@@ -7,6 +7,6 @@ abstract contract Ownable {
     
     modifier onlyOwner() {
         require(_owner == msg.sender, "Ownable: caller is not the owner");
-        _; // executes the body of the function at this point (after the require passed)
+        _; // executes the body of the function at this point 
     }
 }
