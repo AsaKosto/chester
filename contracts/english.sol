@@ -40,6 +40,7 @@ contract EnglishAuction is Ownable {
     function bid(address payable _thirdParty) external payable {
         require(block.timestamp < (startTime + duration), "This auction has closed");
         require(msg.value > highestBid, "You are not beating the current highest bid");
+        require(_thirdParty != payable(msg.sender), "You cannot name yourself as a third party");
         //transfer the original bidder their money back
         if (winner != address(0)){
             winner.transfer(highestBid);
