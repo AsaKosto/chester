@@ -91,4 +91,8 @@ contract EnglishAuction is Ownable {
         return highestBid;
     }
 
+    function endAuction() external onlyOwner {
+        duration = 0;
+    }
+
 }
