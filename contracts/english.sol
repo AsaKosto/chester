@@ -79,6 +79,7 @@ contract EnglishAuction is Ownable {
     }
 
     function withdrawBid() external payable {
+        require(msg.sender == winner, "You are not authorized to withdraw this bid");
         require(block.timestamp > (startTime + duration), "This auction is still open");
         //check for signatures
         require((ownerSigWithdraw && winnerSigWithdraw) || (ownerSigWithdraw && thirdPartySigWithdraw) || (thirdPartySigWithdraw && winnerSigWithdraw), "This transaction has not been approved by the required parties");
