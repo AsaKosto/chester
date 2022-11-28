@@ -49,6 +49,7 @@ contract MultiBid{
         //MAKE SURE THIS IS RIGHT
         uint256 ETHToSend = (callerPower * ((address(this).balance * (10 ** 18)) / totalVotingPower)) / (10 ** 18);
         payable(msg.sender).transfer(ETHToSend);
+        totalVotingPower -= votingPower[msg.sender];
         votingPower[msg.sender] = 0;
     }
 
@@ -80,9 +81,15 @@ contract MultiBid{
 
     //Third Party management
     function proposeThirdParty(address thirdParty) external{
+        require(thirdParty != msg.sender, "You cannot propose yourself as a third party");
+        require(thirdParty != thirdPartyOptions[0] &&
+                thirdParty != thirdPartyOptions[1] &&
+                thirdParty != thirdPartyOptions[2] &&
+                thirdParty != thirdPartyOptions[3] &&
+                thirdParty != thirdPartyOptions[4], "This party has already been proposed");
         //Scenario 1: there have been less than 5 third parties proposed
         //Fill the next available slot with a proposed 3rd party
-        if (ipThirdPartyOptions < 4){
+        if (ipThirdPartyOptions < 5){
             thirdPartyOptions[ipThirdPartyOptions] = thirdParty;
             ipThirdPartyOptions += 1;
         }
@@ -136,7 +143,7 @@ contract MultiBid{
         listingIds[newListingID] = newListing; //MAKE SURE THIS MAPS PROPERLY
         //Scenario 1: there have been less than 5 listings proposed
         //Fill the next available slot with a proposed listing
-        if(ipListingOptions < 4){
+        if(ipListingOptions < 5){
             listingOptions[ipListingOptions] = newListingID;
             ipListingOptions += 1;
         }
@@ -187,9 +194,14 @@ contract MultiBid{
 
     //Auction Management
     function proposeNewAuction(address newAuction) external{
+        require(newAuction != auctionOptions[0] &&
+                newAuction != auctionOptions[1] &&
+                newAuction != auctionOptions[2] &&
+                newAuction != auctionOptions[3] &&
+                newAuction != auctionOptions[4], "This auction has already been proposed");
         //Scenario 1: there have been less than 5 auctions proposed
         //Fill the next available slot with a proposed auction
-        if (ipAuctionOptions < 4){
+        if (ipAuctionOptions < 5){
             auctionOptions[ipAuctionOptions] = newAuction;
             ipAuctionOptions += 1;
         }
