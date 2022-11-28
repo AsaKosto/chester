@@ -42,8 +42,14 @@ contract MultiBid{
         totalVotingPower += msg.value;
     }
 
-    function withdrawValue(uint256 amount) external{
-        //remove the proportional amount of value and adjust tokens
+    function withdrawValue() external{
+        require(address(this).balance > 0, "There is currently no ETH stored in this contract. Either the contract is new, or a bid has been submitted");
+        require(votingPower[msg.sender] > 0, "You do not have any stake in this contract");
+        uint256 callerPower = votingPower[msg.sender];
+        //MAKE SURE THIS IS RIGHT
+        uint256 ETHToSend = (callerPower * ((address(this).balance * (10 ** 18)) / totalVotingPower)) / (10 ** 18);
+        payable(msg.sender).transfer(ETHToSend);
+        votingPower[msg.sender] = 0;
     }
 
     function voteToPay() external{
