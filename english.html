@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="./style.css">
+    <script src="./web3.min.js"></script>
+    <script src="./abi-decoder.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  </head>
+  <body>
+    <div id="header">
+        <header>
+          <div id="sub-title-container">
+            <h1 id="title"></h1>
+            <!-- <h2 id="subtitle">Art Auction App</h2> -->
+          </div>
+        </header>
+      </div>
+    <div class="panel panel_right">
+        <h2>My Account</h2>
+        <select id="myaccount" class="account"></select>
+      </div>
+    <div id="main">
+        <div id="main-display">
+            <article>
+                <div id="auction-params">
+                    <label for="bid-amt">Enter Bid Amount:</label>
+                    <input id="bid" type="text">
+                    <label for="third-party-address">Enter Third Party Address:</label>
+                    <input id="third-address" type="text">
+                </div>
+            </article>
+            <div id="bid-submitting">
+                <div id="bid-submitting-button">
+                <button id="submit-bid"></button>
+                </div>
+            </div>
+
+            <div id="update-checking">
+                <div id="min-bid-checking-button">
+                    <button id="check-min-bid"></button>
+                </div>
+                <article>
+                    <div id="min-bid-display">
+                        <h1 id="min-bid-title">Current Winning Bid:</h1>
+                        <h3 id="curr-min-bid"></h3>
+                    </div>
+                    <div id="duration-display">
+                        <h1 id="duration-title">Time Left:</h1>
+                        <h3 id="duration"></h3>
+                    </div>
+                </article>
+            </div>
+            <div id="bid-ending">
+                <div id="bid-ending-button">
+                <button id="end-auction"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./english.js"></script>
+  </body>
+</html>
