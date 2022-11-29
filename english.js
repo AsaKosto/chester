@@ -5,7 +5,7 @@ const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 //         ABIs and Contract Addresses: Paste Your ABIs/Addresses Here
 // =============================================================================
 
-const english_address = '0xAA6a2c1Fcd6d12465e52a0B9009C646E9A15ae10';     
+const english_address = '0xf56A7EE3EDcD36c5CE1b500b173B2c7A773cF9AF';     
 const english_abi = [
 	{
 		"inputs": [],
@@ -172,14 +172,61 @@ web3.eth.getAccounts().then((response)=>{
     $(".account").html(opts);
 });
 
-$("#check-min-bid").click(async function() {
-	web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+async function update_curr_bid(){
+    web3.eth.defaultAccount = $("#myaccount").val();
     let curr_min_bid = await english_contract.methods.currentHighestBid().call({from:web3.eth.defaultAccount});
-   // alert(curr_min_bid)
-    $("#curr-min-bid").html(curr_min_bid);
+    $("#curr-min-bid").html(curr_min_bid * 10**(-18) + "ETH");
+    let duration = await english_contract.methods.duration().call({from:web3.eth.defaultAccount});
+    let begin = await english_contract.methods.startTime().call({from:web3.eth.defaultAccount});
+    const d = new Date();
+    let time = Math.floor(d.getTime()/ 1000);
+    let time_passed = time - begin;
+    let time_left = duration - time_passed;
+    console.log(time)
+    console.log(begin)
+    console.log(time_passed)
+    console.log(time_left)
+    if (time_left < 0){
+        $("#duration").html(0);
+    } else {
+        $("#duration").html(time_left);
+    }
+    
+}
+
+
+$("#submit-bid").click(async function() {
+	web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+    await english_contract.methods.bid($("#third-address").val()).send({from:web3.eth.defaultAccount,
+                                                                        value:$("#bid").val()},
+                                                                        function(error, hash){
+                                                                            if (error) {
+                                                                                const e = error;
+                                                                                const data = e.data;
+                                                                                const txHash = Object.keys(data)[0]; // TODO improve
+                                                                                const reason = data[txHash].reason;
+                                                                            
+                                                                                console.log(reason); // prints "This is error message"
+                                                                            
+                                                                        }
+                                                                    });
+    update_curr_bid();
+})
+
+$("#end-auction").click(async function() {
+	web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+    await english_contract.methods.endAuction().send({from:web3.eth.defaultAccount});
+    alert('Auction Ended')
+    update_curr_bid();
+})
+
+
+$("#check-min-bid").click(async function() {
+	update_curr_bid();
 })
 
 $("#title").html("English Auction");
 
 $("#submit-bid").html("Submit Bid");
-$("#check-min-bid").html("Check Minimum Bid");
+$("#check-min-bid").html("Update");
+$("#end-auction").html("End Auction");
