@@ -58,12 +58,14 @@ contract MultiBid{
     }
 
     function voteToPay() external{
+        require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
         require(votedSigPay[msg.sender] == false, "You have already voted to pay");
         require(votedSigWithdraw[msg.sender] == false, "You have already voted to withdraw");
         votesToPay += votingPower[msg.sender];
         votedSigPay[msg.sender] = true;
     }
     function retractVoteToPay() external{
+        require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
         require(votedSigPay[msg.sender] == true, "You have not yet voted to pay");
         require(votedSigWithdraw[msg.sender] == false, "You have voted to withdraw");
         votesToPay -= votingPower[msg.sender];
@@ -71,12 +73,14 @@ contract MultiBid{
     }
 
     function voteToWithdraw() external{
+        require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
         require(votedSigWithdraw[msg.sender] == false, "You have already voted to withdraw");
         require(votedSigPay[msg.sender] == false, "You have already voted to pay");
         votesToWithdraw += votingPower[msg.sender];
         votedSigWithdraw[msg.sender] = true;
     }
     function retractVoteToWithdraw() external{
+        require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
         require(votedSigWithdraw[msg.sender] == true, "You have not yet voted to withdraw");
         require(votedSigPay[msg.sender] == false, "You have voted to pay");
         votesToWithdraw -= votingPower[msg.sender];
@@ -85,6 +89,7 @@ contract MultiBid{
 
     //Third Party management
     function proposeThirdParty(address thirdParty) external{
+        require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
         require(thirdParty != msg.sender, "You cannot propose yourself as a third party");
         require(thirdParty != thirdPartyOptions[0] &&
                 thirdParty != thirdPartyOptions[1] &&
@@ -116,6 +121,7 @@ contract MultiBid{
     }
     //Vote or retract votes for a third party
     function voteThirdParty(address thirdParty) external{
+        require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
         require(votedThirdParty[msg.sender] == false, "You have already voted");
         require(thirdParty != address(0), "You cannot vote for the 0 address");
         require(thirdParty == thirdPartyOptions[0] ||
@@ -128,6 +134,7 @@ contract MultiBid{
     }
 
     function retractVoteThirdParty(address thirdParty) external{
+        require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
         require(votedThirdParty[msg.sender] == true, "You have not voted yet");
         require(thirdParty != address(0), "You cannot use for the 0 address");
         thirdParties[thirdParty] -= votingPower[msg.sender];
@@ -142,6 +149,7 @@ contract MultiBid{
     
     //Listing Management
     function proposeNewListing(uint256 format, uint256 minPrice, uint256 duration) external{
+        require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
         uint256[3] memory newListing = [format, minPrice, duration];
         uint256 newListingID = listingId;
         listingIds[newListingID] = newListing; //MAKE SURE THIS MAPS PROPERLY
@@ -172,6 +180,7 @@ contract MultiBid{
     }
 
     function voteNewListing(uint256 listingID) external{
+        require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
         require(votedListings[msg.sender] == false, "You have already voted");
         require(listingID == listingOptions[0] ||
                 listingID == listingOptions[1] ||
@@ -183,6 +192,7 @@ contract MultiBid{
     }
 
     function retractNewVoteListing(uint256 listingID) external{
+        require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
         require(votedListings[msg.sender] == true, "You have not yet voted");
         listings[listingID] -= votingPower[msg.sender];
         votedListings[msg.sender] = false;
@@ -198,6 +208,7 @@ contract MultiBid{
 
     //Auction Management
     function proposeNewAuction(address newAuction) external{
+        require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
         require(newAuction != auctionOptions[0] &&
                 newAuction != auctionOptions[1] &&
                 newAuction != auctionOptions[2] &&
@@ -228,6 +239,7 @@ contract MultiBid{
     }
 
     function voteNewAuction(address newAuction) external{
+        require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
         require(votedAuctions[msg.sender] == false, "You have already voted");
         require(newAuction != address(0), "You cannot vote for the zero address");
         require(newAuction == auctionOptions[0] ||
@@ -240,6 +252,7 @@ contract MultiBid{
     }
 
     function retractVoteNewAuction(address newAuction) external{
+        require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
         require(votedAuctions[msg.sender] == true, "You have not voted yet");
         require(newAuction != address(0), "You cannot use the 0 address");
         auctions[newAuction] -= votingPower[msg.sender];
@@ -256,5 +269,13 @@ contract MultiBid{
     //Contract functions
     //********************************************************************************\\
 
+    function submitBid(address thirdParty, uint256 amount) external payable{
+        require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
+        require(amount <= address(this).balance, "There is not enough ETH in this multi-bid, please add more value");
+        require((2 * thirdParties[thirdParty]) > totalVotingPower, "This third party does not currently have enough votes");
+        EnglishInterface bidAuction = EnglishInterface(currentAuction);
+        //Discuss merits of amount vs just sending everything
+        bidAuction.bid{value: amount}(payable(thirdParty));
+    }
 
 }
