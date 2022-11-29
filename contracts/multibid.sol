@@ -32,10 +32,15 @@ contract MultiBid{
     mapping(address => bool) public votedSigPay;
     mapping(address => bool) public votedSigWithdraw;
 
-    address public currentAuction; //The auction this multi-bid is currently bidding on
+    uint256 votesApproveSubmittedThirdParty;
+    mapping(address => bool) public votedApprove;
+
+    address public _currentAuction; //The auction this multi-bid is currently bidding on
+    //EnglishInterface public currentAuction;
 
     constructor(address auction){
-        currentAuction = auction;
+        _currentAuction = auction;
+        //EnglishInterface currentAuction = EnglishInterface(_currentAuction);
     }
     //********************************************************************************\\
     //Individual Functions
@@ -87,7 +92,7 @@ contract MultiBid{
         votedSigWithdraw[msg.sender] = false;
     }
 
-    //Third Party management
+    //Third Party management for submitting bids
     function proposeThirdParty(address thirdParty) external{
         require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
         require(thirdParty != msg.sender, "You cannot propose yourself as a third party");
@@ -119,7 +124,7 @@ contract MultiBid{
             thirdPartyOptions[lowestIndex] = thirdParty;
         }
     }
-    //Vote or retract votes for a third party
+    //Vote or retract votes for a third party for a bid
     function voteThirdParty(address thirdParty) external{
         require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
         require(votedThirdParty[msg.sender] == false, "You have already voted");
@@ -265,6 +270,21 @@ contract MultiBid{
         return auctionOptions[index];
     }
 
+    //Approving submitted third party in a winning bid
+    function voteApproveSubmittedThirdParty() external{
+        require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
+        require(votedApprove[msg.sender] == false, "You have already voted");
+        votesApproveSubmittedThirdParty += votingPower[msg.sender];
+        votedApprove[msg.sender] = true;
+    }
+
+    function retractVoteApproveSubmittedThirdParty() external{
+        require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
+        require(votedApprove[msg.sender] == true, "You have not voted yet");
+        votesApproveSubmittedThirdParty -= votingPower[msg.sender];
+        votedApprove[msg.sender] = false;
+    }
+
     //********************************************************************************\\
     //Contract functions
     //********************************************************************************\\
@@ -273,9 +293,43 @@ contract MultiBid{
         require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
         require(amount <= address(this).balance, "There is not enough ETH in this multi-bid, please add more value");
         require((2 * thirdParties[thirdParty]) > totalVotingPower, "This third party does not currently have enough votes");
-        EnglishInterface bidAuction = EnglishInterface(currentAuction);
         //Discuss merits of amount vs just sending everything
-        bidAuction.bid{value: amount}(payable(thirdParty));
+        EnglishInterface currentAuction = EnglishInterface(_currentAuction);
+        currentAuction.bid{value: amount}(payable(thirdParty));
+    }
+
+    function submitSigPay() external{
+        require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
+        require((2 * votesToPay) > totalVotingPower, "There are not currently enough votes to submit a 'pay' signature");
+        EnglishInterface currentAuction = EnglishInterface(_currentAuction);
+        currentAuction.signToPay();
+    }
+
+    function submitSigWithdraw() external{
+        require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
+        require((2 * votesToWithdraw) > totalVotingPower, "There are not currently enough votes to submit a 'withdraw' signature");
+        EnglishInterface currentAuction = EnglishInterface(_currentAuction);
+        currentAuction.signToWithdraw();
+    }
+
+    function submitCashOut() external{
+        require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
+        EnglishInterface currentAuction = EnglishInterface(_currentAuction);
+        currentAuction.cashOut();
+    }
+
+    function submitApprovalThirdParty() external{
+        require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
+        require((2 * votesApproveSubmittedThirdParty) > totalVotingPower, "There are not currently enough votes to approve the proposed third party");
+        EnglishInterface currentAuction = EnglishInterface(_currentAuction);
+        currentAuction.approveThirdParty();
+    }
+
+    function submitWithdrawBid() external{
+        require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
+        require((2 * votesToWithdraw) > totalVotingPower, "There are not currently enough votes to submit a withdrawal request");
+        EnglishInterface currentAuction = EnglishInterface(_currentAuction);
+        currentAuction.withdrawBid();
     }
 
 }
