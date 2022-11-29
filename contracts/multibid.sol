@@ -1,6 +1,8 @@
 //Multi-Bid
 // SPDX-License-Identifier: MIT
 
+import '../interfaces/englishInterface.sol';
+
 pragma solidity ^0.8.0;
 
 contract MultiBid{
@@ -35,8 +37,10 @@ contract MultiBid{
     constructor(address auction){
         currentAuction = auction;
     }
-
+    //********************************************************************************\\
     //Individual Functions
+    //********************************************************************************\\
+
     function addValue() external payable{
         votingPower[msg.sender] += msg.value;
         totalVotingPower += msg.value;
@@ -247,5 +251,10 @@ contract MultiBid{
     function viewAuctionAtIndex(uint256 index) external view returns(address){
         return auctionOptions[index];
     }
+
+    //********************************************************************************\\
+    //Contract functions
+    //********************************************************************************\\
+
 
 }
