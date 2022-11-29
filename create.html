@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" type="text/css" href="./style.css">
+    <script src="./web3.min.js"></script>
+    <script src="./abi-decoder.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  </head>
+  <body>
+    <div id="header">
+        <header>
+          <div id="sub-title-container">
+            <h1 id="title"></h1>
+            <!-- <h2 id="subtitle">Art Auction App</h2> -->
+          </div>
+        </header>
+      </div>
+    <div class="panel panel_right">
+        <h2>My Account</h2>
+        <select id="myaccount" class="account"></select>
+      </div>
+    <div id="main">
+        <div id="main-display">
+            <article>
+                <div id="auction-params">
+                    <h2> Auction Type</h2>
+                    <select id="auction-type" class="auction"></select>
+                    <label for="min-bid-amt">Enter Minimum Bid Amount:</label>
+                    <input id="min-bid-amt" type="text">
+                    <label for="item-name">Enter The Item Name:</label>
+                    <input id="item-name" type="text">
+                    <label for="duration">Enter Duration In Hours:</label>
+                    <input id="duration" type="text">
+                </div>
+            </article>
+            <div id="auction-submitting">
+            <div id="auction-submitting-button">
+              <button id="submit-auction"></button>
+            </div>
+          </div>
+        </div>
+    </div>
+    <script src="./create.js"></script>
+  </body>
+</html>
