@@ -11,7 +11,7 @@ contract EnglishAuction is Ownable {
     uint256 public startTime;
 
     uint256 private highestBid;
-    address payable private winner;
+    address payable public winner; 
     address payable public thirdParty;
 
     bool private ownerSigWithdraw = false;
@@ -39,6 +39,7 @@ contract EnglishAuction is Ownable {
     }
 
     function bid(address payable _thirdParty) external payable {
+        require(msg.sender != admin, "You cannot bid on your own auction");
         require(block.timestamp < (startTime + duration), "This auction has closed");
         require(msg.value > highestBid, "You are not beating the current highest bid");
         require(_thirdParty != payable(msg.sender), "You cannot name yourself as a third party");

@@ -332,4 +332,7 @@ contract MultiBid{
         currentAuction.withdrawBid();
     }
 
+    //Recieve
+    receive() external payable{}
+
 }
