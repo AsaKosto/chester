@@ -30,8 +30,8 @@ contract EnglishAuction is Ownable {
 
     //minimumBid in Wei
     //duration of the auction in seconds
-    constructor(uint256 _minimumBid, uint256 _duration){
-        admin = payable(msg.sender);
+    constructor(uint256 _minimumBid, uint256 _duration, address payable _admin){
+        admin = _admin;
         minimumBid = _minimumBid;
         duration = _duration;
         highestBid = _minimumBid;
