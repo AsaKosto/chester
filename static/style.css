@@ -16,8 +16,8 @@ body {
 }
 .panel {
 	position: absolute;
-	top: 20px;
-	width: 300px;
+	top: 10px;
+	width: 40px;
 	background-color: #CCC;
 	padding: 20px;
 }
