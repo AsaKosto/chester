@@ -3,9 +3,7 @@
 
 pragma solidity ^0.8.0;
 
-import '../libraries/ownable.sol';
-
-contract EnglishAuction is Ownable {
+contract EnglishAuction{
 
     address payable public admin;
     uint256 public startTime;
@@ -31,6 +29,7 @@ contract EnglishAuction is Ownable {
     //minimumBid in Wei
     //duration of the auction in seconds
     constructor(uint256 _minimumBid, uint256 _duration, address payable _admin){
+        require(_duration <= 604800, "Auctions cannot run for more than a week");
         admin = _admin;
         minimumBid = _minimumBid;
         duration = _duration;
@@ -53,7 +52,8 @@ contract EnglishAuction is Ownable {
         thirdParty = _thirdParty;
     }
 
-    function approveThirdParty() external onlyOwner {
+    function approveThirdParty() external {
+        require(msg.sender == admin, "You are not authorized to approve this third party");
         require(block.timestamp > (startTime + duration), "This auction is still open");
         thirdPartyApproved = true;
     }
@@ -72,7 +72,8 @@ contract EnglishAuction is Ownable {
         if (msg.sender == winner) {winnerSigWithdraw = true;}
     }
 
-    function cashOut() external payable onlyOwner {
+    function cashOut() external payable {
+        require(msg.sender == admin, "You are not authorized to cash out");
         require(block.timestamp > (startTime + duration), "This auction is still open");
         //check for signatures
         require((ownerSigPay && winnerSigPay) || (ownerSigPay && thirdPartySigPay) || (thirdPartySigPay && winnerSigPay), "This transaction has not been approved by the required parties");
@@ -95,7 +96,8 @@ contract EnglishAuction is Ownable {
         return highestBid;
     }
 
-    function endAuction() external onlyOwner {
+    function endAuction() external {
+        require(msg.sender == admin, "You are not authorized to end this auction");
         duration = 0;
     }
 
