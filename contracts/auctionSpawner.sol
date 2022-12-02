@@ -1,9 +1,7 @@
 //Auction Spawner
 // SPDX-License-Identifier: MIT
 
-import '../interfaces/englishInterface.sol';
 import './english.sol';
-import './multibid.sol';
 
 
 pragma solidity ^0.8.0;
