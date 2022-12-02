@@ -660,68 +660,71 @@ web3.eth.getAccounts().then((response)=>{
     $(".account").html(opts);
 });
 
-// This opens a new page to create an auction
-$("#create-auction").click(function() {
-	web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-	location.href = 'create.html'
+$(document).ready(function(){
+
+	// This opens a new page to create an auction
+	$("#create-auction").click(function() {
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		location.href = 'create.html'
+	})
+
+	// This fills in UI information
+	$("#create-auction").html("List a piece");
+
+
+	// This runs the 'swapETHForTokens' function when you click the button
+	$("#swap-eth").click(function() {
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+	swapETHForTokens($("#amt-to-swap").val(), $("#max-slippage-swap").val()).then((response)=>{
+			window.location.reload(true); // refreshes the page after add_IOU returns and the promise is unwrapped
+		})
+	});
+
+	// This goes to dummy contract so we can interact
+	$("#create-dummy-auction").click(function() {
+		location.href = 'english.html'
+	})
+
+	// This runs the 'swapTokensForETH' function when you click the button
+	$("#swap-token").click(function() {
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+	swapTokensForETH($("#amt-to-swap").val(), $("#max-slippage-swap").val()).then((response)=>{
+			window.location.reload(true); // refreshes the page after add_IOU returns and the promise is unwrapped
+		})
+	});
+
+	// This runs the 'addLiquidity' function when you click the button
+	$("#add-liquidity").click(function() {
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+	addLiquidity($("#amt-eth").val(), $("#max-slippage-liquid").val()).then((response)=>{
+			window.location.reload(true); // refreshes the page after add_IOU returns and the promise is unwrapped
+		})
+	});
+
+	// This runs the 'removeLiquidity' function when you click the button
+	$("#remove-liquidity").click(function() {
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+	removeLiquidity($("#amt-eth").val(), $("#max-slippage-liquid").val()).then((response)=>{
+			window.location.reload(true); // refreshes the page after add_IOU returns and the promise is unwrapped
+		})
+	});
+
+	// This runs the 'removeAllLiquidity' function when you click the button
+	$("#remove-all-liquidity").click(function() {
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+	removeAllLiquidity($("#max-slippage-liquid").val()).then((response)=>{
+			window.location.reload(true); // refreshes the page after add_IOU returns and the promise is unwrapped
+		})
+	});
+
+	// Fills in relevant parts of UI with your token and exchange name info:
+	$("#swap-eth").html("Swap ETH for " + token_symbol);
+
+	$("#swap-token").html("Swap " + token_symbol + " for ETH");
+
+	$("#title").html("Chester");
+
+	$("#create-dummy-auction").html("dummy-auction");
+
+	
 })
-
-// This fills in UI information
-$("#create-auction").html("List a piece");
-
-
-// This runs the 'swapETHForTokens' function when you click the button
-$("#swap-eth").click(function() {
-    web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-  swapETHForTokens($("#amt-to-swap").val(), $("#max-slippage-swap").val()).then((response)=>{
-        window.location.reload(true); // refreshes the page after add_IOU returns and the promise is unwrapped
-    })
-});
-
-// This goes to dummy contract so we can interact
-$("#create-dummy-auction").click(function() {
-    location.href = 'english.html'
-})
-
-// This runs the 'swapTokensForETH' function when you click the button
-$("#swap-token").click(function() {
-    web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-  swapTokensForETH($("#amt-to-swap").val(), $("#max-slippage-swap").val()).then((response)=>{
-        window.location.reload(true); // refreshes the page after add_IOU returns and the promise is unwrapped
-    })
-});
-
-// This runs the 'addLiquidity' function when you click the button
-$("#add-liquidity").click(function() {
-    web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-  addLiquidity($("#amt-eth").val(), $("#max-slippage-liquid").val()).then((response)=>{
-        window.location.reload(true); // refreshes the page after add_IOU returns and the promise is unwrapped
-    })
-});
-
-// This runs the 'removeLiquidity' function when you click the button
-$("#remove-liquidity").click(function() {
-    web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-  removeLiquidity($("#amt-eth").val(), $("#max-slippage-liquid").val()).then((response)=>{
-        window.location.reload(true); // refreshes the page after add_IOU returns and the promise is unwrapped
-    })
-});
-
-// This runs the 'removeAllLiquidity' function when you click the button
-$("#remove-all-liquidity").click(function() {
-    web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-  removeAllLiquidity($("#max-slippage-liquid").val()).then((response)=>{
-        window.location.reload(true); // refreshes the page after add_IOU returns and the promise is unwrapped
-    })
-});
-
-// Fills in relevant parts of UI with your token and exchange name info:
-$("#swap-eth").html("Swap ETH for " + token_symbol);
-
-$("#swap-token").html("Swap " + token_symbol + " for ETH");
-
-$("#title").html("Chester");
-
-$("#create-dummy-auction").html("dummy-auction");
-
-
