@@ -5,12 +5,116 @@ const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 //         ABIs and Contract Addresses: Paste Your ABIs/Addresses Here
 // =============================================================================
 
-const english_address = '0x96a318aC678a5272CcCD08d73318772AD3Efdf39';     
-const english_abi = [
-
-
+const english_spawner_address = '0x68018Ff9C854E9D89D7c77eeF0f7E70c238bE8F4';     
+const english_spawner_abi =[
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "minimumBid",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "duration",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address payable",
+				"name": "admin",
+				"type": "address"
+			}
+		],
+		"name": "auctionCreated",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "minimumBid",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "duration",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address payable",
+				"name": "admin",
+				"type": "address"
+			}
+		],
+		"name": "createAuction",
+		"outputs": [
+			{
+				"internalType": "contract EnglishAuction",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "auction",
+		"outputs": [
+			{
+				"internalType": "contract EnglishAuction",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "genesis",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getMostRecentListing",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "mostRecentListing",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
 ];     
-// const english_contract = new web3.eth.Contract(english_abi, english_address);        
+const english_spawner_contract = new web3.eth.Contract(english_spawner_abi, english_spawner_address);        
 
 // This sets the default account on load and displays the total owed to that
 // account.
@@ -24,22 +128,53 @@ web3.eth.getAccounts().then((response)=>{
     $(".account").html(opts);
 });
 
-var auction_types = {
-    ValueA : 'English',
-    ValueB : 'MultiBid',
-    ValueC : 'Text C'
-};
+// var auction_types = {
+//     ValueA : 'English',
+//     ValueB : 'MultiBid',
+//     ValueC : 'Text C'
+// };
 
-var select = document.getElementById("auction-type");
-for(index in auction_types) {
-    select.options[select.options.length] = new Option(auction_types[index], index);
-}
+// var select = document.getElementById("auction-type");
+// for(index in auction_types) {
+//     select.options[select.options.length] = new Option(auction_types[index], index);
+// }
 
 // This gets the auction information
-$("#submit-auction").click(function() {
+
+// function sleep(ms) {
+//     return new Promise(resolve => setTimeout(resolve, ms));
+// }
+
+async function create_new(min_bid_amt,duration,address){
+    console.log(min_bid_amt)
+    // min_bid_amt = parseInt(min_bid_amt)
+    // duration = parseInt(duration)
+    console.log(duration)
+    console.log(address)
+    let x = await english_spawner_contract.methods.createAuction(min_bid_amt,duration,address).call({from:address});
+    alert(x)
+	console.log(x)
+    // sleep(1000000000)
+    // let english_address = await english_spawner_contract.methods.getMostRecentListing().call({from:address})
+    // alert(english_address)
+    // let english_address2 = await english_spawner_contract.methods.mostRecentListing().call({from:address})
+    // alert(english_address2)
+    // console.log(english_address)
+    return x;
+}
+
+$("#submit-auction").click(async function() {
 	web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-    createContract($("auction-type").val(),$("min-bid-amt").val(),$("item-name").val(),$("duration").val());
-    location.href = 'index.html'
+    let min_bid_amt = $("#min-bid-amt").val();
+    let duration = $("#duration").val();
+    let english_address = await create_new(min_bid_amt,duration,web3.eth.defaultAccount);
+	console.log(english_address)
+    //english_address = english_spawner_contract.methods.call
+    let params = new URLSearchParams();
+    params.append("address", english_address);
+    let url = 'english.html?' + params.toString();
+	console.log(url)
+    location.href = url;
 })
 
 

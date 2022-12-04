@@ -10,13 +10,15 @@ contract auctionSpawner{
     uint256 public genesis = block.timestamp;
     address public mostRecentListing;
 
-    function createAuction(uint256 minimumBid, uint256 duration, address payable admin) external returns(address){
+    function createAuction(uint256 minimumBid, uint256 duration, address payable admin) external returns (EnglishAuction){
         require(admin == msg.sender, "You cannot create auctions where you are not the admin");
         require(duration <= 604800, "Auctions cannot run for more than a week");
-        EnglishAuction newAuction = new EnglishAuction(minimumBid, duration, admin);
+        EnglishAuction auction = new EnglishAuction(minimumBid, duration, admin);
         emit auctionCreated(minimumBid, duration, admin);
-        mostRecentListing = address(newAuction);
-        return address(newAuction);
+        mostRecentListing = address(auction);
+        // mostRecentListing = auction.getAddress();
+        //address a = address(auction);
+        return auction;
     }
 
     event auctionCreated(uint256 minimumBid, uint256 duration, address payable admin);

@@ -6,9 +6,43 @@ const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 // =============================================================================
 
 ///THESE ARE HARDCODED FOR NOW
-const english_address = '0xAD6A27ACeb0777A4845Eb4438cf05807A94c682b';     
-const owner_address = '0xbaFC265Da1DdB4648B622A7A7c5b7566f7EcD890';
+// const english_address = '0xBd1945E5e7f0Db91dcFbb4b48813b11694D3e008';     
+const owner_address = '0x48FD7c0D8c5c1A305e5E88f1AF12E88e804E2112';
 const english_abi = [
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_minimumBid",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_duration",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address payable",
+				"name": "_admin",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [],
+		"name": "admin",
+		"outputs": [
+			{
+				"internalType": "address payable",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
 	{
 		"inputs": [],
 		"name": "approveThirdParty",
@@ -34,63 +68,6 @@ const english_abi = [
 		"name": "cashOut",
 		"outputs": [],
 		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "endAuction",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "signToPay",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "signToWithdraw",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_minimumBid",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_duration",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"inputs": [],
-		"name": "withdrawBid",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "admin",
-		"outputs": [
-			{
-				"internalType": "address payable",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -121,6 +98,13 @@ const english_abi = [
 	},
 	{
 		"inputs": [],
+		"name": "endAuction",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "minimumBid",
 		"outputs": [
 			{
@@ -130,6 +114,20 @@ const english_abi = [
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "signToPay",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "signToWithdraw",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -170,14 +168,27 @@ const english_abi = [
 		],
 		"stateMutability": "view",
 		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "withdrawBid",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
 	}
 ];
 
-const english_contract = new web3.eth.Contract(english_abi, english_address);        
+var english_address = 0;
+var english_contract = 0;
+
+
+// const english_contract = new web3.eth.Contract(english_abi, english_address);        
 
 async function update_curr_bid(){
     web3.eth.defaultAccount = $("#myaccount").val();
+	console.log("curr highest bid call")
     let curr_min_bid = await english_contract.methods.currentHighestBid().call({from:web3.eth.defaultAccount});
+	console.log("SUCCESS")
 	curr_min_bid = curr_min_bid
     $("#curr-min-bid").html(curr_min_bid * 10**(-18) + " ETH");
     let duration = await english_contract.methods.duration().call({from:web3.eth.defaultAccount});
@@ -250,6 +261,14 @@ async function update_balance2(){
 }
 
 $(document).ready(function(){
+
+	let params = new URLSearchParams(window.location.search),
+		first = params.get("address");
+	alert(first)
+	console.log(first)
+	english_address = first;
+	english_contract = new web3.eth.Contract(english_abi, first);        	
+
 
 	web3.eth.getAccounts().then((response)=> {
 		web3.eth.defaultAccount = response[0];
