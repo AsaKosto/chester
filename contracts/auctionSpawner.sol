@@ -17,7 +17,7 @@ contract auctionSpawner{
         emit auctionCreated(minimumBid, duration, admin);
         mostRecentListing = address(auction);
         // mostRecentListing = auction.getAddress();
-        //address a = address(auction);
+        //address a = address(auction)
         return auction;
     }
 
