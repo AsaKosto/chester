@@ -953,7 +953,7 @@ $(document).ready(function(){
 			amount = $("#bid").val() * scale;
 			await multibid_contract.methods.submitBid($("#third-address").val(), web3.utils.toBN(amount)).send({from:web3.eth.defaultAccount})
 			update_balance($("#myaccount").val());
-			//ship($("#myaccount").val());
+			update_info();
 		}
 	})
 
@@ -974,9 +974,15 @@ $(document).ready(function(){
 		}
 		amount = $("#valueToAdd").val() * scale;
 		await multibid_contract.methods.addValue().send({from:web3.eth.defaultAccount, value:amount});
+		update_info()
 	})
 
 
+	$("#withdrawValue").click(async function() {
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		await multibid_contract.methods.withdrawValue().send({from:web3.eth.defaultAccount});
+		update_info()
+	})
 
 	
 	
