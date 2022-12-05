@@ -285,6 +285,10 @@ contract MultiBid{
         votedApprove[msg.sender] = false;
     }
 
+    function seeMyStake() external view returns(uint256){
+        return(votingPower[msg.sender]);
+    }
+
     //********************************************************************************\\
     //Contract functions
     //********************************************************************************\\
