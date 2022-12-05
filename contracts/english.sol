@@ -12,16 +12,16 @@ contract EnglishAuction{
     address payable public winner; 
     address payable public thirdParty;
 
-    bool private ownerSigWithdraw = false;
-    bool private ownerSigPay = false;
+    bool public ownerSigWithdraw = false;
+    bool public ownerSigPay = false;
 
-    bool private thirdPartySigWithdraw = false;
-    bool private thirdPartySigPay = false;
+    bool public thirdPartySigWithdraw = false;
+    bool public thirdPartySigPay = false;
 
-    bool private winnerSigWithdraw = false;
-    bool private winnerSigPay = false;
+    bool public winnerSigWithdraw = false;
+    bool public winnerSigPay = false;
 
-    bool private thirdPartyApproved = false;
+    bool public thirdPartyApproved = false;
 
     uint256 public minimumBid;
     uint256 public duration;
