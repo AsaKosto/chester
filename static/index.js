@@ -685,6 +685,10 @@ $(document).ready(function(){
 		location.href = 'english.html'
 	})
 
+	$("#create-multibid").click(function() {
+		location.href = 'multibid.html'
+	})
+
 	// This runs the 'swapTokensForETH' function when you click the button
 	$("#swap-token").click(function() {
 		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
@@ -725,6 +729,8 @@ $(document).ready(function(){
 	$("#title").html("Chester");
 
 	$("#create-dummy-auction").html("dummy-auction");
+
+	$("#create-multibid").html("multibid");
 
 	
 })
