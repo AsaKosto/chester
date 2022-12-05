@@ -13,8 +13,8 @@
   <body>
     <div class="container">
       <div class="row">
-        <div class="col-md-2">
-          Multibid
+        <div class="col-md-2" id="multibid-balance">
+          Multibid: 
         </div>
         <div id="ownership-label" class="col-md-3">
         </div>
@@ -25,13 +25,15 @@
           <select onchange="update_balance2()" id="myaccount" class="account"></select>
         </div>
       </div>
+      <div class="row">
+        <div class="col-md-2" id="stake"></div>
+      </div>
 
       <div class="row">
         <div class="col-md-2">
           Auction Address: 
         </div>
-        <div class="col-md-4">
-          0x5B38Da6a701c568545dCfcB03FcB875f56beddC4
+        <div class="col-md-4" id="auction-address">
         </div>
       </div>
 
@@ -39,11 +41,24 @@
         <div class="col-md-2">
           Current Highest Bid: 
         </div>
-        <div id="curr-min-bid" class="col-md-6">
-          0
+        <div id="curr-high-bid" class="col-md-6">
         </div>
         <div id="account-balance" class="col-md-4">
           Balance: 
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-2">
+          Winner: 
+        </div>
+        <div id="winner" class="col-md-6">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-2">
+          Time Left: 
+        </div>
+        <div id="duration" class="col-md-6">
         </div>
       </div>
 
@@ -76,6 +91,7 @@
 
       <div class="row">
         <button id="addValue">addValue</button>
+        <input id="valueToAdd" type="text" placeholder="00">
       </div>
       <div class="row">
         <button id="withdrawValue">withdrawValue</button>
@@ -104,8 +120,6 @@
       <div class="row">
         <button id="retractVoteThirdParty">retractVoteThirdParty</button>
       </div>
-
-      
     </div>
 
 
