@@ -8,7 +8,7 @@ contract EnglishAuction{
     address payable public admin;
     uint256 public startTime;
 
-    uint256 private highestBid;
+    uint256 public highestBid;
     address payable public winner; 
     address payable public thirdParty;
 
