@@ -1051,27 +1051,6 @@ $(document).ready(function(){
 		update_info()
 	})
 
-	$("#proposeNewAuction").click(async function() {
-		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-		address = $("#new-auction-address").val()
-		await multibid_contract.methods.proposeNewAuction(address).send({from:web3.eth.defaultAccount});
-		update_info()
-	})
-
-	$("#voteNewAuction").click(async function() {
-		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-		address = $("#vote-new-auction-address").val()
-		await multibid_contract.methods.voteNewAuction(address).send({from:web3.eth.defaultAccount});
-		update_info()
-	})
-
-	$("#retractVoteNewAuction").click(async function() {
-		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-		address = $("#retract-vote-new-auction-address").val()
-		await multibid_contract.methods.retractVoteNewAuction(address).send({from:web3.eth.defaultAccount});
-		update_info()
-	})
-
 	$("#voteApproveSubmittedThirdParty").click(async function() {
 		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
 		await multibid_contract.methods.voteApproveSubmittedThirdParty().send({from:web3.eth.defaultAccount});
