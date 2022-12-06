@@ -984,6 +984,7 @@ $(document).ready(function(){
 		update_info()
 	})
 
+<<<<<<< HEAD
 	$("#voteToPay").click(async function() {
 		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
 		await multibid_contract.methods.voteToPay().send({from:web3.eth.defaultAccount});
@@ -999,4 +1000,27 @@ $(document).ready(function(){
 
 	
 	
+=======
+	$("#proposeThirdParty").click(async function() {
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		third_party_prop = $("#third-address-proposal").val()
+		await multibid_contract.methods.proposeThirdParty(third_party_prop).send({from:web3.eth.defaultAccount});
+		update_info()
+	})
+
+	$("#voteThirdParty").click(async function() {
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		third_party_vote = $("#third-address-vote").val()
+		await multibid_contract.methods.voteThirdParty(third_party_vote).send({from:web3.eth.defaultAccount});
+		update_info()
+	})
+
+	$("#retractVoteThirdParty").click(async function() {
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		third_party_retract = $("#third-address-retract").val()
+		await multibid_contract.methods.retractVoteThirdParty(third_party_retract).send({from:web3.eth.defaultAccount});
+		update_info()
+	})
+
+>>>>>>> 2a6b299e92253b44fef21c31c42ef4025c8fbfa4
 })
