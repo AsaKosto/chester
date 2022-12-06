@@ -995,6 +995,18 @@ $(document).ready(function(){
 		await multibid_contract.methods.retractVoteToPay().send({from:web3.eth.defaultAccount});
 		update_info()
 	})
+
+	$("#voteToWithdraw").click(async function() {
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		await multibid_contract.methods.voteToWithdraw().send({from:web3.eth.defaultAccount});
+		update_info()
+	})
+
+	$("#retractVoteToWithdraw").click(async function() {
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		await multibid_contract.methods.retractVoteToWithdraw().send({from:web3.eth.defaultAccount});
+		update_info()
+	})
 	
 	$("#proposeThirdParty").click(async function() {
 		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
