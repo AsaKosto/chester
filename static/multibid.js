@@ -1029,4 +1029,65 @@ $(document).ready(function(){
 		update_info()
 	})
 
+	$("#proposeNewListing").click(async function() {
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		min_price = $("#new-listing-minPrice").val()
+		duration = $("#new-listing-duration").val()
+		await multibid_contract.methods.proposeNewListing(0, min_price, duration).send({from:web3.eth.defaultAccount});
+		update_info()
+	})
+
+	$("#voteNewListing").click(async function() {
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		listing_id = $("#vote-listing-id").val()
+		await multibid_contract.methods.voteNewListing(listing_id).send({from:web3.eth.defaultAccount});
+		update_info()
+	})
+
+	$("#retractNewVoteListing").click(async function() {
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		listing_id = $("#retract-listing-id").val()
+		await multibid_contract.methods.retractNewVoteListing(listing_id).send({from:web3.eth.defaultAccount});
+		update_info()
+	})
+
+	$("#proposeNewAuction").click(async function() {
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		address = $("#new-auction-address").val()
+		await multibid_contract.methods.proposeNewAuction(address).send({from:web3.eth.defaultAccount});
+		update_info()
+	})
+
+	$("#voteNewAuction").click(async function() {
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		address = $("#vote-new-auction-address").val()
+		await multibid_contract.methods.voteNewAuction(address).send({from:web3.eth.defaultAccount});
+		update_info()
+	})
+
+	$("#retractVoteNewAuction").click(async function() {
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		address = $("#retract-vote-new-auction-address").val()
+		await multibid_contract.methods.retractVoteNewAuction(address).send({from:web3.eth.defaultAccount});
+		update_info()
+	})
+
+	$("#voteApproveSubmittedThirdParty").click(async function() {
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		await multibid_contract.methods.voteApproveSubmittedThirdParty().send({from:web3.eth.defaultAccount});
+		update_info()
+	})
+
+	$("#retractVoteApproveSubmittedThirdParty").click(async function() {
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		await multibid_contract.methods.retractVoteApproveSubmittedThirdParty().send({from:web3.eth.defaultAccount});
+		update_info()
+	})
+
+	
+
+
+
+
+
 })

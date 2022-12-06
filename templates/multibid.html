@@ -22,7 +22,7 @@
         </div>
         <div class="col-md-4 panel panel_right  ">
           <h2>My Account</h2>
-          <select onchange="update_balance2()" id="myaccount" class="account"></select>
+          <select onchange="update_info()" id="myaccount" class="account"></select>
         </div>
       </div>
       <div class="row">
@@ -85,7 +85,7 @@
         <div class="col-md-8">
         </div>
         <div class="col-md-2">
-          <button id="submit-bid"></button>
+          <button id="submit-bid">Submit Bid</button>
         </div>
       </div>
 
@@ -100,7 +100,7 @@
         <button id="voteToPay">voteToPay</button>
       </div>
       <div class="row">
-        <button id="RetractvoteToPay">RetractvoteToPay</button>
+        <button id="retractVoteToPay">retractVoteToPay</button>
       </div>
       <div class="row">
         <button id="voteToWithdraw">voteToWithdraw</button>
@@ -119,6 +119,34 @@
       <input id="third-address-retract" type="text" placeholder="Third Party Address">
       <div class="row">
         <button id="retractVoteThirdParty">retractVoteThirdParty</button>
+      </div>
+      <input id="new-listing-minPrice" type="text" placeholder="MinPrice">
+      <input id="new-listing-duration" type="text" placeholder="duration">
+      <div class="row">
+        <button id="proposeNewListing">proposeNewListing</button>
+      </div>
+      <input id="vote-listing-id" type="text" placeholder="listingID">
+      <div class="row">
+        <button id="voteNewListing">voteNewListing</button>
+      </div>
+      <input id="retract-listing-id" type="text" placeholder="listingID">
+      <div class="row">
+        <button id="retractNewVoteListing">retractNewVoteListing</button>
+      </div>
+      <input id="new-auction-address" type="text" placeholder="Address">
+      <div class="row">
+        <button id="proposeNewAuction">proposeNewAuction</button>
+      </div>
+      <input id="vote-new-auction-address" type="text" placeholder="Address">
+      <div class="row">
+        <button id="voteNewAuction">voteNewAuction</button>
+      </div>
+      <input id="retract-vote-new-auction-address" type="text" placeholder="Address">
+      <div class="row">
+        <button id="retractVoteNewAuction">retractVoteNewAuction</button>
+      </div>
+      <div class="row">
+        <button id="voteApproveSubmittedThirdParty">voteApproveSubmittedThirdParty</button>
       </div>
     </div>
 
