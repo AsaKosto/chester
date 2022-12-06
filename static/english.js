@@ -309,6 +309,7 @@ async function update_curr_bid(){
 	minutes = Math.floor((time_left % (60*60)) / 60)
     if (time_left < 0){
         $("#duration").html(0);
+		await english_contract.methods.endAuction().send({from:web3.eth.defaultAccount});
     } else {
         $("#duration").html(hours + "H " + minutes + "M");
     }
@@ -347,7 +348,7 @@ async function update_ownership(address){
 		$("#winner-label").html("");
 		$("#third-address-display").html("");
 		if (duration == 0)
-			$("#third-address-display").html("Third Party Address: ");
+			$("#third-address-display").html("Third Party Address: " + third_party_address);
 		show_owner_buttons(curr_address);
 	} else if (curr_address == third_party_address) {
 		$("#ownership-label").html("You are the active third party of this auction");
@@ -581,6 +582,8 @@ $(document).ready(function(){
 		let winner_address = await english_contract.methods.winner().call({from:web3.eth.defaultAccount});
 		let third_address = $("#third-address").val()
 		let duration = await english_contract.methods.duration().call({from:web3.eth.defaultAccount});
+		console.log("DURATION")
+		console.log(duration)
 		if (duration == 0){
 			alert("This auction is over!")
 		} else if (web3.eth.defaultAccount.toLocaleLowerCase() == owner_address.toLowerCase()) {
