@@ -205,10 +205,10 @@ contract MultiBid{
 
     //See a listing at a certain index in listingOptions
     //Iterate client-side (indices 0-4)
-    function viewListingAtIndex(uint256 index) external view returns(uint256, uint256, uint256){
+    function viewListingAtIndex(uint256 index) external view returns(uint256, uint256, uint256, uint256){
         uint256 idToAccess = listingOptions[index];
         uint256[] memory details = listingIds[idToAccess]; //MAKE SURE THIS RETURNS PROPERLY
-        return(details[0], details[1], details[2]);
+        return(idToAccess, details[1], details[2], listings[idToAccess]);
     }
 
     //Approving submitted third party in a winning bid

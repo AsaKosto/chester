@@ -189,26 +189,13 @@ const english_abi = [
 		"type": "function"
 	}
 ];
-const multibid_address = '0xf5308262Ad98e660519975C9357572269C8373F4'
+const multibid_address = '0x647Bd5833085ab0D905e0AECAa2A590a29F1DFab'
 const multibid_abi =  [
 	{
 		"inputs": [],
 		"name": "addValue",
 		"outputs": [],
 		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "newAuction",
-				"type": "address"
-			}
-		],
-		"name": "proposeNewAuction",
-		"outputs": [],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -263,19 +250,6 @@ const multibid_abi =  [
 	{
 		"inputs": [],
 		"name": "retractVoteApproveSubmittedThirdParty",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "newAuction",
-				"type": "address"
-			}
-		],
-		"name": "retractVoteNewAuction",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -374,19 +348,6 @@ const multibid_abi =  [
 	{
 		"inputs": [],
 		"name": "voteApproveSubmittedThirdParty",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "newAuction",
-				"type": "address"
-			}
-		],
-		"name": "voteNewAuction",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -627,27 +588,13 @@ const multibid_abi =  [
 				"type": "uint256"
 			}
 		],
-		"name": "viewAuctionAtIndex",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "index",
-				"type": "uint256"
-			}
-		],
 		"name": "viewListingAtIndex",
 		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
 			{
 				"internalType": "uint256",
 				"name": "",
@@ -863,6 +810,7 @@ async function update_info(){
 	update_balance(address);
 	get_auction_info();
 	get_multibid_info();
+	get_listing_proposals();
 }
 
 async function get_auction_info(){
@@ -898,6 +846,21 @@ async function get_multibid_info(){
 	totalVotingPower = await multibid_contract.methods.totalVotingPower().call({from:web3.eth.defaultAccount})
 	percent_ownership = stake/totalVotingPower*100;
 	$("#stake").html("Stake: "+percent_ownership+"%");
+}
+
+async function get_listing_proposals(){
+	web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+	for(let i = 0; i<5; i++){
+		res = await multibid_contract.methods.viewListingAtIndex(i).call({from:web3.eth.defaultAccount});
+		//id = res[0];
+		min_bid = res[1];
+		duration=res[2];
+		votes = res[3];
+		totalVotingPower = await multibid_contract.methods.totalVotingPower().call({from:web3.eth.defaultAccount});
+		percentOfVote = votes/totalVotingPower*100;
+		elt_id = "#listing-info-"+i;
+		$(elt_id).html("id: "+ i +" Minimum Bid: "+ min_bid +" duration: "+ duration +" Vote %: "+ percentOfVote);
+	}
 }
 
 $(document).ready(function(){
@@ -1029,27 +992,27 @@ $(document).ready(function(){
 		update_info()
 	})
 
-	$("#proposeNewListing").click(async function() {
-		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-		min_price = $("#new-listing-minPrice").val()
-		duration = $("#new-listing-duration").val()
-		await multibid_contract.methods.proposeNewListing(0, min_price, duration).send({from:web3.eth.defaultAccount});
-		update_info()
-	})
+	// $("#proposeNewListing").click(async function() {
+	// 	web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+	// 	min_price = $("#new-listing-minPrice").val();
+	// 	duration = $("#new-listing-duration").val();
+	// 	await multibid_contract.methods.proposeNewListing(0, min_price, duration).send({from:web3.eth.defaultAccount});
+	// 	update_info()
+	// })
 
-	$("#voteNewListing").click(async function() {
-		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-		listing_id = $("#vote-listing-id").val()
-		await multibid_contract.methods.voteNewListing(listing_id).send({from:web3.eth.defaultAccount});
-		update_info()
-	})
+	// $("#voteNewListing").click(async function() {
+	// 	web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+	// 	listing_id = $("#vote-listing-id").val()
+	// 	await multibid_contract.methods.voteNewListing(listing_id).send({from:web3.eth.defaultAccount});
+	// 	update_info()
+	// })
 
-	$("#retractNewVoteListing").click(async function() {
-		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-		listing_id = $("#retract-listing-id").val()
-		await multibid_contract.methods.retractNewVoteListing(listing_id).send({from:web3.eth.defaultAccount});
-		update_info()
-	})
+	// $("#retractNewVoteListing").click(async function() {
+	// 	web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+	// 	listing_id = $("#retract-listing-id").val()
+	// 	await multibid_contract.methods.retractNewVoteListing(listing_id).send({from:web3.eth.defaultAccount});
+	// 	update_info()
+	// })
 
 	$("#voteApproveSubmittedThirdParty").click(async function() {
 		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
@@ -1062,11 +1025,5 @@ $(document).ready(function(){
 		await multibid_contract.methods.retractVoteApproveSubmittedThirdParty().send({from:web3.eth.defaultAccount});
 		update_info()
 	})
-
-	
-
-
-
-
 
 })
