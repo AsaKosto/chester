@@ -984,6 +984,19 @@ $(document).ready(function(){
 		update_info()
 	})
 
+	$("#voteToPay").click(async function() {
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		await multibid_contract.methods.voteToPay().send({from:web3.eth.defaultAccount});
+		update_info()
+	})
+
+	$("#retractVoteToPay").click(async function() {
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		await multibid_contract.methods.retractVoteToPay().send({from:web3.eth.defaultAccount});
+		update_info()
+	})
+	
+
 	
 	
 })
