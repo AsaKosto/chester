@@ -984,7 +984,6 @@ $(document).ready(function(){
 		update_info()
 	})
 
-<<<<<<< HEAD
 	$("#voteToPay").click(async function() {
 		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
 		await multibid_contract.methods.voteToPay().send({from:web3.eth.defaultAccount});
@@ -997,10 +996,6 @@ $(document).ready(function(){
 		update_info()
 	})
 	
-
-	
-	
-=======
 	$("#proposeThirdParty").click(async function() {
 		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
 		third_party_prop = $("#third-address-proposal").val()
@@ -1022,5 +1017,4 @@ $(document).ready(function(){
 		update_info()
 	})
 
->>>>>>> 2a6b299e92253b44fef21c31c42ef4025c8fbfa4
 })
