@@ -211,65 +211,6 @@ contract MultiBid{
         return(details[0], details[1], details[2]);
     }
 
-    //Auction Management
-    function proposeNewAuction(address newAuction) external{
-        require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
-        require(newAuction != auctionOptions[0] &&
-                newAuction != auctionOptions[1] &&
-                newAuction != auctionOptions[2] &&
-                newAuction != auctionOptions[3] &&
-                newAuction != auctionOptions[4], "This auction has already been proposed");
-        //Scenario 1: there have been less than 5 auctions proposed
-        //Fill the next available slot with a proposed auction
-        if (ipAuctionOptions < 5){
-            auctionOptions[ipAuctionOptions] = newAuction;
-            ipAuctionOptions += 1;
-        }
-        //Scenario 2: there have been 5 auctions proposed, replace the one with the lowest votes
-        //If multiple auctions are tied for the lowest number of votes, the first proposal in the array will be replaced
-        else{
-            //Find the lowest voted proposal
-            address lowest = auctionOptions[0];
-            uint256 lowestIndex = 0;
-            for(uint256 i = 0; i < 5; i++){
-                address proposal = auctionOptions[i];
-                if(auctions[proposal] < auctions[lowest]){
-                    lowest = proposal;
-                    lowestIndex = i;
-                }
-            }
-            //Replace it and clear all votes for that proposal
-            auctionOptions[lowestIndex] = newAuction;
-        }
-    }
-
-    function voteNewAuction(address newAuction) external{
-        require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
-        require(votedAuctions[msg.sender] == false, "You have already voted");
-        require(newAuction != address(0), "You cannot vote for the zero address");
-        require(newAuction == auctionOptions[0] ||
-                newAuction == auctionOptions[1] ||
-                newAuction == auctionOptions[2] ||
-                newAuction == auctionOptions[3] ||
-                newAuction == auctionOptions[4], "Please vote for a proposed auction, or propose this auction yourself");
-        auctions[newAuction] += votingPower[msg.sender];
-        votedAuctions[msg.sender] = true;
-    }
-
-    function retractVoteNewAuction(address newAuction) external{
-        require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
-        require(votedAuctions[msg.sender] == true, "You have not voted yet");
-        require(newAuction != address(0), "You cannot use the 0 address");
-        auctions[newAuction] -= votingPower[msg.sender];
-        votedAuctions[msg.sender] = false;
-    }
-
-    //See a third party at a certain index in auctionOptions
-    //Iterate client-side (indices 0-4)
-    function viewAuctionAtIndex(uint256 index) external view returns(address){
-        return auctionOptions[index];
-    }
-
     //Approving submitted third party in a winning bid
     function voteApproveSubmittedThirdParty() external{
         require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
