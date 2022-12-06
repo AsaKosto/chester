@@ -984,6 +984,25 @@ $(document).ready(function(){
 		update_info()
 	})
 
-	
-	
+	$("#proposeThirdParty").click(async function() {
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		third_party_prop = $("#third-address-proposal").val()
+		await multibid_contract.methods.proposeThirdParty(third_party_prop).send({from:web3.eth.defaultAccount});
+		update_info()
+	})
+
+	$("#voteThirdParty").click(async function() {
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		third_party_vote = $("#third-address-vote").val()
+		await multibid_contract.methods.voteThirdParty(third_party_vote).send({from:web3.eth.defaultAccount});
+		update_info()
+	})
+
+	$("#retractVoteThirdParty").click(async function() {
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		third_party_retract = $("#third-address-retract").val()
+		await multibid_contract.methods.retractVoteThirdParty(third_party_retract).send({from:web3.eth.defaultAccount});
+		update_info()
+	})
+
 })
