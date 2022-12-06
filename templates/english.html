@@ -27,67 +27,188 @@
       </div>
 
       <div class="row">
-        <div class="col-md-2">
-          "Item Name"
-        </div>
-        <div class="col-md-2">
-          Time Left: 
-        </div>
-        <div id="duration" class="col-md-2">
-          
-        </div>
-      </div>
+        <div class="col-md-8">
+          <div class="row">
+            <div class="col-md-3">
+              Item: 
+            </div>
+            <div class="col-md-3">
+              "Mona Lisa"
+            </div>
+          </div>
 
-      <div class="row">
-        <div class="col-md-2">
-          Auction Address: 
+
+          <div class="row">
+            <div class="col-md-3">
+              Time Left: 
+            </div>
+            <div id="duration" class="col-md-2">
+
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-3">
+              Auction Address: 
+            </div>
+            <div id="auction-address" class="col-md-4">
+              0x0000000000000000000000000000000000000000
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-3">
+              Current Highest Bid: 
+            </div>
+            <div id="curr-min-bid" class="col-md-6">
+              0
+            </div>
+          </div>
         </div>
+
         <div class="col-md-4">
-          0x5B38Da6a701c568545dCfcB03FcB875f56beddC4
+          <div class="row">
+            <div class="col-md-12">
+              <br>
+              <div id="account-balance">
+                Balance: 
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-10">
+              <input id="bid" type="text" placeholder="00">
+            </div>
+            <div class="col-md-2">
+              <select id="units"></select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-10">
+              <input id="third-address" type="text" placeholder="Third Party Address">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <button id="submit-bid"></button>
+            </div>
+            <div class="col-md-6">
+              <button id="end-auction-button"></button>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div class="row">
-        <div class="col-md-2">
-          Current Highest Bid: 
-        </div>
-        <div id="curr-min-bid" class="col-md-6">
-          0
-        </div>
-        <div id="account-balance" class="col-md-4">
-          Balance: 
-        </div>
       </div>
-
+      
+      <br>
       <div class="row">
-        <div class="col-md-8">
-        </div>
         <div class="col-md-3">
-          <input id="bid" type="text" placeholder="00">
+          <div class="row">
+            <div id="owner-label" class="col-md-12">
+              OWNER OPTIONS
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <button id="approve-button"></button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <button id="reject-button"></button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <button id="cashout-button"></button>
+            </div>
+          </div>
+          <div class="row">
+            <div id="third-address-display" class="col-md-12">
+              Third Party Address:
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <button id="approve-third-button"></button>
+            </div>
+          </div>
+          <div class="row">
+            <div id="third-approved" class="col-md-12">
+              
+            </div>
+          </div>
         </div>
-        <div class="col-md-1">
-          <select id="units"></select>
-        </div>
-      </div>
 
-      <div class="row">
-        <div class="col-md-8">
-        </div>
         <div class="col-md-3">
-          <input id="third-address" type="text" placeholder="Third Party Address">
+          <div class="row">
+            <div id="winner-label" class="col-md-12">
+              WINNER OPTIONS
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <button id="approve-button2"></button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <button id="reject-button2"></button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <button id="withdraw-button"></button>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-3">
+          <div class="row">
+            <div id="third-label" class="col-md-12">
+              THIRD PARTY OPTIONS
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <button id="approve-button3"></button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <button id="reject-button3"></button>
+            </div>
+          </div>
         </div>
-        <div class="col-md-2">
-          <button id="submit-bid"></button>
+
+        <div class="col-md-3">
+          <div class="row">
+            <div id="sig-label" class="col-md-12">
+              
+            </div>
+          </div>
+          <div class="row">
+            <div id="owner-sig" class="col-md-12">
+              
+            </div>
+          </div>
+          <div class="row">
+            <div id="winner-sig" class="col-md-12">
+              
+            </div>
+          </div>
+          <div class="row">
+            <div id="third-sig" class="col-md-12">
+
+            </div>
+          </div>
         </div>
-        <div class="col-md-2">
-          <button id="end-auction-button"></button>
-        </div>
+
+        
       </div>
+      
+
+
       
     </div>
 
