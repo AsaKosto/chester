@@ -189,7 +189,7 @@ const english_abi = [
 		"type": "function"
 	}
 ];
-const multibid_address = '0xf2a5975D86b493977f09c84d65941b2e9c7E8B1D'
+const multibid_address = '0x2ED3117216d4184f7cAf20f487654d195cb45CFB'
 const multibid_abi =  [
 	{
 		"inputs": [],
@@ -590,6 +590,11 @@ const multibid_abi =  [
 				"internalType": "address",
 				"name": "",
 				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
@@ -754,6 +759,7 @@ async function update_info(){
 	get_auction_info();
 	get_multibid_info();
 	get_listing_proposals();
+	get_thirdParty_proposals();
 }
 
 async function get_auction_info(){
@@ -803,6 +809,20 @@ async function get_listing_proposals(){
 		percentOfVote = votes/totalVotingPower*100;
 		elt_id = "#listing-info-"+i;
 		$(elt_id).html("id: "+ (i+1) +" Minimum Bid: "+ min_bid +" duration: "+ duration +" Vote %: "+ percentOfVote);
+	}
+}
+
+async function get_thirdParty_proposals(){
+	web3.eth.defaultAccount = $("#myaccount").val();
+	for(let i = 0; i<5; i++){
+		res = await multibid_contract.methods.viewThirdPartyAtIndex(i).call({from:web3.eth.defaultAccount});
+		thirdParty = res[0];
+		votes = res[1];
+		totalVotingPower = await multibid_contract.methods.totalVotingPower().call({from:web3.eth.defaultAccount});
+		percentOfVote = votes/totalVotingPower*100;
+		elt_id = "#3p-"+i;
+		console.log(elt_id, thirdParty, percentOfVote);
+		$(elt_id).html("address:"+thirdParty+" Vote %: "+ percentOfVote);
 	}
 }
 
@@ -919,7 +939,6 @@ $(document).ready(function(){
 		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
 		third_party_prop = $("#third-address-proposal").val()
 		await multibid_contract.methods.proposeThirdParty(third_party_prop).send({from:web3.eth.defaultAccount});
-		alert('sent')
 		update_info()
 	})
 

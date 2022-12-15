@@ -143,8 +143,10 @@ contract MultiBid{
 
     //See a third party at a certain index in thirdPartyOptions
     //Iterate client-side (indices 0-4)
-    function viewThirdPartyAtIndex(uint256 index) external view returns(address){
-        return thirdPartyOptions[index];
+    function viewThirdPartyAtIndex(uint256 index) external view returns(address, uint256){
+        address thirdParty = thirdPartyOptions[index];
+        uint256 votes = thirdParties[thirdParty];
+        return(thirdParty, votes);
     }
     
     //Listing Management
