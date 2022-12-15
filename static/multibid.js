@@ -189,7 +189,11 @@ const english_abi = [
 		"type": "function"
 	}
 ];
+<<<<<<< HEAD
 const multibid_address = '0x3C4FeFB9F2a0fF14EbEF38Bf6b03a9c80151B497'
+=======
+const multibid_address = '0x1987Fef2384e56C1cb9206Dc32993A59765BC500'
+>>>>>>> 5978f595fca6c6c440fd3f0d4edd8a7825d8dfab
 const multibid_abi =  [
 	{
 		"inputs": [
@@ -228,6 +232,47 @@ const multibid_abi =  [
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
+<<<<<<< HEAD
+=======
+			}
+		],
+		"name": "auctionOptions",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "auctions",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+>>>>>>> 5978f595fca6c6c440fd3f0d4edd8a7825d8dfab
 			},
 			{
 				"internalType": "uint256",
@@ -475,6 +520,8 @@ const multibid_abi =  [
 		"inputs": [],
 		"name": "totalVotingPower",
 		"outputs": [
+<<<<<<< HEAD
+=======
 			{
 				"internalType": "uint256",
 				"name": "",
@@ -499,6 +546,7 @@ const multibid_abi =  [
 				"name": "",
 				"type": "uint256"
 			},
+>>>>>>> 5978f595fca6c6c440fd3f0d4edd8a7825d8dfab
 			{
 				"internalType": "uint256",
 				"name": "",
@@ -506,13 +554,23 @@ const multibid_abi =  [
 			},
 			{
 				"internalType": "uint256",
-				"name": "",
+				"name": "index",
 				"type": "uint256"
+<<<<<<< HEAD
+			}
+		],
+		"name": "viewListingAtIndex",
+		"outputs": [
+=======
 			},
+>>>>>>> 5978f595fca6c6c440fd3f0d4edd8a7825d8dfab
 			{
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
+<<<<<<< HEAD
+			},
+=======
 			}
 		],
 		"stateMutability": "view",
@@ -528,9 +586,19 @@ const multibid_abi =  [
 		],
 		"name": "viewThirdPartyAtIndex",
 		"outputs": [
+>>>>>>> 5978f595fca6c6c440fd3f0d4edd8a7825d8dfab
 			{
 				"internalType": "address",
 				"name": "",
+<<<<<<< HEAD
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+=======
 				"type": "address"
 			}
 		],
@@ -546,6 +614,7 @@ const multibid_abi =  [
 	},
 	{
 		"inputs": [
+>>>>>>> 5978f595fca6c6c440fd3f0d4edd8a7825d8dfab
 			{
 				"internalType": "uint256",
 				"name": "listingID",
@@ -560,12 +629,65 @@ const multibid_abi =  [
 	{
 		"inputs": [
 			{
+<<<<<<< HEAD
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			}
+		],
+		"name": "viewThirdPartyAtIndex",
+		"outputs": [
+			{
+=======
+>>>>>>> 5978f595fca6c6c440fd3f0d4edd8a7825d8dfab
 				"internalType": "address",
 				"name": "thirdParty",
 				"type": "address"
 			}
 		],
 		"name": "voteThirdParty",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+<<<<<<< HEAD
+		"name": "voteApproveSubmittedThirdParty",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "listingID",
+				"type": "uint256"
+			}
+		],
+		"name": "voteNewListing",
+=======
+		"name": "voteToPay",
+>>>>>>> 5978f595fca6c6c440fd3f0d4edd8a7825d8dfab
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+<<<<<<< HEAD
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "thirdParty",
+				"type": "address"
+			}
+		],
+		"name": "voteThirdParty",
+=======
+		"inputs": [],
+		"name": "voteToWithdraw",
+>>>>>>> 5978f595fca6c6c440fd3f0d4edd8a7825d8dfab
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
