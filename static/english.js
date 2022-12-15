@@ -282,7 +282,7 @@ const english_abi = [
 	}
 ];
 
-const set_english_address = '0x303811d8236AC4da9dDE318d7A1ABcDCa808F843';
+const set_english_address = '0x2a072FEA1Fcf24BB900da725fd5e19996e6D3443';
 var english_address = 0;
 var english_contract = 0;
 var owner_address = 0;

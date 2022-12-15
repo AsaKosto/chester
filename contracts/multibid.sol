@@ -22,10 +22,11 @@ contract MultiBid{
     mapping(uint256 => uint256) public listings; //maps ids to the number of votes
     mapping(address => bool) public votedListings;
 
-    uint256 ipAuctionOptions = 0;
-    address[5] public auctionOptions;
-    mapping(address => uint256) public auctions; //Options for new auction
-    mapping(address => bool) public votedAuctions;
+    //Can probably remove this now?
+    // uint256 ipAuctionOptions = 0;
+    // address[5] public auctionOptions;
+    // mapping(address => uint256) public auctions; //Options for new auction
+    // mapping(address => bool) public votedAuctions;
 
     uint256 public votesToPay;
     uint256 public votesToWithdraw;
