@@ -16,17 +16,11 @@ contract MultiBid{
     mapping(address => bool) public votedThirdParty;
 
     uint256 ipListingOptions = 0;
-    uint256 listingId = 0;
+    uint256 listingId = 1;
     uint256[5] public listingOptions;
     mapping(uint256 => uint256[]) public listingIds; //maps IDs to listing details
     mapping(uint256 => uint256) public listings; //maps ids to the number of votes
     mapping(address => bool) public votedListings;
-
-    //Can probably remove this now?
-    // uint256 ipAuctionOptions = 0;
-    // address[5] public auctionOptions;
-    // mapping(address => uint256) public auctions; //Options for new auction
-    // mapping(address => bool) public votedAuctions;
 
     uint256 public votesToPay;
     uint256 public votesToWithdraw;
@@ -239,7 +233,6 @@ contract MultiBid{
         require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
         require(amount <= address(this).balance, "There is not enough ETH in this multi-bid, please add more value");
         require((2 * thirdParties[thirdParty]) > totalVotingPower, "This third party does not currently have enough votes");
-        //Discuss merits of amount vs just sending everything
         EnglishInterface currentAuction = EnglishInterface(_currentAuction);
         currentAuction.bid{value: amount}(payable(thirdParty));
     }
