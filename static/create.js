@@ -27,6 +27,12 @@ const english_spawner_abi =[
 				"internalType": "address payable",
 				"name": "admin",
 				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "contract EnglishAuction",
+				"name": "auction",
+				"type": "address"
 			}
 		],
 		"name": "auctionCreated",
@@ -51,7 +57,13 @@ const english_spawner_abi =[
 			}
 		],
 		"name": "createAuction",
-		"outputs": [],
+		"outputs": [
+			{
+				"internalType": "contract EnglishAuction",
+				"name": "",
+				"type": "address"
+			}
+		],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
@@ -63,19 +75,6 @@ const english_spawner_abi =[
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "getMostRecentListing",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
 			}
 		],
 		"stateMutability": "view",
@@ -95,6 +94,7 @@ const english_spawner_abi =[
 		"type": "function"
 	}
 ];     
+
 const english_spawner_contract = new web3.eth.Contract(english_spawner_abi, english_spawner_address);        
 
 // This sets the default account on load and displays the total owed to that
@@ -109,22 +109,6 @@ web3.eth.getAccounts().then((response)=>{
     $(".account").html(opts);
 });
 
-// var auction_types = {
-//     ValueA : 'English',
-//     ValueB : 'MultiBid',
-//     ValueC : 'Text C'
-// };
-
-// var select = document.getElementById("auction-type");
-// for(index in auction_types) {
-//     select.options[select.options.length] = new Option(auction_types[index], index);
-// }
-
-// This gets the auction information
-
-// function sleep(ms) {
-//     return new Promise(resolve => setTimeout(resolve, ms));
-// }
 
 async function create_new(min_bid_amt,duration,address){
     console.log(min_bid_amt)
@@ -158,6 +142,35 @@ $("#submit-auction").click(async function() {
     location.href = url;
 })
 
+
 // This fills in UI information
 $("#submit-auction").html("Submit");
 
+function createContract(auction, min_bid, item, duration ) {
+    if (auction == "English") {
+        //NEEDS TO COME FROM MAIN CONTRACT
+       // await main_contract.methods.....
+       //temp way
+       alert("english")
+        
+    }
+
+}
+
+async function get_active_auctions(){
+	let auctions = [];
+	let ev = await english_spawner_contract.getPastEvents("auctionCreated", {
+		fromBlock: (await web3.eth.getBlockNumber()) - 12343,
+		toBlock: "latest"
+	});
+	for(var i = 0; i < ev.length; i++){
+		auctions.push(ev[i].returnValues[3]);
+		//console.log(ev[i].returnValues[3]);
+	}
+	console.log(auctions);
+}
+
+$(document).ready(function(){
+	web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+	get_active_auctions();
+});

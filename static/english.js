@@ -313,7 +313,6 @@ async function update_curr_bid(){
     } else {
         $("#duration").html(hours + "H " + minutes + "M");
     }
-
 }
 
 async function update_balance(address){

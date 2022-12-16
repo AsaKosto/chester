@@ -5,8 +5,7 @@ const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 //         ABIs and Contract Addresses: Paste Your ABIs/Addresses Here
 // =============================================================================
 
-///THESE ARE HARDCODED FOR NOW
-// const english_address = '0xBd1945E5e7f0Db91dcFbb4b48813b11694D3e008';
+
 const english_abi = [
 	{
 		"inputs": [
@@ -971,11 +970,6 @@ async function show_win_sig_buttons(){
 		document.getElementById('signToWithdraw').style.visibility='hidden';
 		document.getElementById('withdrawBid').style.visibility='visible';
 	}
-	// else{
-	// 	document.getElementById('signToPay').style.visibility='hidden';
-	// 	document.getElementById('signToWithdraw').style.visibility='hidden';
-	// 	document.getElementById('withdrawBid').style.visibility='hidden';
-	// }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
