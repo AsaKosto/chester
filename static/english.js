@@ -314,8 +314,6 @@ async function update_curr_bid(){
         $("#duration").html(hours + "H " + minutes + "M");
     }
 
-
-
 }
 
 async function update_balance(address){
@@ -420,7 +418,6 @@ async function show_owner_buttons(address){
 		let winner_signed_to_withdraw = await english_contract.methods.winnerSigWithdraw().call({address});
 		let third_signed_to_pay = await english_contract.methods.thirdPartySigPay().call({address});
 		let third_signed_to_withdraw = await english_contract.methods.thirdPartySigWithdraw().call({address});
-		console.log("B")
 		let balance = await web3.eth.getBalance(english_contract.options.address);
 		console.log(balance)
 		if ((owner_signed_to_pay && winner_signed_to_pay) || (owner_signed_to_pay && third_signed_to_pay) || (third_signed_to_pay && winner_signed_to_pay)){

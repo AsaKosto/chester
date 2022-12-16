@@ -5,7 +5,7 @@ const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 //         ABIs and Contract Addresses: Paste Your ABIs/Addresses Here
 // =============================================================================
 
-const english_spawner_address = '0x7B8F75f06cE7A67d96C964E258334318C1145385';     
+const english_spawner_address = '0x321B1A163E3bD41F96517Dc78dc6ef5b93617349';     
 const english_spawner_abi =[
 	{
 		"anonymous": false,
@@ -158,27 +158,6 @@ $("#submit-auction").click(async function() {
     location.href = url;
 })
 
-
-
-
 // This fills in UI information
 $("#submit-auction").html("Submit");
 
-
-
-
-// ============================================================
-//                    FUNCTIONS
-// ============================================================
-
-
-function createContract(auction, min_bid, item, duration ) {
-    if (auction == "English") {
-        //NEEDS TO COME FROM MAIN CONTRACT
-       // await main_contract.methods.....
-       //temp way
-       alert("english")
-        
-    }
-
-}

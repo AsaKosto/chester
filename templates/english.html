@@ -1,4 +1,7 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html> -->
+{% extends "layout.html" %}
+
+{% block content %}
 <html lang="en">
   <head>
     <link rel="stylesheet" type="text/css" href="./../static/style.css">
@@ -20,7 +23,7 @@
         </div>
         <div id="over-label" class="col-md-3">
         </div>
-        <div class="col-md-4 panel panel_right  ">
+        <div class="col-md-4 panel panel_right">
           <h2>My Account</h2>
           <select onchange="update_balance2()" id="myaccount" class="account"></select>
         </div>
@@ -207,12 +210,11 @@
         
       </div>
       
-
-
-      
     </div>
 
 
     <script src="./../static/english.js"></script>
   </body>
 </html>
+{% endblock %}
+
