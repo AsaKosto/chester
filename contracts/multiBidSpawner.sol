@@ -11,12 +11,14 @@ contract multiBidSpawner{
     uint256 public genesis = block.timestamp;
     address public mostRecentMultiBid;
 
-    function createMultiBid(address auction) external returns(address){
+    function createMultiBid(address auction) external {
         MultiBid newMultiBid = new MultiBid(auction);
         emit multiBidCreated(auction);
         mostRecentMultiBid = address(newMultiBid);
-        return address(newMultiBid);
+    }
 
+    function getMostRecentMultiBid() external view returns (address) {
+        return mostRecentMultiBid;
     }
 
     event multiBidCreated(address auction);
