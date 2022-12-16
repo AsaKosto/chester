@@ -1,7 +1,7 @@
 // sets up web3.js
 const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 
-const english_spawner_address = '0xBE1D56feFF332Db565397257998729813E3ED846';     
+const english_spawner_address = '0x9cBd0FdF7fE371EEF56934C14A3Bd8F935Bd9Fd5';     
 const english_spawner_abi =[
 	{
 		"anonymous": false,
@@ -122,9 +122,20 @@ async function get_active_auctions(){
 	});
 	for(var i = 0; i < ev.length; i++){
 		auctions.push(ev[i].returnValues[3]);
-		//console.log(ev[i].returnValues[3]);
 	}
 	console.log(auctions);
+	for(var i = 0; i < auctions.length; i++){
+		var a = document.createElement('a');
+		var linkText = document.createTextNode(auctions[i]);
+		a.append(linkText);
+		a.title = ""+auctions[i];
+		let params = new URLSearchParams();
+		params.append("address", auctions[i]);
+		let url = 'english.html?' + params.toString();
+		a.href = url;
+		$("#active").append(a);
+		$("#active").append("<br>");
+	}
 }
 
 $(document).ready(function(){

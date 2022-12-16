@@ -5,7 +5,7 @@ const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 //         ABIs and Contract Addresses: Paste Your ABIs/Addresses Here
 // =============================================================================
 
-const english_spawner_address = '0x321B1A163E3bD41F96517Dc78dc6ef5b93617349';     
+const english_spawner_address = '0x02a5c5eE6bF233be00962223c3af614CC35b0890';     
 const english_spawner_abi =[
 	{
 		"anonymous": false,
@@ -157,20 +157,8 @@ function createContract(auction, min_bid, item, duration ) {
 
 }
 
-async function get_active_auctions(){
-	let auctions = [];
-	let ev = await english_spawner_contract.getPastEvents("auctionCreated", {
-		fromBlock: (await web3.eth.getBlockNumber()) - 12343,
-		toBlock: "latest"
-	});
-	for(var i = 0; i < ev.length; i++){
-		auctions.push(ev[i].returnValues[3]);
-		//console.log(ev[i].returnValues[3]);
-	}
-	console.log(auctions);
-}
 
 $(document).ready(function(){
 	web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-	get_active_auctions();
+
 });
