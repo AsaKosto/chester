@@ -14,13 +14,13 @@ contract auctionSpawner{
         require(admin == msg.sender, "You cannot create auctions where you are not the admin");
         require(duration <= 604800, "Auctions cannot run for more than a week");
         EnglishAuction auction = new EnglishAuction(minimumBid, duration, admin);
-        emit auctionCreated(minimumBid, duration, admin);
+        emit auctionCreated(minimumBid, duration, admin, auction);
         mostRecentListing = address(auction);
         // mostRecentListing = auction.getAddress();
         //address a = address(auction)
         return auction;
     }
 
-    event auctionCreated(uint256 minimumBid, uint256 duration, address payable admin);
+    event auctionCreated(uint256 minimumBid, uint256 duration, address payable admin, EnglishAuction auction);
 }
 
