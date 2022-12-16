@@ -1,7 +1,7 @@
 // sets up web3.js
 const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 
-const english_spawner_address = '0xAc42254242682B9a60a6A80db7A8afa653C9AFb4';     
+const english_spawner_address = '0xBE1D56feFF332Db565397257998729813E3ED846';     
 const english_spawner_abi =[
 	{
 		"anonymous": false,
@@ -53,13 +53,7 @@ const english_spawner_abi =[
 			}
 		],
 		"name": "createAuction",
-		"outputs": [
-			{
-				"internalType": "contract EnglishAuction",
-				"name": "",
-				"type": "address"
-			}
-		],
+		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
@@ -71,6 +65,19 @@ const english_spawner_abi =[
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getMostRecentListing",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
 			}
 		],
 		"stateMutability": "view",
