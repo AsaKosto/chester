@@ -279,7 +279,7 @@ const english_abi = [
 		"type": "function"
 	}
 ];
-const multibid_address = '0xfbF10C8Cee5abf8E1d586eb9c2667bE3DB50Fe10'
+// const multibid_address = '0x7F9FBef1A5251e5AAEF002825a392F74bb299F01'
 const multibid_abi =  [
 	{
 		"inputs": [],
@@ -832,6 +832,12 @@ const multibid_abi =  [
 	}
 ];
 
+// const set_address = '';
+var multibid_address = 0;
+var multibid_contract = 0;
+var owner_address = 0;
+
+
 async function update_balance(address){
 	web3.eth.getBalance(address, function(err, result){
 		if (err){
@@ -1060,6 +1066,17 @@ async function get_thirdParty_proposals(){
 }
 
 $(document).ready(function(){
+	let params = new URLSearchParams(window.location.search),
+		first = params.get("address");
+	if (first != null){
+		multibid_address = first;
+		multibid_contract = new web3.eth.Contract(multibid_abi, multibid_address);  
+		console.log('first')      	
+	} else {
+		multibid_address = set_address;
+		multibid_contract = new web3.eth.Contract(multibid_abi, multibid_address);        	
+	}
+
 	web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
 	multibid_contract = new web3.eth.Contract(multibid_abi, multibid_address);
 	get_multibid_info();
