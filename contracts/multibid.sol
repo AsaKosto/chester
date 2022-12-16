@@ -262,6 +262,7 @@ contract MultiBid{
     function submitApprovalThirdParty() external{
         require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
         require((2 * votesApproveSubmittedThirdParty) > totalVotingPower, "There are not currently enough votes to approve the proposed third party");
+        //WE need a way to switch the auction to the one the multi-bid owns once it wins something
         EnglishInterface currentAuction = EnglishInterface(_currentAuction);
         currentAuction.approveThirdParty();
     }

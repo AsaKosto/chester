@@ -130,6 +130,32 @@ const english_abi = [
 	},
 	{
 		"inputs": [],
+		"name": "ownerSigPay",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "ownerSigWithdraw",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "signToPay",
 		"outputs": [],
 		"stateMutability": "nonpayable",
@@ -170,6 +196,45 @@ const english_abi = [
 	},
 	{
 		"inputs": [],
+		"name": "thirdPartyApproved",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "thirdPartySigPay",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "thirdPartySigWithdraw",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "winner",
 		"outputs": [
 			{
@@ -183,13 +248,39 @@ const english_abi = [
 	},
 	{
 		"inputs": [],
+		"name": "winnerSigPay",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "winnerSigWithdraw",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "withdrawBid",
 		"outputs": [],
 		"stateMutability": "payable",
 		"type": "function"
 	}
 ];
-const multibid_address = '0x2ED3117216d4184f7cAf20f487654d195cb45CFB'
+const multibid_address = '0x7F9FBef1A5251e5AAEF002825a392F74bb299F01'
 const multibid_abi =  [
 	{
 		"inputs": [],
@@ -752,6 +843,140 @@ async function update_balance(address){
 		}
 	});
 }
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//BUTTON VISIBILITY CONTROL
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function hide_buttons(){
+	//Voting
+	document.getElementById('voteToPay').style.visibility='hidden';
+	document.getElementById('retractVoteToPay').style.visibility='hidden';
+	document.getElementById('voteToWithdraw').style.visibility='hidden';
+	document.getElementById('retractVoteToWithdraw').style.visibility='hidden';
+	//Signatures
+	document.getElementById('signToPay').style.visibility='hidden';
+	document.getElementById('signToWithdraw').style.visibility='hidden';
+	document.getElementById('withdrawBid').style.visibility='hidden';
+	//Third Party Management
+	document.getElementById('third-address-proposal').style.visibility='hidden';
+	document.getElementById('proposeThirdParty').style.visibility='hidden';
+	//
+	document.getElementById('third-address-vote').style.visibility='hidden';
+	document.getElementById('voteThirdParty').style.visibility='hidden';
+	//
+	document.getElementById('third-address-retract').style.visibility='hidden';
+	document.getElementById('retractVoteThirdParty').style.visibility='hidden';
+	//Re-Listing Options
+	document.getElementById('new-listing-minPrice').style.visibility='hidden';
+	document.getElementById('new-listing-duration').style.visibility='hidden';
+	document.getElementById('proposeNewListing').style.visibility='hidden';
+	//
+	document.getElementById('vote-listing-id').style.visibility='hidden';
+	document.getElementById('voteNewListing').style.visibility='hidden';
+	//
+	document.getElementById('retract-listing-id').style.visibility='hidden';
+	document.getElementById('retractNewVoteListing').style.visibility='hidden';
+	//
+	document.getElementById('voteApproveSubmittedThirdParty').style.visibility='hidden';
+	document.getElementById('retractVoteApproveSubmittedThirdParty').style.visibility='hidden';
+	document.getElementById('approveSubmittedThirdParty').style.visibility='hidden';
+	document.getElementById('cashOut').style.visibility='hidden';
+}
+
+async function show_win_vote_buttons(){
+	web3.eth.defaultAccount = $("#myaccount").val();
+	address = web3.eth.defaultAccount;
+	let votedPay = await multibid_contract.methods.votedSigPay(address).call({address});
+	let votedWithdraw = await multibid_contract.methods.votedSigWithdraw(address).call({address});
+	if(!votedPay && !votedWithdraw){
+		document.getElementById('voteToPay').style.visibility='visible';
+		document.getElementById('voteToWithdraw').style.visibility='visible';
+		document.getElementById('retractVoteToPay').style.visibility='hidden';
+		document.getElementById('retractVoteToWithdraw').style.visibility='hidden';
+	}
+	if(votedPay){
+		document.getElementById('voteToPay').style.visibility='hidden';
+		document.getElementById('voteToWithdraw').style.visibility='hidden';
+		document.getElementById('retractVoteToPay').style.visibility='visible';
+		document.getElementById('retractVoteToWithdraw').style.visibility='hidden';
+	}
+	if(votedWithdraw){
+		document.getElementById('voteToPay').style.visibility='hidden';
+		document.getElementById('voteToWithdraw').style.visibility='hidden';
+		document.getElementById('retractVoteToPay').style.visibility='hidden';
+		document.getElementById('retractVoteToWithdraw').style.visibility='visible';
+	}
+}
+
+async function show_third_party_mgmt(){
+	address = web3.eth.defaultAccount;
+	time_left = await get_time_left();
+	if(time_left > 0){
+		document.getElementById('third-address-proposal').style.visibility='visible';
+		document.getElementById('proposeThirdParty').style.visibility='visible';
+		let voted = await multibid_contract.methods.votedThirdParty(address).call({address});
+		if(voted){
+			document.getElementById('third-address-vote').style.visibility='hidden';
+			document.getElementById('voteThirdParty').style.visibility='hidden';
+			document.getElementById('third-address-retract').style.visibility='visible';
+			document.getElementById('retractVoteThirdParty').style.visibility='visible';
+		}
+		else{
+			document.getElementById('third-address-vote').style.visibility='visible';
+			document.getElementById('voteThirdParty').style.visibility='visible';
+			document.getElementById('third-address-retract').style.visibility='hidden';
+			document.getElementById('retractVoteThirdParty').style.visibility='hidden';
+		}
+	}
+	else{
+		document.getElementById('third-address-proposal').style.visibility='hidden';
+		document.getElementById('proposeThirdParty').style.visibility='hidden';
+		document.getElementById('third-address-vote').style.visibility='hidden';
+		document.getElementById('voteThirdParty').style.visibility='hidden';
+		document.getElementById('third-address-retract').style.visibility='hidden';
+		document.getElementById('retractVoteThirdParty').style.visibility='hidden';
+	}
+}
+
+async function show_win_sig_buttons(){
+	time_left        = await get_time_left();
+	//vote info
+	votesSigPay      = await multibid_contract.methods.votesToPay().call({from:web3.eth.defaultAccount});
+	votesSigWithdraw = await multibid_contract.methods.votesToWithdraw().call({from:web3.eth.defaultAccount});
+	totalVotingPower = await multibid_contract.methods.totalVotingPower().call({from:web3.eth.defaultAccount});
+	//sig info
+	let winnerSig        = await english_contract.methods.winnerSigWithdraw().call({from:web3.eth.defaultAccount});
+	let ownerSig         = await english_contract.methods.ownerSigWithdraw().call({from:web3.eth.defaultAccount});
+	let thirdPartySig    = await english_contract.methods.thirdPartySigWithdraw().call({from:web3.eth.defaultAccount});
+	if(time_left <= 0 && (2 * votesSigPay > totalVotingPower)){
+		document.getElementById('signToPay').style.visibility='visible';
+		document.getElementById('signToWithdraw').style.visibility='hidden';
+		document.getElementById('withdrawBid').style.visibility='hidden';
+	}
+	if(time_left <= 0 && (2 * votesSigWithdraw > totalVotingPower)){
+		document.getElementById('signToPay').style.visibility='hidden';
+		document.getElementById('signToWithdraw').style.visibility='visible';
+		document.getElementById('withdrawBid').style.visibility='hidden';
+	}
+	if(time_left < 0 && ((winnerSig&&ownerSig) || (winnerSig&&thirdPartySig) || (thirdPartySig&&ownerSig))){
+		document.getElementById('signToPay').style.visibility='hidden';
+		document.getElementById('signToWithdraw').style.visibility='hidden';
+		document.getElementById('withdrawBid').style.visibility='visible';
+	}
+	// else{
+	// 	document.getElementById('signToPay').style.visibility='hidden';
+	// 	document.getElementById('signToWithdraw').style.visibility='hidden';
+	// 	document.getElementById('withdrawBid').style.visibility='hidden';
+	// }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//END BUTTON VISIBILITY CONTROL
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 async function update_info(){
 	address = $("#myaccount").val();
@@ -760,6 +985,19 @@ async function update_info(){
 	get_multibid_info();
 	get_listing_proposals();
 	get_thirdParty_proposals();
+	//buttons control
+	show_win_sig_buttons();
+	show_third_party_mgmt();
+}
+
+async function get_time_left(){
+	let duration = await english_contract.methods.duration().call({from:web3.eth.defaultAccount});
+    let begin = await english_contract.methods.startTime().call({from:web3.eth.defaultAccount});
+    const d = new Date();
+    let time = Math.floor(d.getTime()/ 1000);
+    let time_passed = time - begin;
+    let time_left = duration - time_passed;
+	return time_left;
 }
 
 async function get_auction_info(){
@@ -781,6 +1019,7 @@ async function get_auction_info(){
 	minutes = Math.floor((time_left % (60*60)) / 60)
     if (time_left < 0){
        $("#duration").html(0);
+	   show_win_vote_buttons();
     } else {
        $("#duration").html(hours + "H " + minutes + "M");
     }
@@ -831,6 +1070,9 @@ $(document).ready(function(){
 	multibid_contract = new web3.eth.Contract(multibid_abi, multibid_address);
 	get_multibid_info();
 	get_auction_info();
+	//buttons control
+	hide_buttons();
+	show_win_sig_buttons();
 
 	web3.eth.getAccounts().then((response)=> {
 		web3.eth.defaultAccount = response[0];
@@ -855,6 +1097,7 @@ $(document).ready(function(){
 	for(index in denominations) {
 		select.options[select.options.length] = new Option(denominations[index], index);
 	}
+
 	$("#submit-bid").click(async function() {
 		
 		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
@@ -931,7 +1174,24 @@ $(document).ready(function(){
 	$("#retractVoteToWithdraw").click(async function() {
 		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
 		await multibid_contract.methods.retractVoteToWithdraw().send({from:web3.eth.defaultAccount, gas:500000});
-		alert('sent')
+		update_info()
+	})
+
+	$("#signToPay").click(async function() {
+		web3.eth.defaultAccount = $("#myaccount").val();
+		await multibid_contract.methods.submitSigPay().send({from:web3.eth.defaultAccount});
+		update_info()
+	})
+
+	$("#signToWithdraw").click(async function() {
+		web3.eth.defaultAccount = $("#myaccount").val();
+		await multibid_contract.methods.submitSigWithdraw().send({from:web3.eth.defaultAccount});
+		update_info()
+	})
+
+	$("#withdrawBid").click(async function() {
+		web3.eth.defaultAccount = $("#myaccount").val();
+		await multibid_contract.methods.submitWithdrawBid().send({from:web3.eth.defaultAccount});
 		update_info()
 	})
 	
@@ -962,7 +1222,6 @@ $(document).ready(function(){
 		duration = $("#new-listing-duration").val();
 		console.log(min_price,duration)
 		await multibid_contract.methods.proposeNewListing(0, min_price, duration).send({from:web3.eth.defaultAccount, gasLimit: 500000});
-		alert('sent')
 		update_info()
 	})
 
