@@ -13,7 +13,7 @@ contract multiBidSpawner{
 
     function createMultiBid(address auction) external {
         MultiBid newMultiBid = new MultiBid(auction);
-        emit multiBidCreated(auction);
+        emit multiBidCreated(auction, newMultiBid);
         mostRecentMultiBid = address(newMultiBid);
     }
 
@@ -21,5 +21,5 @@ contract multiBidSpawner{
         return mostRecentMultiBid;
     }
 
-    event multiBidCreated(address auction);
+    event multiBidCreated(address auction, MultiBid multi);
 }
