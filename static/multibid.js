@@ -4,7 +4,102 @@ const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 // =============================================================================
 //         ABIs and Contract Addresses: Paste Your ABIs/Addresses Here
 // =============================================================================
-
+const english_spawner_address = '0x238226faB4c657a14b360aB5845A96eB50c57BB3';     
+const english_spawner_abi = [
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "minimumBid",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "duration",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address payable",
+				"name": "admin",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "contract EnglishAuction",
+				"name": "auction",
+				"type": "address"
+			}
+		],
+		"name": "auctionCreated",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "minimumBid",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "duration",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address payable",
+				"name": "admin",
+				"type": "address"
+			}
+		],
+		"name": "createAuction",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "genesis",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getMostRecentListing",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "mostRecentListing",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+];
 
 const english_abi = [
 	{
@@ -280,7 +375,6 @@ const english_abi = [
 	}
 ];
 
-//const multibid_address = '0x55C4E044be44Cb7E89cFD39e979FFe3D71D8F18A'
 const multibid_abi =  [
 	{
 		"inputs": [],
@@ -1303,6 +1397,23 @@ $(document).ready(function(){
 		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
 		await multibid_contract.methods.retractVoteApproveSubmittedThirdParty().send({from:web3.eth.defaultAccount});
 		update_info()
+	})
+
+	$("#reList").click(async function(){
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		listing_id = $("#final-listing-id").val();
+		let votes = await multibid_contract.methods.listings(listing_id).call({from:web3.eth.defaultAccount});
+		totalVotingPower = await multibid_contract.methods.totalVotingPower().call({from:web3.eth.defaultAccount});
+		if(2 * votes > totalVotingPower){
+			const english_spawner_contract = new web3.eth.Contract(english_spawner_abi, english_spawner_address);
+			min_bid  = await multibid_contract.methods.listingIds(listing_id, 1).call({from:web3.eth.defaultAccount});
+			duration = await multibid_contract.methods.listingIds(listing_id, 2).call({from:web3.eth.defaultAccount});
+			await english_spawner_contract.methods.createAuction(min_bid, duration, multibid_address).send({from:web3.eth.defaultAccount, gas:2000000});
+			alert('created');
+			let relisted = await english_spawner_contract.methods.getMostRecentListing().call({from:web3.eth.defaultAccount});
+			alert(relisted);
+		} else { alert('This listing option does not currently have enough votes'); }
+		
 	})
 
 })
