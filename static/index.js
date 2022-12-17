@@ -1,7 +1,7 @@
 // sets up web3.js
 const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 
-const english_spawner_address = '0x9cBd0FdF7fE371EEF56934C14A3Bd8F935Bd9Fd5';     
+const english_spawner_address = '0xCBA9B17Ad01B884F7f080834F3c5e5A0dB97Fa3d';     
 const english_spawner_abi =[
 	{
 		"anonymous": false,
@@ -116,8 +116,9 @@ web3.eth.getAccounts().then((response)=>{
 
 async function get_active_auctions(){
 	let auctions = [];
+	let currBlock = await web3.eth.getBlockNumber();
 	let ev = await english_spawner_contract.getPastEvents("auctionCreated", {
-		fromBlock: (await web3.eth.getBlockNumber()) - 40500,
+		fromBlock: Math.max(currBlock - 40500,0),
 		toBlock: "latest"
 	});
 	for(var i = 0; i < ev.length; i++){
