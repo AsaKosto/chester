@@ -279,7 +279,8 @@ const english_abi = [
 		"type": "function"
 	}
 ];
-// const multibid_address = '0x7F9FBef1A5251e5AAEF002825a392F74bb299F01'
+
+//const multibid_address = '0x55C4E044be44Cb7E89cFD39e979FFe3D71D8F18A'
 const multibid_abi =  [
 	{
 		"inputs": [],
@@ -884,6 +885,9 @@ function hide_buttons(){
 	document.getElementById('retract-listing-id').style.visibility='hidden';
 	document.getElementById('retractNewVoteListing').style.visibility='hidden';
 	//
+	document.getElementById('final-listing-id').style.visibility='hidden';
+	document.getElementById('reList').style.visibility='hidden';
+	//
 	document.getElementById('voteApproveSubmittedThirdParty').style.visibility='hidden';
 	document.getElementById('retractVoteApproveSubmittedThirdParty').style.visibility='hidden';
 	document.getElementById('approveSubmittedThirdParty').style.visibility='hidden';
@@ -972,15 +976,40 @@ async function show_win_sig_buttons(){
 	}
 }
 
-// async function show_relist_buttons(){
-// 	let time_left    = await get_time_left();
-// 	let winner       = await english_contract.methods.winner().call({from:web3.eth.defaultAccount});
-// 	let balance      = await web3.eth.getBalance(english_contract)
-// 	if(time_left <= 0 && (winner == multibid_address) && balance == 0){ //check that the auction is over, the multibid has won, and the owner has cashed out (maybe check signatures instead)?
-// 		//Do stuff
-// 	}
+async function show_relist_buttons(){
+	let time_left = await get_time_left();
+	let winner    = await english_contract.methods.winner().call({from:web3.eth.defaultAccount});
+	let balance   = await web3.eth.getBalance(auction_address);
+	if(time_left <= 0 && (winner == multibid_address) && balance == 0){ //check that the auction is over, the multibid has won, and the owner has cashed out (maybe check signatures instead)?
+		document.getElementById('final-listing-id').style.visibility='visible';
+		document.getElementById('reList').style.visibility='visible';
+		document.getElementById('3p-0').style.visibility='hidden';
+		document.getElementById('3p-1').style.visibility='hidden';
+		document.getElementById('3p-2').style.visibility='hidden';
+		document.getElementById('3p-3').style.visibility='hidden';
+		document.getElementById('3p-4').style.visibility='hidden';
+		let voted = await multibid_contract.methods.votedListings(web3.eth.defaultAccount).call({from:web3.eth.defaultAccount});
+		if(!voted){
+			document.getElementById('new-listing-minPrice').style.visibility='visible';
+			document.getElementById('new-listing-duration').style.visibility='visible';
+			document.getElementById('proposeNewListing').style.visibility='visible';
+			document.getElementById('vote-listing-id').style.visibility='visible';
+			document.getElementById('voteNewListing').style.visibility='visible';
+			document.getElementById('retract-listing-id').style.visibility='hidden';
+			document.getElementById('retractNewVoteListing').style.visibility='hidden';
+		}
+		if(voted){
+			document.getElementById('new-listing-minPrice').style.visibility='visible';
+			document.getElementById('new-listing-duration').style.visibility='visible';
+			document.getElementById('proposeNewListing').style.visibility='visible';
+			document.getElementById('vote-listing-id').style.visibility='hidden';
+			document.getElementById('voteNewListing').style.visibility='hidden';
+			document.getElementById('retract-listing-id').style.visibility='visible';
+			document.getElementById('retractNewVoteListing').style.visibility='visible';
+		}
+	}
 
-// }
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -993,14 +1022,17 @@ async function update_info(){
 	update_balance(address);
 	get_auction_info();
 	get_multibid_info();
-	get_listing_proposals();
 	get_thirdParty_proposals();
 	//buttons control
 	show_win_sig_buttons();
 	show_third_party_mgmt();
+	show_relist_buttons();
+	get_listing_proposals();
 }
 
 async function get_time_left(){
+	auction_address = await multibid_contract.methods._currentAuction().call({from:web3.eth.defaultAccount});
+	english_contract = new web3.eth.Contract(english_abi, auction_address);
 	let duration = await english_contract.methods.duration().call({from:web3.eth.defaultAccount});
     let begin = await english_contract.methods.startTime().call({from:web3.eth.defaultAccount});
     const d = new Date();
@@ -1050,14 +1082,14 @@ async function get_listing_proposals(){
 	web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
 	for(let i = 0; i<5; i++){
 		res = await multibid_contract.methods.viewListingAtIndex(i).call({from:web3.eth.defaultAccount});
-		//id = res[0];
+		id = res[0];
 		min_bid = res[1];
 		duration=res[2];
 		votes = res[3];
 		totalVotingPower = await multibid_contract.methods.totalVotingPower().call({from:web3.eth.defaultAccount});
 		percentOfVote = votes/totalVotingPower*100;
 		elt_id = "#listing-info-"+i;
-		$(elt_id).html("id: "+ (i+1) +" Minimum Bid: "+ min_bid +" duration: "+ duration +" Vote %: "+ percentOfVote);
+		$(elt_id).html("id: "+ id +" Minimum Bid: "+ min_bid +" duration: "+ duration +" Vote %: "+ percentOfVote);
 	}
 }
 
@@ -1089,11 +1121,11 @@ $(document).ready(function(){
 
 	web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
 	multibid_contract = new web3.eth.Contract(multibid_abi, multibid_address);
-	get_multibid_info();
-	get_auction_info();
+	// get_multibid_info();
+	// get_auction_info();
 	//buttons control
 	hide_buttons();
-	show_win_sig_buttons();
+	update_info();
 
 	web3.eth.getAccounts().then((response)=> {
 		web3.eth.defaultAccount = response[0];
@@ -1258,7 +1290,6 @@ $(document).ready(function(){
 		listing_id = $("#retract-listing-id").val()
 		console.log(listing_id)
 		await multibid_contract.methods.retractNewVoteListing(listing_id).send({from:web3.eth.defaultAccount});
-		alert('sent')
 		update_info()
 	})
 

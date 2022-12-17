@@ -5,7 +5,7 @@ const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 //         ABIs and Contract Addresses: Paste Your ABIs/Addresses Here
 // =============================================================================
 
-const multi_spawner_address = '0xeed0b9feB5f8Cb6B540Bfd72186100e534FD6255';     
+const multi_spawner_address = '0x64801b85bf450E48AE5Cb9B4AE37549eC05C4A6D';     
 const multi_spawner_abi =[
 	{
 		"anonymous": false,
@@ -14,6 +14,12 @@ const multi_spawner_abi =[
 				"indexed": false,
 				"internalType": "address",
 				"name": "auction",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "contract MultiBid",
+				"name": "multi",
 				"type": "address"
 			}
 		],
@@ -72,7 +78,8 @@ const multi_spawner_abi =[
 		"stateMutability": "view",
 		"type": "function"
 	}
-];     
+];   
+
 const multi_spawner_contract = new web3.eth.Contract(multi_spawner_abi, multi_spawner_address);        
 
 // This sets the default account on load and displays the total owed to that
@@ -89,7 +96,7 @@ web3.eth.getAccounts().then((response)=>{
 
 async function create_new(english_pointer,address){
 	console.log(address)
-    await multi_spawner_contract.methods.createMultiBid(english_pointer).send({from:address, gas:10000000});
+    await multi_spawner_contract.methods.createMultiBid(english_pointer).send({from:address, gas:300000});
     let multi_address = await multi_spawner_contract.methods.getMostRecentMultiBid().call({from:address})
     alert(multi_address)
     return multi_address;
