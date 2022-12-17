@@ -191,8 +191,9 @@ web3.eth.getAccounts().then((response)=>{
 
 async function get_active_auctions(){
 	let auctions = [];
+	let currBlock = await web3.eth.getBlockNumber();
 	let ev = await english_spawner_contract.getPastEvents("auctionCreated", {
-		fromBlock: (await web3.eth.getBlockNumber()) - 40500, //average number of eth blocks mined in a week + a little wiggle room
+		fromBlock: Math.max(currBlock - 40500,0),
 		toBlock: "latest"
 	});
 	for(var i = 0; i < ev.length; i++){
