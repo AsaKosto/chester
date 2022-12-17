@@ -1044,7 +1044,7 @@ async function get_time_left(){
 
 async function get_auction_info(){
 	auction_address = await multibid_contract.methods._currentAuction().call({from:web3.eth.defaultAccount});
-	console.log(auction_address);
+	//console.log(auction_address);
 	$("#auction-address").html(auction_address);
 	english_contract = new web3.eth.Contract(english_abi, auction_address);
 	curr_highest_bid = await english_contract.methods.highestBid().call({from:web3.eth.defaultAccount});
@@ -1070,7 +1070,7 @@ async function get_auction_info(){
 async function get_multibid_info(){
 	web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
 	multibid_balance = await web3.eth.getBalance(multibid_address);
-	console.log(multibid_balance);
+	//console.log(multibid_balance);
 	$("#multibid-balance").html("Multibid Contract Balance: "+multibid_balance+" Wei");
 	stake = await multibid_contract.methods.seeMyStake().call({from:web3.eth.defaultAccount});
 	totalVotingPower = await multibid_contract.methods.totalVotingPower().call({from:web3.eth.defaultAccount})
@@ -1095,14 +1095,16 @@ async function get_listing_proposals(){
 
 async function get_thirdParty_proposals(){
 	web3.eth.defaultAccount = $("#myaccount").val();
+	console.log(web3.eth.defaultAccount);
 	for(let i = 0; i<5; i++){
 		res = await multibid_contract.methods.viewThirdPartyAtIndex(i).call({from:web3.eth.defaultAccount});
 		thirdParty = res[0];
 		votes = res[1];
 		totalVotingPower = await multibid_contract.methods.totalVotingPower().call({from:web3.eth.defaultAccount});
 		percentOfVote = votes/totalVotingPower*100;
+		if(totalVotingPower == 0){percentOfVote = 0;}
 		elt_id = "#3p-"+i;
-		console.log(elt_id, thirdParty, percentOfVote);
+		//console.log(elt_id, thirdParty, percentOfVote);
 		$(elt_id).html("address:"+thirdParty+" Vote %: "+ percentOfVote);
 	}
 }
@@ -1112,8 +1114,7 @@ $(document).ready(function(){
 		first = params.get("address");
 	if (first != null){
 		multibid_address = first;
-		multibid_contract = new web3.eth.Contract(multibid_abi, multibid_address);  
-		console.log('first')      	
+		multibid_contract = new web3.eth.Contract(multibid_abi, multibid_address);       	
 	} else {
 		multibid_address = set_address;
 		multibid_contract = new web3.eth.Contract(multibid_abi, multibid_address);        	
@@ -1155,7 +1156,6 @@ $(document).ready(function(){
 		
 		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
 		let third_address = $("#third-address").val()
-		console.log(duration);
 		if (duration == 0){
 			alert("This auction is over!")
 		} else if (web3.eth.defaultAccount.toLocaleLowerCase() == third_address.toLocaleLowerCase()) {
@@ -1273,7 +1273,7 @@ $(document).ready(function(){
 		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
 		min_price = $("#new-listing-minPrice").val();
 		duration = $("#new-listing-duration").val();
-		console.log(min_price,duration)
+		//console.log(min_price,duration)
 		await multibid_contract.methods.proposeNewListing(0, min_price, duration).send({from:web3.eth.defaultAccount, gasLimit: 500000});
 		update_info()
 	})
@@ -1288,7 +1288,7 @@ $(document).ready(function(){
 	$("#retractNewVoteListing").click(async function() {
 		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
 		listing_id = $("#retract-listing-id").val()
-		console.log(listing_id)
+		//console.log(listing_id)
 		await multibid_contract.methods.retractNewVoteListing(listing_id).send({from:web3.eth.defaultAccount});
 		update_info()
 	})

@@ -96,7 +96,7 @@ web3.eth.getAccounts().then((response)=>{
 
 async function create_new(english_pointer,address){
 	console.log(address)
-    await multi_spawner_contract.methods.createMultiBid(english_pointer).send({from:address, gas:300000});
+    await multi_spawner_contract.methods.createMultiBid(english_pointer).send({from:address, gas:5000000});
     let multi_address = await multi_spawner_contract.methods.getMostRecentMultiBid().call({from:address})
     alert(multi_address)
     return multi_address;
