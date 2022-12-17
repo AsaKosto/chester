@@ -833,7 +833,7 @@ const multibid_abi =  [
 ];
 
 // const set_address = '';
-var multibid_address = 0;
+//var multibid_address = 0;
 var multibid_contract = 0;
 var owner_address = 0;
 
@@ -971,6 +971,16 @@ async function show_win_sig_buttons(){
 		document.getElementById('withdrawBid').style.visibility='visible';
 	}
 }
+
+// async function show_relist_buttons(){
+// 	let time_left    = await get_time_left();
+// 	let winner       = await english_contract.methods.winner().call({from:web3.eth.defaultAccount});
+// 	let balance      = await web3.eth.getBalance(english_contract)
+// 	if(time_left <= 0 && (winner == multibid_address) && balance == 0){ //check that the auction is over, the multibid has won, and the owner has cashed out (maybe check signatures instead)?
+// 		//Do stuff
+// 	}
+
+// }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
