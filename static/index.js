@@ -216,8 +216,9 @@ async function get_active_auctions(){
 
 async function get_active_multis(){
 	let multis = [];
+	let blockNum = (await web3.eth.getBlockNumber());
 	let ev = await multi_spawner_contract.getPastEvents("multiBidCreated", {
-		fromBlock: (await web3.eth.getBlockNumber()) - 40500, //average number of eth blocks mined in a week + a little wiggle room
+		fromBlock: Math.max(0,blockNum - 40500), //average number of eth blocks mined in a week + a little wiggle room
 		toBlock: "latest"
 	});
 	for(var i = 0; i < ev.length; i++){
