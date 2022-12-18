@@ -76,7 +76,7 @@ const multi_spawner_abi = [
 	}
 ];
 
-const english_spawner_address = '0x659253522f9142992030de2347C3a570DEa7c74d';     
+const english_spawner_address = '0xf5f87bBd199b9a7875ae1C4138741AFA238Fba9b';     
 const english_spawner_abi =[
 	{
 		"anonymous": false,
