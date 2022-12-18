@@ -4,39 +4,60 @@
     <link rel="stylesheet" type="text/css" href="./../static/style.css">
     <script src="./../static/web3.min.js"></script>
     <script src="./../static/abi-decoder.js"></script>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script> -->
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
   </head>
   <body>
-    <div id="header">
-        <header>
-          <div id="sub-title-container">
-            <h1 id="title"></h1>
-            <!-- <h2 id="subtitle">Art Auction App</h2> -->
-          </div>
-        </header>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <header>
+            <div id="sub-title-container">
+              <h1 id="title">Create Auction</h1>
+              <!-- <h2 id="subtitle">Art Auction App</h2> -->
+            </div>
+          </header>
+        </div>
+        <div class="col-md-6 panel panel_right">
+          <h2>My Account</h2>
+          <select id="myaccount" class="account"></select>
+        </div>
       </div>
-    <div class="panel panel_right">
-        <h2>My Account</h2>
-        <select id="myaccount" class="account"></select>
-      </div>
-    <div id="main">
-        <div id="main-display">
-            <article>
-                <div id="auction-params">
-                    <label for="min-bid-amt">Enter Minimum Bid Amount:</label>
-                    <input id="min-bid-amt" type="text">
-                    <label for="item-name">Enter The Item Name:</label>
-                    <input id="item-name" type="text">
-                    <label for="duration">Enter Duration In Hours:</label>
-                    <input id="duration" type="text">
-                </div>
-            </article>
-            <div id="auction-submitting">
-            <div id="auction-submitting-button">
-              <button id="submit-auction"></button>
+      <br>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row">
+            <div class="col-md-5">
+              <label for="min-bid-amt">Enter Minimum Bid Amount:</label>
+            </div>
+            <div class="col-md-2">
+              <input id="min-bid-amt" type="text">
             </div>
           </div>
+          <div class="row">
+            <div class="col-md-5">
+              <label for="item-name">Enter The Item Name:</label>
+            </div>
+            <div class="col-md-2">
+              <input id="item-name" type="text">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-5">
+              <label for="duration">Enter Duration In Hours:</label>
+            </div>
+            <div class="col-md-2">
+              <input id="duration" type="text">
+            </div>
+          </div>
+          <div class="row">
+            <button id="submit-auction"></button>
+          </div>
         </div>
+      </div>
     </div>
     <script src="./../static/create.js"></script>
   </body>
