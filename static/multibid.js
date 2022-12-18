@@ -1142,6 +1142,9 @@ async function show_post_relist_buttons(){
 		let votes        = await multibid_contract.methods.votesApproveSubmittedThirdParty().call({from:web3.eth.defaultAccount});
 		totalVotingPower = await multibid_contract.methods.totalVotingPower().call({from:web3.eth.defaultAccount});
 		percentOfVote = votes/totalVotingPower*100;
+		// let ownerSigPay = 
+		// let thirdPartySigPay = 
+		// let winnerSigPay = 
 		$("#submittedThirdParty").append("Submitted Third Party: " + thirdParty + "Vote %: " + percentOfVote);
 		if(!voted){
 			document.getElementById('voteApproveSubmittedThirdParty').style.visibility='visible';
@@ -1154,6 +1157,7 @@ async function show_post_relist_buttons(){
 		if(percentOfVote > 50){
 			document.getElementById('approveSubmittedThirdParty').style.visibility='visible';
 		}
+
 	}
 }
 
@@ -1468,8 +1472,6 @@ $(document).ready(function(){
 			duration = await multibid_contract.methods.listingIds(listing_id, 2).call({from:web3.eth.defaultAccount});
 			await english_spawner_contract.methods.createAuction(min_bid, duration, multibid_address).send({from:web3.eth.defaultAccount, gas:2000000});
 			let relisted = await english_spawner_contract.methods.getMostRecentListing().call({from:web3.eth.defaultAccount});
-			//Didn't happen
-			alert(relisted);
 			await multibid_contract.methods.switchAfterReList(relisted).send({from:web3.eth.defaultAccount});
 			alert('You are now viewing your re-listed auction, make sure to reset all your votes');
 
