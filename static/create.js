@@ -5,7 +5,7 @@ const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 //         ABIs and Contract Addresses: Paste Your ABIs/Addresses Here
 // =============================================================================
 
-const english_spawner_address = '0x822D5cc942A95388365C7c153191fF519282fBe7';     
+const english_spawner_address = '0xe1ceD30f8dF27012a4F278e19f0950B5e0D6639A';     
 const english_spawner_abi =[
 	{
 		"anonymous": false,
@@ -122,7 +122,7 @@ web3.eth.getAccounts().then((response)=>{
 });
 
 var denominations = {
-	// Ether : 'Ether',
+	Ether : 'Ether',
 	Wei : 'Wei',
 	Gwei : 'Gwei'
 };
@@ -157,7 +157,7 @@ $("#submit-auction").click(async function() {
 	console.log(min_bid_amt)
     let duration = $("#duration").val();
 	let name = $("#item-name").val();
-    let english_address = await create_new(min_bid_amt,duration,web3.eth.defaultAccount,name);
+    let english_address = await create_new(BigInt(min_bid_amt),duration,web3.eth.defaultAccount,name);
 	console.log(english_address)
     //english_address = english_spawner_contract.methods.call
     let params = new URLSearchParams();

@@ -5,7 +5,7 @@ const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 //         ABIs and Contract Addresses: Paste Your ABIs/Addresses Here
 // =============================================================================
 
-const multi_spawner_address = '0xAa048d9AEeAe4Fa112F36b1c34c01DEcc32DC419';
+const multi_spawner_address = '0x25BD53158Cd6bE9BfB2C43305E087E49d1aE79E3';
 const multi_spawner_abi = [
 	{
 		"anonymous": false,
