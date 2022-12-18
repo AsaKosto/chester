@@ -33,15 +33,25 @@ contract MultiBid{
     address public _currentAuction; //The auction this multi-bid is currently bidding on
     //EnglishInterface public currentAuction;
 
+    bool public bidSumbitted;
+
     constructor(address auction){
         _currentAuction = auction;
-        //EnglishInterface currentAuction = EnglishInterface(_currentAuction);
     }
     //********************************************************************************\\
     //Individual Functions
     //********************************************************************************\\
 
     function addValue() external payable{
+        EnglishInterface currentAuction = EnglishInterface(_currentAuction);
+        address curWinner = currentAuction.getWinner();
+        address curAdmin = currentAuction.getAdmin();
+        require(address(this) != curWinner, "This Multi-Bid is currently winning this auction! For security reasons, you cannot add value when a bid has been placed");
+        require(address(this) != curAdmin, "This Multi-Bid is the current admin of this auction. No more value can be added");
+        if((address(this) != curWinner) && (address(this) != curAdmin)){
+            bidSumbitted = false;
+        }
+        require(bidSumbitted == false, "This multi-bid has already submitted a bid. For security reasons, you cannot add value when a bid has been placed");
         votingPower[msg.sender] += msg.value;
         totalVotingPower += msg.value;
     }
@@ -237,6 +247,7 @@ contract MultiBid{
         require((2 * thirdParties[thirdParty]) > totalVotingPower, "This third party does not currently have enough votes");
         EnglishInterface currentAuction = EnglishInterface(_currentAuction);
         currentAuction.bid{value: amount}(payable(thirdParty));
+        bidSumbitted = true;
     }
 
     function submitSigPay() external{

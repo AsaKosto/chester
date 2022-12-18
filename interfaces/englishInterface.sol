@@ -22,6 +22,8 @@ interface EnglishInterface{
 
     function getAdmin() external view returns(address);
 
+    function getWinner() external view returns(address);
+
     function endAuction() external;
 
 }

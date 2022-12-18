@@ -102,6 +102,10 @@ contract EnglishAuction{
         return admin;
     }
 
+    function getWinner() external view returns(address){
+        return winner;
+    }
+
     function endAuction() external {
         require(msg.sender == admin, "You are not authorized to end this auction");
         duration = 0;
