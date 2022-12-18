@@ -1507,7 +1507,8 @@ $(document).ready(function(){
 			const english_spawner_contract = new web3.eth.Contract(english_spawner_abi, english_spawner_address);
 			min_bid  = await multibid_contract.methods.listingIds(listing_id, 1).call({from:web3.eth.defaultAccount});
 			duration = await multibid_contract.methods.listingIds(listing_id, 2).call({from:web3.eth.defaultAccount});
-			await english_spawner_contract.methods.createAuction(min_bid, duration, multibid_address).send({from:web3.eth.defaultAccount, gas:2000000});
+			let name = await english_contract.methods.name().call({from:web3.eth.defaultAccount});
+			await english_spawner_contract.methods.createAuction(min_bid, duration, multibid_address,name).send({from:web3.eth.defaultAccount, gas:2000000});
 			let relisted = await english_spawner_contract.methods.getMostRecentListing().call({from:web3.eth.defaultAccount});
 			await multibid_contract.methods.switchAfterReList(relisted).send({from:web3.eth.defaultAccount});
 			alert('You are now viewing your re-listed auction, make sure to reset all your votes');
