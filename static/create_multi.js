@@ -8,19 +8,6 @@ const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 const multi_spawner_address = '0xAa048d9AEeAe4Fa112F36b1c34c01DEcc32DC419';
 const multi_spawner_abi = [
 	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "auction",
-				"type": "address"
-			}
-		],
-		"name": "createMultiBid",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -38,6 +25,19 @@ const multi_spawner_abi = [
 		],
 		"name": "multiBidCreated",
 		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "auction",
+				"type": "address"
+			}
+		],
+		"name": "createMultiBid",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
 		"inputs": [],
