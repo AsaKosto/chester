@@ -27,7 +27,7 @@ contract MultiBid{
     mapping(address => bool) public votedSigPay;
     mapping(address => bool) public votedSigWithdraw;
 
-    uint256 votesApproveSubmittedThirdParty;
+    uint256 public votesApproveSubmittedThirdParty;
     mapping(address => bool) public votedApprove;
 
     address public _currentAuction; //The auction this multi-bid is currently bidding on
@@ -272,6 +272,12 @@ contract MultiBid{
         require((2 * votesToWithdraw) > totalVotingPower, "There are not currently enough votes to submit a withdrawal request");
         EnglishInterface currentAuction = EnglishInterface(_currentAuction);
         currentAuction.withdrawBid();
+    }
+
+    function switchAfterReList(address _newAuction) external{
+        EnglishInterface newAuction = EnglishInterface(_newAuction);
+        require(newAuction.getAdmin() == address(this), 'You cannot switch to auctions where this Multi-Bid is not the admin (re-listings)');
+        _currentAuction = address(newAuction);
     }
 
     //Recieve

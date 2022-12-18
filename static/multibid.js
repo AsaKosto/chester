@@ -4,7 +4,7 @@ const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 // =============================================================================
 //         ABIs and Contract Addresses: Paste Your ABIs/Addresses Here
 // =============================================================================
-const english_spawner_address = '0x238226faB4c657a14b360aB5845A96eB50c57BB3';     
+const english_spawner_address = '0x6C359E3cBf43BA8C4A13B569EdDaEd4B17E81e24';     
 const english_spawner_abi = [
 	{
 		"anonymous": false,
@@ -198,6 +198,19 @@ const english_abi = [
 	},
 	{
 		"inputs": [],
+		"name": "getAdmin",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "highestBid",
 		"outputs": [
 			{
@@ -377,10 +390,96 @@ const english_abi = [
 
 const multibid_abi =  [
 	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "auction",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [],
+		"name": "_currentAuction",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [],
 		"name": "addValue",
 		"outputs": [],
 		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "listingIds",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "listingOptions",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "listings",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -468,6 +567,19 @@ const multibid_abi =  [
 	},
 	{
 		"inputs": [],
+		"name": "seeMyStake",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "submitApprovalThirdParty",
 		"outputs": [],
 		"stateMutability": "nonpayable",
@@ -523,157 +635,13 @@ const multibid_abi =  [
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "auction",
+				"name": "_newAuction",
 				"type": "address"
 			}
 		],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"inputs": [],
-		"name": "voteApproveSubmittedThirdParty",
+		"name": "switchAfterReList",
 		"outputs": [],
 		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "listingID",
-				"type": "uint256"
-			}
-		],
-		"name": "voteNewListing",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "thirdParty",
-				"type": "address"
-			}
-		],
-		"name": "voteThirdParty",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "voteToPay",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "voteToWithdraw",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "withdrawValue",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"stateMutability": "payable",
-		"type": "receive"
-	},
-	{
-		"inputs": [],
-		"name": "_currentAuction",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "listingIds",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "listingOptions",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "listings",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "seeMyStake",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -783,6 +751,53 @@ const multibid_abi =  [
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "voteApproveSubmittedThirdParty",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "listingID",
+				"type": "uint256"
+			}
+		],
+		"name": "voteNewListing",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "thirdParty",
+				"type": "address"
+			}
+		],
+		"name": "voteThirdParty",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "voteToPay",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "voteToWithdraw",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -924,6 +939,17 @@ const multibid_abi =  [
 		],
 		"stateMutability": "view",
 		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "withdrawValue",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"stateMutability": "payable",
+		"type": "receive"
 	}
 ];
 
@@ -1105,6 +1131,32 @@ async function show_relist_buttons(){
 
 }
 
+async function show_post_relist_buttons(){
+	web3.eth.defaultAccount = $("#myaccount").val();
+	let time_left = await get_time_left();
+	if(time_left <= 0){
+		auction_address  = await multibid_contract.methods._currentAuction().call({from:web3.eth.defaultAccount});
+		english_contract = new web3.eth.Contract(english_abi, auction_address);
+		thirdParty = await english_contract.methods.thirdParty().call({from:web3.eth.defaultAccount});
+		let voted        = await multibid_contract.methods.votedApprove(web3.eth.defaultAccount).call({from:web3.eth.defaultAccount});
+		let votes        = await multibid_contract.methods.votesApproveSubmittedThirdParty().call({from:web3.eth.defaultAccount});
+		totalVotingPower = await multibid_contract.methods.totalVotingPower().call({from:web3.eth.defaultAccount});
+		percentOfVote = votes/totalVotingPower*100;
+		$("#submittedThirdParty").append("Submitted Third Party: " + thirdParty + "Vote %: " + percentOfVote);
+		if(!voted){
+			document.getElementById('voteApproveSubmittedThirdParty').style.visibility='visible';
+			document.getElementById('retractVoteApproveSubmittedThirdParty').style.visibility='hidden';
+		}
+		if(voted){
+			document.getElementById('voteApproveSubmittedThirdParty').style.visibility='hidden';
+			document.getElementById('retractVoteApproveSubmittedThirdParty').style.visibility='visible';
+		}
+		if(percentOfVote > 50){
+			document.getElementById('approveSubmittedThirdParty').style.visibility='visible';
+		}
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 //END BUTTON VISIBILITY CONTROL
@@ -1122,6 +1174,7 @@ async function update_info(){
 	show_third_party_mgmt();
 	show_relist_buttons();
 	get_listing_proposals();
+	show_post_relist_buttons()
 }
 
 async function get_time_left(){
@@ -1189,7 +1242,6 @@ async function get_listing_proposals(){
 
 async function get_thirdParty_proposals(){
 	web3.eth.defaultAccount = $("#myaccount").val();
-	console.log(web3.eth.defaultAccount);
 	for(let i = 0; i<5; i++){
 		res = await multibid_contract.methods.viewThirdPartyAtIndex(i).call({from:web3.eth.defaultAccount});
 		thirdParty = res[0];
@@ -1399,6 +1451,12 @@ $(document).ready(function(){
 		update_info()
 	})
 
+	$("#approveSubmittedThirdParty").click(async function() {
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		await multibid_contract.methods.submitApprovalThirdParty().send({from:web3.eth.defaultAccount});
+		update_info()
+	})
+
 	$("#reList").click(async function(){
 		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
 		listing_id = $("#final-listing-id").val();
@@ -1409,9 +1467,12 @@ $(document).ready(function(){
 			min_bid  = await multibid_contract.methods.listingIds(listing_id, 1).call({from:web3.eth.defaultAccount});
 			duration = await multibid_contract.methods.listingIds(listing_id, 2).call({from:web3.eth.defaultAccount});
 			await english_spawner_contract.methods.createAuction(min_bid, duration, multibid_address).send({from:web3.eth.defaultAccount, gas:2000000});
-			alert('created');
 			let relisted = await english_spawner_contract.methods.getMostRecentListing().call({from:web3.eth.defaultAccount});
+			//Didn't happen
 			alert(relisted);
+			await multibid_contract.methods.switchAfterReList(relisted).send({from:web3.eth.defaultAccount});
+			alert('You are now viewing your re-listed auction, make sure to reset all your votes');
+
 		} else { alert('This listing option does not currently have enough votes'); }
 		
 	})

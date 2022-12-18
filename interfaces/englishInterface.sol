@@ -20,6 +20,8 @@ interface EnglishInterface{
 
     function currentHighestBid() external view returns(uint256);
 
+    function getAdmin() external view returns(address);
+
     function endAuction() external;
 
 }

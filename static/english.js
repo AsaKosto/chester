@@ -105,6 +105,19 @@ const english_abi = [
 	},
 	{
 		"inputs": [],
+		"name": "getAdmin",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "highestBid",
 		"outputs": [
 			{
