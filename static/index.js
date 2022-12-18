@@ -1,7 +1,7 @@
 // sets up web3.js
 const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 
-const multi_spawner_address = '0x5D4f761f701b6E96De26756b464c4059EBD6cBee';
+const multi_spawner_address = '0xAa048d9AEeAe4Fa112F36b1c34c01DEcc32DC419';
 const multi_spawner_abi = [
 	{
 		"inputs": [
@@ -76,7 +76,7 @@ const multi_spawner_abi = [
 	}
 ];
 
-const english_spawner_address = '0xf48cBdcED6F183bd642754abbC6AECEB601C02c6';     
+const english_spawner_address = '0x822D5cc942A95388365C7c153191fF519282fBe7';     
 const english_spawner_abi =[
 	{
 		"anonymous": false,
@@ -247,8 +247,32 @@ async function get_active_multis(){
 
 $(document).ready(function(){
 
+	
 	get_active_auctions();
 	get_active_multis();
+
+	$("#home").click(function() {
+		location.href = 'index.html'
+	})
+
+	$("#go-e").click(function() {
+		let english_address = $("#e-address").val()
+		let params = new URLSearchParams();
+		params.append("address", english_address);
+		let url = 'english.html?' + params.toString();
+		console.log(url)
+		location.href = url;
+	})
+
+	$("#go-mb").click(function() {
+		let multi_address = $("#mb-address").val()
+		let params = new URLSearchParams();
+		params.append("address", multi_address);
+		let url = 'multibid.html?' + params.toString();
+		console.log(url)
+		location.href = url;
+	})
+
 
 	// This opens a new page to create an auction
 	$("#create-auction").click(function() {

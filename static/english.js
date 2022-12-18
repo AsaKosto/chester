@@ -713,12 +713,35 @@ $(document).ready(function(){
 		web3.eth.defaultAccount = $("#myaccount").val();
 		english_contract.methods.cashOut().send({from:web3.eth.defaultAccount});
 		update_balance2();
+		update_curr_bid();
 	})
 
 	$("#withdraw-button").click(async function() {
 		web3.eth.defaultAccount = $("#myaccount").val();
 		english_contract.methods.withdrawBid().send({from:web3.eth.defaultAccount});
 		update_balance2();
+	})
+
+	$("#home").click(function() {
+		location.href = 'index.html'
+	})
+
+	$("#go-e").click(function() {
+		let english_address = $("#e-address").val()
+		let params = new URLSearchParams();
+		params.append("address", english_address);
+		let url = 'english.html?' + params.toString();
+		console.log(url)
+		location.href = url;
+	})
+
+	$("#go-mb").click(function() {
+		let multi_address = $("#mb-address").val()
+		let params = new URLSearchParams();
+		params.append("address", multi_address);
+		let url = 'multibid.html?' + params.toString();
+		console.log(url)
+		location.href = url;
 	})
 
 

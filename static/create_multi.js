@@ -5,7 +5,7 @@ const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 //         ABIs and Contract Addresses: Paste Your ABIs/Addresses Here
 // =============================================================================
 
-const multi_spawner_address = '0x5D4f761f701b6E96De26756b464c4059EBD6cBee';
+const multi_spawner_address = '0xAa048d9AEeAe4Fa112F36b1c34c01DEcc32DC419';
 const multi_spawner_abi = [
 	{
 		"inputs": [
@@ -98,7 +98,7 @@ async function create_new(english_pointer,address){
 	console.log(address)
     await multi_spawner_contract.methods.createMultiBid(english_pointer).send({from:address, gas:5000000});
     let multi_address = await multi_spawner_contract.methods.getMostRecentMultiBid().call({from:address})
-    alert(multi_address)
+    // alert(multi_address)
     return multi_address;
 }
 
@@ -106,7 +106,6 @@ $("#submit-auction").click(async function() {
 	web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
     let auction_address = $("#auction-address").val();
     let multi_address = await create_new(auction_address, web3.eth.defaultAccount);
-	console.log(multi_address)
     //english_address = english_spawner_contract.methods.call
     let params = new URLSearchParams();
     params.append("address", multi_address);

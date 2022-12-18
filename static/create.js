@@ -5,7 +5,7 @@ const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 //         ABIs and Contract Addresses: Paste Your ABIs/Addresses Here
 // =============================================================================
 
-const english_spawner_address = '0xf48cBdcED6F183bd642754abbC6AECEB601C02c6';     
+const english_spawner_address = '0x822D5cc942A95388365C7c153191fF519282fBe7';     
 const english_spawner_abi =[
 	{
 		"anonymous": false,
@@ -121,6 +121,16 @@ web3.eth.getAccounts().then((response)=>{
     $(".account").html(opts);
 });
 
+var denominations = {
+	// Ether : 'Ether',
+	Wei : 'Wei',
+	Gwei : 'Gwei'
+};
+
+var select = document.getElementById("units");
+for(index in denominations) {
+	select.options[select.options.length] = new Option(denominations[index], index);
+}
 
 async function create_new(min_bid_amt,duration,address,name){
 	duration = duration * 60 * 60;
@@ -131,7 +141,20 @@ async function create_new(min_bid_amt,duration,address,name){
 
 $("#submit-auction").click(async function() {
 	web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-    let min_bid_amt = $("#min-bid-amt").val();
+    // let min_bid_amt = $("#min-bid-amt").val();
+	let unit = $("#units").val();
+	// alert(unit)
+	if (unit == "Ether") {
+		scale = 10**(18)
+	} else if (unit == "Finney") {
+		scale = 10**(15)
+	} else if (unit == "Gwei") {
+		scale = 10**(9)
+	} else {
+		scale = 1
+	}
+	let min_bid_amt = $("#min-bid-amt").val() * scale;
+	console.log(min_bid_amt)
     let duration = $("#duration").val();
 	let name = $("#item-name").val();
     let english_address = await create_new(min_bid_amt,duration,web3.eth.defaultAccount,name);
