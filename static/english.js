@@ -25,6 +25,11 @@ const english_abi = [
 				"internalType": "address payable",
 				"name": "_admin",
 				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "_name",
+				"type": "string"
 			}
 		],
 		"stateMutability": "nonpayable",
@@ -105,6 +110,19 @@ const english_abi = [
 	},
 	{
 		"inputs": [],
+		"name": "getAdmin",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "highestBid",
 		"outputs": [
 			{
@@ -124,6 +142,19 @@ const english_abi = [
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "name",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
 			}
 		],
 		"stateMutability": "view",
@@ -286,25 +317,29 @@ const english_abi = [
 var english_address = 0;
 var english_contract = 0;
 var owner_address = 0;
-
+let time_left = 0;
 
 // const english_contract = new web3.eth.Contract(english_abi, english_address);        
 
-async function update_curr_bid(){
-    web3.eth.defaultAccount = $("#myaccount").val();
-	console.log("curr highest bid call")
-    let curr_min_bid = await english_contract.methods.currentHighestBid().call({from:web3.eth.defaultAccount});
-	console.log("SUCCESS")
-	curr_min_bid = curr_min_bid
-    $("#curr-min-bid").html(curr_min_bid * 10**(-18) + " ETH");
-    let duration = await english_contract.methods.duration().call({from:web3.eth.defaultAccount});
+async function get_time_left(){
+	web3.eth.defaultAccount = $("#myaccount").val();
+	let duration = await english_contract.methods.duration().call({from:web3.eth.defaultAccount});
     let begin = await english_contract.methods.startTime().call({from:web3.eth.defaultAccount});
     const d = new Date();
     let time = Math.floor(d.getTime()/ 1000);
     let time_passed = time - begin;
-    let time_left = duration - time_passed;
+    time_left = Math.max(0,duration - time_passed);
+	// return time_left;
+}
 
-	//let time_left = 5400
+
+async function update_curr_bid(){
+    web3.eth.defaultAccount = $("#myaccount").val();
+    let curr_min_bid = await english_contract.methods.currentHighestBid().call({from:web3.eth.defaultAccount});
+	curr_min_bid = curr_min_bid
+    $("#curr-min-bid").html(curr_min_bid * 10**(-18) + " ETH");
+    await get_time_left();
+	console.log(time_left);
 	hours = Math.floor(time_left/(60*60))
 	minutes = Math.floor((time_left % (60*60)) / 60)
     if (time_left < 0){
@@ -313,11 +348,14 @@ async function update_curr_bid(){
     } else {
         $("#duration").html(hours + "H " + minutes + "M");
     }
+
+	let name = await english_contract.methods.name().call({from:web3.eth.defaultAccount});
+	$("#name").html(name);
 }
 
 async function update_balance(address){
 	web3.eth.getBalance(address, function(err, result){
-		if (err){
+		if (err){update
 			console.log(err)
 		} else {
 			let b = web3.utils.fromWei(result, "ether")
@@ -329,7 +367,7 @@ async function update_balance(address){
 async function update_ownership(address){
 	// console.log(address)
 	hide_buttons();
-	let duration = await english_contract.methods.duration().call({from:web3.eth.defaultAccount});
+	await get_time_left();
 	owner_address = await english_contract.methods.admin().call({from:web3.eth.defaultAccount});
 	// console.log(owner_address)
 	curr_address = address.toLowerCase()
@@ -344,7 +382,7 @@ async function update_ownership(address){
 		$("#third-label").html("");
 		$("#winner-label").html("");
 		$("#third-address-display").html("");
-		if (duration == 0)
+		if (time_left == 0)
 			$("#third-address-display").html("Third Party Address: " + third_party_address);
 		show_owner_buttons(curr_address);
 	} else if (curr_address == third_party_address) {
@@ -361,7 +399,7 @@ async function update_ownership(address){
 		$("#third-label").html("");
 		$("#third-address-display").html("");
 		$("#winner-label").html("WINNER OPTIONS");
-		if (duration > 0) {
+		if (time_left > 0) {
 			$("#ownership-label").html("You are currently winning this auction!");
 		} else {
 			$("#ownership-label").html("You won this auction!");
@@ -379,7 +417,7 @@ async function update_ownership(address){
 		$("#third-address-display").html("");
 	}
 
-	if (duration == 0){
+	if (time_left == 0){
 		$("#over-label").html("This auction has ended");
 	}
 }
@@ -399,8 +437,8 @@ function hide_buttons(){
 }
 
 async function show_owner_buttons(address){
-	let duration = await english_contract.methods.duration().call({address});
-	if (duration == 0) {
+	await get_time_left();
+	if (time_left == 0) {
 		let third_party_approved = await english_contract.methods.thirdPartyApproved().call({address});
 		if (!third_party_approved)
 			document.getElementById('approve-third-button').style.visibility='visible';
@@ -430,9 +468,9 @@ async function show_owner_buttons(address){
 }
 
 async function show_winner_buttons(address){
-	let duration = await english_contract.methods.duration().call({address});
-	console.log(duration)
-	if (duration == 0) {
+	await get_time_left();
+	console.log(time_left)
+	if (time_left == 0) {
 		let winner_signed_to_pay = await english_contract.methods.winnerSigPay().call({address});
 		let winner_signed_to_withdraw = await english_contract.methods.winnerSigWithdraw().call({address});
 		show_signatures(address);
@@ -455,13 +493,13 @@ async function show_winner_buttons(address){
 }
 
 async function show_third_buttons(address){
-	let duration = await english_contract.methods.duration().call({address});
+	await get_time_left();
 	let owner_signed_to_pay = await english_contract.methods.ownerSigPay().call({address});
 	let owner_signed_to_withdraw = await english_contract.methods.ownerSigWithdraw().call({address});
 	let winner_signed_to_pay = await english_contract.methods.winnerSigPay().call({address});
 	let winner_signed_to_withdraw = await english_contract.methods.winnerSigWithdraw().call({address});
 	let third_party_approved = await english_contract.methods.thirdPartyApproved().call({address});
-	if (duration == 0) {
+	if (time_left == 0) {
 		show_signatures(address);
 		let third_signed_to_pay = await english_contract.methods.thirdPartySigPay().call({address});
 			let third_signed_to_withdraw = await english_contract.methods.thirdPartySigWithdraw().call({address});
@@ -509,8 +547,8 @@ async function update_balance2(){
 }
 
 async function signPay(address){
-	let duration = await english_contract.methods.duration().call({from:address});
-	if (duration == 0) {
+	await get_time_left();
+	if (time_left == 0) {
 		await english_contract.methods.signToPay().send({from:address});
 	} else {
 		alert("The Auction is still open!")
@@ -519,8 +557,8 @@ async function signPay(address){
 }
 
 async function signWithdraw(address){
-	let duration = await english_contract.methods.duration().call({from:address});
-	if (duration == 0) {
+	await get_time_left();
+	if (time_left == 0) {
 		await english_contract.methods.signToWithdraw().send({from:address});
 	} else {
 		alert("The Auction is still open!")
@@ -558,6 +596,8 @@ $(document).ready(function(){
 		web3.eth.defaultAccount = $("#myaccount").val();
 	});
 
+	// let d = get_time_left();
+	// console.log(d)
 	update_curr_bid();
 	var denominations = {
 		Ether : 'Ether',
@@ -577,10 +617,10 @@ $(document).ready(function(){
 		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
 		let winner_address = await english_contract.methods.winner().call({from:web3.eth.defaultAccount});
 		let third_address = $("#third-address").val()
-		let duration = await english_contract.methods.duration().call({from:web3.eth.defaultAccount});
-		console.log("DURATION")
-		console.log(duration)
-		if (duration == 0){
+		await get_time_left();
+		console.log("time_left")
+		console.log(time_left)
+		if (time_left == 0){
 			alert("This auction is over!")
 		} else if (web3.eth.defaultAccount.toLocaleLowerCase() == owner_address.toLowerCase()) {
 			alert("The lister cannot bid on their own auction!")
@@ -630,8 +670,8 @@ $(document).ready(function(){
 
 	$("#approve-third-button").click(async function() {
 		web3.eth.defaultAccount = $("#myaccount").val();
-		let duration = await english_contract.methods.duration().call({from:web3.eth.defaultAccount});
-		if (duration == 0) {
+		await get_time_left();
+		if (time_left == 0) {
 			await english_contract.methods.approveThirdParty().send({from:web3.eth.defaultAccount});
 		} else {
 			alert("The Auction is still open!")

@@ -5,7 +5,7 @@ const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 //         ABIs and Contract Addresses: Paste Your ABIs/Addresses Here
 // =============================================================================
 
-const english_spawner_address = '0x02a5c5eE6bF233be00962223c3af614CC35b0890';     
+const english_spawner_address = '0x659253522f9142992030de2347C3a570DEa7c74d';     
 const english_spawner_abi =[
 	{
 		"anonymous": false,
@@ -54,16 +54,15 @@ const english_spawner_abi =[
 				"internalType": "address payable",
 				"name": "admin",
 				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
 			}
 		],
 		"name": "createAuction",
-		"outputs": [
-			{
-				"internalType": "contract EnglishAuction",
-				"name": "",
-				"type": "address"
-			}
-		],
+		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
@@ -82,6 +81,19 @@ const english_spawner_abi =[
 	},
 	{
 		"inputs": [],
+		"name": "getMostRecentListing",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "mostRecentListing",
 		"outputs": [
 			{
@@ -93,7 +105,7 @@ const english_spawner_abi =[
 		"stateMutability": "view",
 		"type": "function"
 	}
-];     
+];          
 
 const english_spawner_contract = new web3.eth.Contract(english_spawner_abi, english_spawner_address);        
 
@@ -110,21 +122,10 @@ web3.eth.getAccounts().then((response)=>{
 });
 
 
-async function create_new(min_bid_amt,duration,address){
-    console.log(min_bid_amt)
-    // min_bid_amt = parseInt(min_bid_amt)
-    // duration = parseInt(duration)
-    console.log(duration)
-    console.log(address)
-    await english_spawner_contract.methods.createAuction(min_bid_amt,duration,address).send({from:address, gas:2000000});
-    // alert(x)
-	// console.log(x)
-    // sleep(1000000000)
+async function create_new(min_bid_amt,duration,address,name){
+	duration = duration * 60 * 60;
+    await english_spawner_contract.methods.createAuction(min_bid_amt,duration,address,name).send({from:address, gas:2000000});
     let english_address = await english_spawner_contract.methods.getMostRecentListing().call({from:address})
-    alert(english_address)
-    // let english_address2 = await english_spawner_contract.methods.mostRecentListing().call({from:address})
-    // alert(english_address2)
-    // console.log(english_address)
     return english_address;
 }
 
@@ -132,7 +133,8 @@ $("#submit-auction").click(async function() {
 	web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
     let min_bid_amt = $("#min-bid-amt").val();
     let duration = $("#duration").val();
-    let english_address = await create_new(min_bid_amt,duration,web3.eth.defaultAccount);
+	let name = $("#item-name").val();
+    let english_address = await create_new(min_bid_amt,duration,web3.eth.defaultAccount,name);
 	console.log(english_address)
     //english_address = english_spawner_contract.methods.call
     let params = new URLSearchParams();
