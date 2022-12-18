@@ -4,7 +4,7 @@ const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 // =============================================================================
 //         ABIs and Contract Addresses: Paste Your ABIs/Addresses Here
 // =============================================================================
-const english_spawner_address = '0x6C359E3cBf43BA8C4A13B569EdDaEd4B17E81e24';     
+const english_spawner_address = '0x659253522f9142992030de2347C3a570DEa7c74d';     
 const english_spawner_abi = [
 	{
 		"anonymous": false,
@@ -53,6 +53,11 @@ const english_spawner_abi = [
 				"internalType": "address payable",
 				"name": "admin",
 				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
 			}
 		],
 		"name": "createAuction",
@@ -118,6 +123,11 @@ const english_abi = [
 				"internalType": "address payable",
 				"name": "_admin",
 				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "_name",
+				"type": "string"
 			}
 		],
 		"stateMutability": "nonpayable",
@@ -230,6 +240,19 @@ const english_abi = [
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "name",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
 			}
 		],
 		"stateMutability": "view",
