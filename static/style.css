@@ -61,3 +61,21 @@ button {
 	border: 1px solid #666;
 	background: #CCC;
 }
+
+.button2 {
+	display: block;
+	margin: 30px 0;
+	padding: 10px 10px;
+	border: 1px solid #666;
+	background: #CCC;
+	margin-top: 0px;
+}
+
+.button3 {
+	display: block;
+	margin: 30px 0;
+	padding: 10px 20px;
+	border: 1px solid #666;
+	background: #CCC;
+	margin-top: 0px;
+}
