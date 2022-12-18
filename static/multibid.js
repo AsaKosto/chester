@@ -4,7 +4,11 @@ const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 // =============================================================================
 //         ABIs and Contract Addresses: Paste Your ABIs/Addresses Here
 // =============================================================================
+<<<<<<< HEAD
 const english_spawner_address = '0x1F02feE3A7411c53fa4BBdb68D178888D32c1a31';     
+=======
+const english_spawner_address = '0xe1ceD30f8dF27012a4F278e19f0950B5e0D6639A';     
+>>>>>>> b0c5eea8a7ab84cd65507851575774088739e1c4
 const english_spawner_abi = [
 	{
 		"anonymous": false,
@@ -1057,6 +1061,7 @@ function hide_buttons(){
 	document.getElementById('retractVoteThirdParty').style.visibility='hidden';
 	//Re-Listing Options
 	document.getElementById('new-listing-minPrice').style.visibility='hidden';
+	document.getElementById('units3').style.visibility='hidden';
 	document.getElementById('new-listing-duration').style.visibility='hidden';
 	document.getElementById('proposeNewListing').style.visibility='hidden';
 	//
@@ -1174,6 +1179,7 @@ async function show_relist_buttons(){
 		let voted = await multibid_contract.methods.votedListings(web3.eth.defaultAccount).call({from:web3.eth.defaultAccount});
 		if(!voted){
 			document.getElementById('new-listing-minPrice').style.visibility='visible';
+			document.getElementById('units3').style.visibility='visible';
 			document.getElementById('new-listing-duration').style.visibility='visible';
 			document.getElementById('proposeNewListing').style.visibility='visible';
 			document.getElementById('vote-listing-id').style.visibility='visible';
@@ -1183,6 +1189,7 @@ async function show_relist_buttons(){
 		}
 		if(voted){
 			document.getElementById('new-listing-minPrice').style.visibility='visible';
+			document.getElementById('units3').style.visibility='visible';
 			document.getElementById('new-listing-duration').style.visibility='visible';
 			document.getElementById('proposeNewListing').style.visibility='visible';
 			document.getElementById('vote-listing-id').style.visibility='hidden';
@@ -1381,6 +1388,14 @@ $(document).ready(function(){
 		select.options[select.options.length] = new Option(denominations[index], index);
 	}
 
+<<<<<<< HEAD
+=======
+	var select = document.getElementById("units3");
+	for(index in denominations) {
+		select.options[select.options.length] = new Option(denominations[index], index);
+	}
+
+>>>>>>> b0c5eea8a7ab84cd65507851575774088739e1c4
 	$("#submit-bid").click(async function() {
 		
 		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
