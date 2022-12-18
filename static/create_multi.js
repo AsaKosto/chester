@@ -5,8 +5,21 @@ const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 //         ABIs and Contract Addresses: Paste Your ABIs/Addresses Here
 // =============================================================================
 
-const multi_spawner_address = '0xc61421209221C8916661a6f3108453DE706BDfBF';     
-const multi_spawner_abi =[
+const multi_spawner_address = '0x5D4f761f701b6E96De26756b464c4059EBD6cBee';
+const multi_spawner_abi = [
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "auction",
+				"type": "address"
+			}
+		],
+		"name": "createMultiBid",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
 	{
 		"anonymous": false,
 		"inputs": [
@@ -25,19 +38,6 @@ const multi_spawner_abi =[
 		],
 		"name": "multiBidCreated",
 		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "auction",
-				"type": "address"
-			}
-		],
-		"name": "createMultiBid",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
 	},
 	{
 		"inputs": [],
@@ -78,7 +78,7 @@ const multi_spawner_abi =[
 		"stateMutability": "view",
 		"type": "function"
 	}
-];   
+];  
 
 const multi_spawner_contract = new web3.eth.Contract(multi_spawner_abi, multi_spawner_address);        
 
