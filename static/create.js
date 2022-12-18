@@ -5,8 +5,8 @@ const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 //         ABIs and Contract Addresses: Paste Your ABIs/Addresses Here
 // =============================================================================
 
-const english_spawner_address = '0x7929398EF42c5E5C46cE7326A2AD63D679Ff0056';     
-const english_spawner_abi = [
+const english_spawner_address = '0xf48cBdcED6F183bd642754abbC6AECEB601C02c6';     
+const english_spawner_abi =[
 	{
 		"anonymous": false,
 		"inputs": [
@@ -105,7 +105,7 @@ const english_spawner_abi = [
 		"stateMutability": "view",
 		"type": "function"
 	}
-];     
+];          
 
 const english_spawner_contract = new web3.eth.Contract(english_spawner_abi, english_spawner_address);        
 
