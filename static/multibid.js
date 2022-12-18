@@ -1088,6 +1088,8 @@ async function show_third_party_mgmt(){
 }
 
 async function show_win_sig_buttons(){
+	auction_address  = await multibid_contract.methods._currentAuction().call({from:web3.eth.defaultAccount});
+	english_contract = new web3.eth.Contract(english_abi, auction_address);
 	time_left        = await get_time_left();
 	//vote info
 	votesSigPay      = await multibid_contract.methods.votesToPay().call({from:web3.eth.defaultAccount});
@@ -1155,12 +1157,16 @@ async function show_post_relist_buttons(){
 	if(time_left <= 0){
 		auction_address  = await multibid_contract.methods._currentAuction().call({from:web3.eth.defaultAccount});
 		english_contract = new web3.eth.Contract(english_abi, auction_address);
-		thirdParty = await english_contract.methods.thirdParty().call({from:web3.eth.defaultAccount});
+		thirdParty       = await english_contract.methods.thirdParty().call({from:web3.eth.defaultAccount});
+		let threepee = thirdParty
 		let voted        = await multibid_contract.methods.votedApprove(web3.eth.defaultAccount).call({from:web3.eth.defaultAccount});
 		let votes        = await multibid_contract.methods.votesApproveSubmittedThirdParty().call({from:web3.eth.defaultAccount});
 		totalVotingPower = await multibid_contract.methods.totalVotingPower().call({from:web3.eth.defaultAccount});
 		percentOfVote = votes/totalVotingPower*100;
-		$("#submittedThirdParty").append("Submitted Third Party: " + thirdParty + "Vote %: " + percentOfVote);
+		let ownerSigPay      = await english_contract.methods.ownerSigPay().call({from:web3.eth.defaultAccount});
+		let thirdPartySigPay = await english_contract.methods.thirdPartySigPay().call({from:web3.eth.defaultAccount});
+		let winnerSigPay     = await english_contract.methods.winnerSigPay().call({from:web3.eth.defaultAccount});
+		$("#submittedThirdParty").html("Submitted Third Party: " + threepee + "Vote %: " + percentOfVote);
 		if(!voted){
 			document.getElementById('voteApproveSubmittedThirdParty').style.visibility='visible';
 			document.getElementById('retractVoteApproveSubmittedThirdParty').style.visibility='hidden';
@@ -1172,6 +1178,12 @@ async function show_post_relist_buttons(){
 		if(percentOfVote > 50){
 			document.getElementById('approveSubmittedThirdParty').style.visibility='visible';
 		}
+		if((ownerSigPay && thirdPartySigPay) || (ownerSigPay && winnerSigPay) || (thirdPartySigPay && winnerSigPay)){
+			document.getElementById('voteApproveSubmittedThirdParty').style.visibility='hidden';
+			document.getElementById('retractVoteApproveSubmittedThirdParty').style.visibility='hidden';
+			document.getElementById('cashOut').style.visibility='visible';
+		}
+		show_win_vote_buttons();
 	}
 }
 
@@ -1192,7 +1204,7 @@ async function update_info(){
 	show_third_party_mgmt();
 	show_relist_buttons();
 	get_listing_proposals();
-	show_post_relist_buttons()
+	show_post_relist_buttons();
 }
 
 async function get_time_left(){
@@ -1485,6 +1497,12 @@ $(document).ready(function(){
 		update_info()
 	})
 
+	$("#cashOut").click(async function() {
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		await multibid_contract.methods.submitCashOut().send({from:web3.eth.defaultAccount});
+		update_info()
+	})
+
 	$("#reList").click(async function(){
 		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
 		listing_id = $("#final-listing-id").val();
@@ -1497,8 +1515,6 @@ $(document).ready(function(){
 			let name = await english_contract.methods.name().call({from:web3.eth.defaultAccount});
 			await english_spawner_contract.methods.createAuction(min_bid, duration, multibid_address,name).send({from:web3.eth.defaultAccount, gas:2000000});
 			let relisted = await english_spawner_contract.methods.getMostRecentListing().call({from:web3.eth.defaultAccount});
-			//Didn't happen
-			alert(relisted);
 			await multibid_contract.methods.switchAfterReList(relisted).send({from:web3.eth.defaultAccount});
 			alert('You are now viewing your re-listed auction, make sure to reset all your votes');
 
