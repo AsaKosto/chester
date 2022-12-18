@@ -4,31 +4,41 @@
     <link rel="stylesheet" type="text/css" href="./../static/style.css">
     <script src="./../static/web3.min.js"></script>
     <script src="./../static/abi-decoder.js"></script>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script> -->
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
   </head>
   <body>
-    <div id="header">
-        <header>
-          <div id="sub-title-container">
-            <h1 id="title"></h1>
-            <!-- <h2 id="subtitle">Art Auction App</h2> -->
-          </div>
-        </header>
-      </div>
-    <div class="panel panel_right">
-        <h2>My Account</h2>
-        <select id="myaccount" class="account"></select>
-      </div>
-    <div id="main">
-        <div id="main-display">
-          <article>
-            <div id="auction-params">
-              <label for="auction-address">Which auction would you like to bid on?</label>
-              <input id="auction-address" type="text">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <header>
+            <div id="sub-title-container">
+              <h1 id="title">Create MultiBid</h1>
+              <!-- <h2 id="subtitle">Art Auction App</h2> -->
             </div>
-          </article>
-          <button id="submit-auction">Submit</button>
+          </header>
         </div>
+        <div class="col-md-6 panel panel_right">
+          <h2>My Account</h2>
+          <select id="myaccount" class="account"></select>
+        </div>
+      </div>
+      <br>
+      <br>
+      <div class="row">
+        <div class="col-md-5">
+          <label for="auction-address">Enter the address of the auction you would like to bid on: </label>
+        </div>
+        <div class="col-md-4">
+          <input id="auction-address" type="text">
+        </div>
+      </div>
+      <div class="row">
+        <button id="submit-auction">Submit</button>
+      </div>
     </div>
     <script src="./../static/create_multi.js"></script>
   </body>

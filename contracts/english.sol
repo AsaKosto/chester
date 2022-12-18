@@ -25,15 +25,17 @@ contract EnglishAuction{
 
     uint256 public minimumBid;
     uint256 public duration;
+    string public name;
 
     //minimumBid in Wei
     //duration of the auction in seconds
-    constructor(uint256 _minimumBid, uint256 _duration, address payable _admin){
+    constructor(uint256 _minimumBid, uint256 _duration, address payable _admin, string memory _name){
         require(_duration <= 604800, "Auctions cannot run for more than a week");
         admin = _admin;
         minimumBid = _minimumBid;
         duration = _duration;
         highestBid = _minimumBid;
+        name = _name;
         startTime = block.timestamp;
     }
 

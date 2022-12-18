@@ -1,7 +1,7 @@
 // sets up web3.js
 const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 
-const multi_spawner_address = '0x64801b85bf450E48AE5Cb9B4AE37549eC05C4A6D';
+const multi_spawner_address = '0xB0dC856fAedcE89a07Cc6Af0D8343e5c6dd98CeD';
 const multi_spawner_abi = [
 	{
 		"anonymous": false,
@@ -76,7 +76,7 @@ const multi_spawner_abi = [
 	}
 ];
 
-const english_spawner_address = '0x238226faB4c657a14b360aB5845A96eB50c57BB3';     
+const english_spawner_address = '0x7929398EF42c5E5C46cE7326A2AD63D679Ff0056';     
 const english_spawner_abi =[
 	{
 		"anonymous": false,
@@ -125,6 +125,11 @@ const english_spawner_abi =[
 				"internalType": "address payable",
 				"name": "admin",
 				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
 			}
 		],
 		"name": "createAuction",
@@ -196,6 +201,7 @@ async function get_active_auctions(){
 		fromBlock: Math.max(currBlock - 40500,0),
 		toBlock: "latest"
 	});
+	console.log(ev)
 	for(var i = 0; i < ev.length; i++){
 		auctions.push(ev[i].returnValues[3]);
 	}
@@ -216,9 +222,9 @@ async function get_active_auctions(){
 
 async function get_active_multis(){
 	let multis = [];
-	let blockNum = (await web3.eth.getBlockNumber());
+	let currBlock = await web3.eth.getBlockNumber();
 	let ev = await multi_spawner_contract.getPastEvents("multiBidCreated", {
-		fromBlock: Math.max(0,blockNum - 40500), //average number of eth blocks mined in a week + a little wiggle room
+		fromBlock: Math.max(currBlock - 40500,0), //average number of eth blocks mined in a week + a little wiggle room
 		toBlock: "latest"
 	});
 	for(var i = 0; i < ev.length; i++){

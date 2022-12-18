@@ -25,6 +25,11 @@ const english_abi = [
 				"internalType": "address payable",
 				"name": "_admin",
 				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "_name",
+				"type": "string"
 			}
 		],
 		"stateMutability": "nonpayable",
@@ -124,6 +129,19 @@ const english_abi = [
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "name",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
 			}
 		],
 		"stateMutability": "view",
@@ -290,14 +308,24 @@ var owner_address = 0;
 
 // const english_contract = new web3.eth.Contract(english_abi, english_address);        
 
+async function time_left(){
+	web3.eth.defaultAccount = $("#myaccount").val();
+	let duration = await english_contract.methods.duration().call({from:web3.eth.defaultAccount});
+    let begin = await english_contract.methods.startTime().call({from:web3.eth.defaultAccount});
+    const d = new Date();
+    let time = Math.floor(d.getTime()/ 1000);
+    let time_passed = time - begin;
+    let time_left = Math.max(0,duration - time_passed);
+	return time_left
+}
+
+
 async function update_curr_bid(){
     web3.eth.defaultAccount = $("#myaccount").val();
-	console.log("curr highest bid call")
     let curr_min_bid = await english_contract.methods.currentHighestBid().call({from:web3.eth.defaultAccount});
-	console.log("SUCCESS")
 	curr_min_bid = curr_min_bid
     $("#curr-min-bid").html(curr_min_bid * 10**(-18) + " ETH");
-    let duration = await english_contract.methods.duration().call({from:web3.eth.defaultAccount});
+    let duration = time_left();
     let begin = await english_contract.methods.startTime().call({from:web3.eth.defaultAccount});
     const d = new Date();
     let time = Math.floor(d.getTime()/ 1000);
@@ -313,6 +341,9 @@ async function update_curr_bid(){
     } else {
         $("#duration").html(hours + "H " + minutes + "M");
     }
+
+	let name = await english_contract.methods.name().call({from:web3.eth.defaultAccount});
+	$("#name").html(name);
 }
 
 async function update_balance(address){
@@ -329,7 +360,7 @@ async function update_balance(address){
 async function update_ownership(address){
 	// console.log(address)
 	hide_buttons();
-	let duration = await english_contract.methods.duration().call({from:web3.eth.defaultAccount});
+	let duration = time_left();
 	owner_address = await english_contract.methods.admin().call({from:web3.eth.defaultAccount});
 	// console.log(owner_address)
 	curr_address = address.toLowerCase()
@@ -399,7 +430,7 @@ function hide_buttons(){
 }
 
 async function show_owner_buttons(address){
-	let duration = await english_contract.methods.duration().call({address});
+	let duration = time_left()
 	if (duration == 0) {
 		let third_party_approved = await english_contract.methods.thirdPartyApproved().call({address});
 		if (!third_party_approved)
@@ -430,7 +461,7 @@ async function show_owner_buttons(address){
 }
 
 async function show_winner_buttons(address){
-	let duration = await english_contract.methods.duration().call({address});
+	let duration = time_left();
 	console.log(duration)
 	if (duration == 0) {
 		let winner_signed_to_pay = await english_contract.methods.winnerSigPay().call({address});
@@ -455,7 +486,7 @@ async function show_winner_buttons(address){
 }
 
 async function show_third_buttons(address){
-	let duration = await english_contract.methods.duration().call({address});
+	let duration = time_left();
 	let owner_signed_to_pay = await english_contract.methods.ownerSigPay().call({address});
 	let owner_signed_to_withdraw = await english_contract.methods.ownerSigWithdraw().call({address});
 	let winner_signed_to_pay = await english_contract.methods.winnerSigPay().call({address});
@@ -509,7 +540,7 @@ async function update_balance2(){
 }
 
 async function signPay(address){
-	let duration = await english_contract.methods.duration().call({from:address});
+	let duration = time_left();
 	if (duration == 0) {
 		await english_contract.methods.signToPay().send({from:address});
 	} else {
@@ -519,7 +550,7 @@ async function signPay(address){
 }
 
 async function signWithdraw(address){
-	let duration = await english_contract.methods.duration().call({from:address});
+	let duration = time_left();
 	if (duration == 0) {
 		await english_contract.methods.signToWithdraw().send({from:address});
 	} else {
@@ -577,7 +608,7 @@ $(document).ready(function(){
 		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
 		let winner_address = await english_contract.methods.winner().call({from:web3.eth.defaultAccount});
 		let third_address = $("#third-address").val()
-		let duration = await english_contract.methods.duration().call({from:web3.eth.defaultAccount});
+		let duration = time_left();
 		console.log("DURATION")
 		console.log(duration)
 		if (duration == 0){
@@ -630,7 +661,7 @@ $(document).ready(function(){
 
 	$("#approve-third-button").click(async function() {
 		web3.eth.defaultAccount = $("#myaccount").val();
-		let duration = await english_contract.methods.duration().call({from:web3.eth.defaultAccount});
+		let duration = time_left();
 		if (duration == 0) {
 			await english_contract.methods.approveThirdParty().send({from:web3.eth.defaultAccount});
 		} else {

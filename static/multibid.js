@@ -23,6 +23,11 @@ const english_abi = [
 				"internalType": "address payable",
 				"name": "_admin",
 				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "_name",
+				"type": "string"
 			}
 		],
 		"stateMutability": "nonpayable",
@@ -122,6 +127,19 @@ const english_abi = [
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "name",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
 			}
 		],
 		"stateMutability": "view",
@@ -1047,8 +1065,10 @@ async function get_auction_info(){
 	//console.log(auction_address);
 	$("#auction-address").html(auction_address);
 	english_contract = new web3.eth.Contract(english_abi, auction_address);
+	let name = await english_contract.methods.name().call({from:web3.eth.defaultAccount});
+	$("#name").html("Item: " + name);
 	curr_highest_bid = await english_contract.methods.highestBid().call({from:web3.eth.defaultAccount});
-	$("#curr-high-bid").html(curr_highest_bid);
+	$("#curr-high-bid").html(curr_highest_bid * 10**(-18) + " ETH");
 	winner = await english_contract.methods.winner().call({from:web3.eth.defaultAccount});
 	$("#winner").html(winner);
 	let duration = await english_contract.methods.duration().call({from:web3.eth.defaultAccount});
@@ -1099,13 +1119,16 @@ async function get_thirdParty_proposals(){
 	for(let i = 0; i<5; i++){
 		res = await multibid_contract.methods.viewThirdPartyAtIndex(i).call({from:web3.eth.defaultAccount});
 		thirdParty = res[0];
-		votes = res[1];
-		totalVotingPower = await multibid_contract.methods.totalVotingPower().call({from:web3.eth.defaultAccount});
-		percentOfVote = votes/totalVotingPower*100;
-		if(totalVotingPower == 0){percentOfVote = 0;}
-		elt_id = "#3p-"+i;
-		//console.log(elt_id, thirdParty, percentOfVote);
-		$(elt_id).html("address:"+thirdParty+" Vote %: "+ percentOfVote);
+		if (thirdParty != '0x0000000000000000000000000000000000000000')
+		{
+			votes = res[1];
+			totalVotingPower = await multibid_contract.methods.totalVotingPower().call({from:web3.eth.defaultAccount});
+			percentOfVote = votes/totalVotingPower*100;
+			if(totalVotingPower == 0){percentOfVote = 0;}
+			elt_id = "#3p-"+i;
+			//console.log(elt_id, thirdParty, percentOfVote);
+			$(elt_id).html("address:"+thirdParty+" Vote %: "+ percentOfVote);
+		}
 	}
 }
 
@@ -1152,6 +1175,11 @@ $(document).ready(function(){
 		select.options[select.options.length] = new Option(denominations[index], index);
 	}
 
+	var select = document.getElementById("units2");
+	for(index in denominations) {
+		select.options[select.options.length] = new Option(denominations[index], index);
+	}
+
 	$("#submit-bid").click(async function() {
 		
 		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
@@ -1183,7 +1211,7 @@ $(document).ready(function(){
 
 	$("#addValue").click(async function() {
 		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-		let unit = $("#units").val();
+		let unit = $("#units2").val();
 		//alert(unit);
 		if (unit == "Ether") {
 			scale = 10**(18)
