@@ -1160,13 +1160,13 @@ async function show_post_relist_buttons(){
 		thirdParty       = await english_contract.methods.thirdParty().call({from:web3.eth.defaultAccount});
 		let threepee = thirdParty
 		let voted        = await multibid_contract.methods.votedApprove(web3.eth.defaultAccount).call({from:web3.eth.defaultAccount});
-		//let votes        = await multibid_contract.methods.votesApproveSubmittedThirdParty().call({from:web3.eth.defaultAccount});
+		let votes        = await multibid_contract.methods.votesApproveSubmittedThirdParty().call({from:web3.eth.defaultAccount});
 		totalVotingPower = await multibid_contract.methods.totalVotingPower().call({from:web3.eth.defaultAccount});
-		percentOfVote = 60 //votes/totalVotingPower*100;
+		percentOfVote = votes/totalVotingPower*100;
 		let ownerSigPay      = await english_contract.methods.ownerSigPay().call({from:web3.eth.defaultAccount});
 		let thirdPartySigPay = await english_contract.methods.thirdPartySigPay().call({from:web3.eth.defaultAccount});
 		let winnerSigPay     = await english_contract.methods.winnerSigPay().call({from:web3.eth.defaultAccount});
-		$("#submittedThirdParty").append("Submitted Third Party: " + threepee + "Vote %: " + percentOfVote);
+		$("#submittedThirdParty").html("Submitted Third Party: " + threepee + "Vote %: " + percentOfVote);
 		if(!voted){
 			document.getElementById('voteApproveSubmittedThirdParty').style.visibility='visible';
 			document.getElementById('retractVoteApproveSubmittedThirdParty').style.visibility='hidden';
@@ -1494,6 +1494,12 @@ $(document).ready(function(){
 	$("#approveSubmittedThirdParty").click(async function() {
 		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
 		await multibid_contract.methods.submitApprovalThirdParty().send({from:web3.eth.defaultAccount});
+		update_info()
+	})
+
+	$("#cashOut").click(async function() {
+		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		await multibid_contract.methods.submitCashOut().send({from:web3.eth.defaultAccount});
 		update_info()
 	})
 
