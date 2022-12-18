@@ -1,7 +1,7 @@
 // sets up web3.js
 const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 
-const multi_spawner_address = '0xAa048d9AEeAe4Fa112F36b1c34c01DEcc32DC419';
+const multi_spawner_address = '0x86801C8de2C3A36AB1047A8694E6247dB0Ed46F4';
 const multi_spawner_abi = [
 	{
 		"inputs": [
@@ -76,7 +76,7 @@ const multi_spawner_abi = [
 	}
 ];
 
-const english_spawner_address = '0x822D5cc942A95388365C7c153191fF519282fBe7';     
+const english_spawner_address = '0x1F02feE3A7411c53fa4BBdb68D178888D32c1a31';     
 const english_spawner_abi =[
 	{
 		"anonymous": false,

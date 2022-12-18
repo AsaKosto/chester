@@ -4,7 +4,7 @@ const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 // =============================================================================
 //         ABIs and Contract Addresses: Paste Your ABIs/Addresses Here
 // =============================================================================
-const english_spawner_address = '0x822D5cc942A95388365C7c153191fF519282fBe7';     
+const english_spawner_address = '0x1F02feE3A7411c53fa4BBdb68D178888D32c1a31';     
 const english_spawner_abi = [
 	{
 		"anonymous": false,
@@ -221,6 +221,19 @@ const english_abi = [
 	},
 	{
 		"inputs": [],
+		"name": "getWinner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "highestBid",
 		"outputs": [
 			{
@@ -411,7 +424,7 @@ const english_abi = [
 	}
 ];
 
-const multibid_abi =  [
+const multibid_abi = [
 	{
 		"inputs": [
 			{
@@ -441,6 +454,19 @@ const multibid_abi =  [
 		"name": "addValue",
 		"outputs": [],
 		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "bidSumbitted",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -989,8 +1015,7 @@ const multibid_abi =  [
 	}
 ];
 
-// const set_address = '';
-//var multibid_address = 0;
+
 var multibid_contract = 0;
 var owner_address = 0;
 
@@ -1356,14 +1381,6 @@ $(document).ready(function(){
 		select.options[select.options.length] = new Option(denominations[index], index);
 	}
 
-	var select = document.getElementById("units3");
-	for(index in denominations) {
-		// alert(denominations)
-		if (denominations[index] == 'Gwei' || denominations[index] == 'Wei') {
-			select.options[select.options.length] = new Option(denominations[index], index);
-		}
-	}
-
 	$("#submit-bid").click(async function() {
 		
 		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
@@ -1385,7 +1402,7 @@ $(document).ready(function(){
 				scale = 1
 			}
 			amount = $("#bid").val() * scale;
-			await multibid_contract.methods.submitBid($("#third-address").val(), web3.utils.toBN(amount)).send({from:web3.eth.defaultAccount,gas:5000000})
+			await multibid_contract.methods.submitBid($("#third-address").val(), web3.utils.toBN(amount)).send({from:web3.eth.defaultAccount, gas:3000000})
 			update_balance($("#myaccount").val());
 			update_info();
 		}
@@ -1445,7 +1462,6 @@ $(document).ready(function(){
 	$("#signToPay").click(async function() {
 		web3.eth.defaultAccount = $("#myaccount").val();
 		await multibid_contract.methods.submitSigPay().send({from:web3.eth.defaultAccount});
-		alert('signed')
 		update_info()
 	})
 
@@ -1484,19 +1500,8 @@ $(document).ready(function(){
 
 	$("#proposeNewListing").click(async function() {
 		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-		let unit = $("#units3").val();
-		//alert(unit)
-		if (unit == "Ether") {
-			scale = 10**(18)
-		} else if (unit == "Finney") {
-			scale = 10**(15)
-		} else if (unit == "Gwei") {
-			scale = 10**(9)
-		} else {
-			scale = 1
-		}
-		let min_price = $("#new-listing-minPrice").val() * scale;
-		duration = $("#new-listing-duration").val() * 60 * 60;
+		min_price = $("#new-listing-minPrice").val();
+		duration = $("#new-listing-duration").val();
 		//console.log(min_price,duration)
 		await multibid_contract.methods.proposeNewListing(0, min_price, duration).send({from:web3.eth.defaultAccount, gasLimit: 500000});
 		update_info()
@@ -1558,28 +1563,6 @@ $(document).ready(function(){
 
 		} else { alert('This listing option does not currently have enough votes'); }
 		
-	})
-
-	$("#home").click(function() {
-		location.href = 'index.html'
-	})
-
-	$("#go-e").click(function() {
-		let english_address = $("#e-address").val()
-		let params = new URLSearchParams();
-		params.append("address", english_address);
-		let url = 'english.html?' + params.toString();
-		console.log(url)
-		location.href = url;
-	})
-
-	$("#go-mb").click(function() {
-		let multi_address = $("#mb-address").val()
-		let params = new URLSearchParams();
-		params.append("address", multi_address);
-		let url = 'multibid.html?' + params.toString();
-		console.log(url)
-		location.href = url;
 	})
 
 })

@@ -241,12 +241,11 @@ contract MultiBid{
     //Contract functions
     //********************************************************************************\\
 
-    function submitBid(address thirdParty, uint256 amount) external payable{
+    function submitBid(address thirdParty) external payable{
         require(votingPower[msg.sender] > 0, "You do not have any stake in this multi-bid, please add value if you wish to be able to perform this action");
-        require(amount <= address(this).balance, "There is not enough ETH in this multi-bid, please add more value");
         require((2 * thirdParties[thirdParty]) > totalVotingPower, "This third party does not currently have enough votes");
         EnglishInterface currentAuction = EnglishInterface(_currentAuction);
-        currentAuction.bid{value: amount}(payable(thirdParty));
+        currentAuction.bid{value: address(this).balance}(payable(thirdParty));
         bidSumbitted = true;
     }
 
