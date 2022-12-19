@@ -1,3 +1,9 @@
+/*
+ * Deploy English.sol contract on Remix and modify addresses and contract address in english_address
+ * Run test with command node english_test.js
+ */
+
+
 const Web3 = require('web3');
 const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 const english_abi = [
