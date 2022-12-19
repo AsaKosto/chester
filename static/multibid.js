@@ -4,7 +4,7 @@
  // =============================================================================
  //         ABIs and Contract Addresses: Paste Your ABIs/Addresses Here
  // =============================================================================
- const english_spawner_address = '0xe1ceD30f8dF27012a4F278e19f0950B5e0D6639A';     
+ const english_spawner_address = '0x566153de38E3acBa05375B2Dc45ea8c414dE6839';     
  const english_spawner_abi = [
 	 {
 		 "anonymous": false,
@@ -1050,7 +1050,7 @@
 	 document.getElementById('voteApproveSubmittedThirdParty').style.visibility='hidden';
 	 document.getElementById('retractVoteApproveSubmittedThirdParty').style.visibility='hidden';
 	 document.getElementById('approveSubmittedThirdParty').style.visibility='hidden';
-	 document.getElementById('cashOut').style.visibility='hidden';
+	//  document.getElementById('cashOut').style.visibility='hidden';
  }
  
  async function show_win_vote_buttons(){
