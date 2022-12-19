@@ -1,993 +1,1025 @@
- // sets up web3.js
- const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
+
+
+// sets up web3.js
+//const web3 = new Web3(Web3.givenProvider)// || "ws://localhost:8545");
+
+if (typeof window.ethereum !== 'undefined' || (typeof window.web3 !== 'undefined')) {
+	// Web3 browser user detected. You can now use the provider.
+    provider = window['ethereum'] || window.web3.currentProvider;
+    web3 = new Web3(provider);
+	web3.eth.getAccounts().then(console.log);
+} else {
+    console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
+}
 
  // =============================================================================
  //         ABIs and Contract Addresses: Paste Your ABIs/Addresses Here
  // =============================================================================
- const english_spawner_address = '0xe1ceD30f8dF27012a4F278e19f0950B5e0D6639A';     
+ const english_spawner_address = '0x656FCCFC415d6557cB76DA25019f82fdB6Fc8a2c';     
  const english_spawner_abi = [
-	 {
-		 "anonymous": false,
-		 "inputs": [
-			 {
-				 "indexed": false,
-				 "internalType": "uint256",
-				 "name": "minimumBid",
-				 "type": "uint256"
-			 },
-			 {
-				 "indexed": false,
-				 "internalType": "uint256",
-				 "name": "duration",
-				 "type": "uint256"
-			 },
-			 {
-				 "indexed": false,
-				 "internalType": "address payable",
-				 "name": "admin",
-				 "type": "address"
-			 },
-			 {
-				 "indexed": false,
-				 "internalType": "contract EnglishAuction",
-				 "name": "auction",
-				 "type": "address"
-			 }
-		 ],
-		 "name": "auctionCreated",
-		 "type": "event"
-	 },
-	 {
-		 "inputs": [
-			 {
-				 "internalType": "uint256",
-				 "name": "minimumBid",
-				 "type": "uint256"
-			 },
-			 {
-				 "internalType": "uint256",
-				 "name": "duration",
-				 "type": "uint256"
-			 },
-			 {
-				 "internalType": "address payable",
-				 "name": "admin",
-				 "type": "address"
-			 },
-			 {
-				 "internalType": "string",
-				 "name": "name",
-				 "type": "string"
-			 }
-		 ],
-		 "name": "createAuction",
-		 "outputs": [],
-		 "stateMutability": "nonpayable",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "genesis",
-		 "outputs": [
-			 {
-				 "internalType": "uint256",
-				 "name": "",
-				 "type": "uint256"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "getMostRecentListing",
-		 "outputs": [
-			 {
-				 "internalType": "address",
-				 "name": "",
-				 "type": "address"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "mostRecentListing",
-		 "outputs": [
-			 {
-				 "internalType": "address",
-				 "name": "",
-				 "type": "address"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 }
- ];
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "minimumBid",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "duration",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address payable",
+				"name": "admin",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "contract EnglishAuction",
+				"name": "auction",
+				"type": "address"
+			}
+		],
+		"name": "auctionCreated",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "minimumBid",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "duration",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address payable",
+				"name": "admin",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			}
+		],
+		"name": "createAuction",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "genesis",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getMostRecentListing",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "mostRecentListing",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+];
  
  const english_abi = [
-	 {
-		 "inputs": [
-			 {
-				 "internalType": "uint256",
-				 "name": "_minimumBid",
-				 "type": "uint256"
-			 },
-			 {
-				 "internalType": "uint256",
-				 "name": "_duration",
-				 "type": "uint256"
-			 },
-			 {
-				 "internalType": "address payable",
-				 "name": "_admin",
-				 "type": "address"
-			 },
-			 {
-				 "internalType": "string",
-				 "name": "_name",
-				 "type": "string"
-			 }
-		 ],
-		 "stateMutability": "nonpayable",
-		 "type": "constructor"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "admin",
-		 "outputs": [
-			 {
-				 "internalType": "address payable",
-				 "name": "",
-				 "type": "address"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "approveThirdParty",
-		 "outputs": [],
-		 "stateMutability": "nonpayable",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [
-			 {
-				 "internalType": "address payable",
-				 "name": "_thirdParty",
-				 "type": "address"
-			 }
-		 ],
-		 "name": "bid",
-		 "outputs": [],
-		 "stateMutability": "payable",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "cashOut",
-		 "outputs": [],
-		 "stateMutability": "payable",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "currentHighestBid",
-		 "outputs": [
-			 {
-				 "internalType": "uint256",
-				 "name": "",
-				 "type": "uint256"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "duration",
-		 "outputs": [
-			 {
-				 "internalType": "uint256",
-				 "name": "",
-				 "type": "uint256"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "endAuction",
-		 "outputs": [],
-		 "stateMutability": "nonpayable",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "getAdmin",
-		 "outputs": [
-			 {
-				 "internalType": "address",
-				 "name": "",
-				 "type": "address"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "highestBid",
-		 "outputs": [
-			 {
-				 "internalType": "uint256",
-				 "name": "",
-				 "type": "uint256"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "minimumBid",
-		 "outputs": [
-			 {
-				 "internalType": "uint256",
-				 "name": "",
-				 "type": "uint256"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "name",
-		 "outputs": [
-			 {
-				 "internalType": "string",
-				 "name": "",
-				 "type": "string"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "ownerSigPay",
-		 "outputs": [
-			 {
-				 "internalType": "bool",
-				 "name": "",
-				 "type": "bool"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "ownerSigWithdraw",
-		 "outputs": [
-			 {
-				 "internalType": "bool",
-				 "name": "",
-				 "type": "bool"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "signToPay",
-		 "outputs": [],
-		 "stateMutability": "nonpayable",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "signToWithdraw",
-		 "outputs": [],
-		 "stateMutability": "nonpayable",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "startTime",
-		 "outputs": [
-			 {
-				 "internalType": "uint256",
-				 "name": "",
-				 "type": "uint256"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "thirdParty",
-		 "outputs": [
-			 {
-				 "internalType": "address payable",
-				 "name": "",
-				 "type": "address"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "thirdPartyApproved",
-		 "outputs": [
-			 {
-				 "internalType": "bool",
-				 "name": "",
-				 "type": "bool"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "thirdPartySigPay",
-		 "outputs": [
-			 {
-				 "internalType": "bool",
-				 "name": "",
-				 "type": "bool"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "thirdPartySigWithdraw",
-		 "outputs": [
-			 {
-				 "internalType": "bool",
-				 "name": "",
-				 "type": "bool"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "winner",
-		 "outputs": [
-			 {
-				 "internalType": "address payable",
-				 "name": "",
-				 "type": "address"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "winnerSigPay",
-		 "outputs": [
-			 {
-				 "internalType": "bool",
-				 "name": "",
-				 "type": "bool"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "winnerSigWithdraw",
-		 "outputs": [
-			 {
-				 "internalType": "bool",
-				 "name": "",
-				 "type": "bool"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "withdrawBid",
-		 "outputs": [],
-		 "stateMutability": "payable",
-		 "type": "function"
-	 }
- ];
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_minimumBid",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_duration",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address payable",
+				"name": "_admin",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "_name",
+				"type": "string"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [],
+		"name": "admin",
+		"outputs": [
+			{
+				"internalType": "address payable",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "approveThirdParty",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address payable",
+				"name": "_thirdParty",
+				"type": "address"
+			}
+		],
+		"name": "bid",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "cashOut",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "currentHighestBid",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "duration",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "endAuction",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getAdmin",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getWinner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "highestBid",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "minimumBid",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "name",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "ownerSigPay",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "ownerSigWithdraw",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "signToPay",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "signToWithdraw",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "startTime",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "thirdParty",
+		"outputs": [
+			{
+				"internalType": "address payable",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "thirdPartyApproved",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "thirdPartySigPay",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "thirdPartySigWithdraw",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "winner",
+		"outputs": [
+			{
+				"internalType": "address payable",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "winnerSigPay",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "winnerSigWithdraw",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "withdrawBid",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	}
+];
  
  const multibid_abi =  [
-	 {
-		 "inputs": [
-			 {
-				 "internalType": "address",
-				 "name": "auction",
-				 "type": "address"
-			 }
-		 ],
-		 "stateMutability": "nonpayable",
-		 "type": "constructor"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "_currentAuction",
-		 "outputs": [
-			 {
-				 "internalType": "address",
-				 "name": "",
-				 "type": "address"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "addValue",
-		 "outputs": [],
-		 "stateMutability": "payable",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [
-			 {
-				 "internalType": "uint256",
-				 "name": "",
-				 "type": "uint256"
-			 },
-			 {
-				 "internalType": "uint256",
-				 "name": "",
-				 "type": "uint256"
-			 }
-		 ],
-		 "name": "listingIds",
-		 "outputs": [
-			 {
-				 "internalType": "uint256",
-				 "name": "",
-				 "type": "uint256"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [
-			 {
-				 "internalType": "uint256",
-				 "name": "",
-				 "type": "uint256"
-			 }
-		 ],
-		 "name": "listingOptions",
-		 "outputs": [
-			 {
-				 "internalType": "uint256",
-				 "name": "",
-				 "type": "uint256"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [
-			 {
-				 "internalType": "uint256",
-				 "name": "",
-				 "type": "uint256"
-			 }
-		 ],
-		 "name": "listings",
-		 "outputs": [
-			 {
-				 "internalType": "uint256",
-				 "name": "",
-				 "type": "uint256"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [
-			 {
-				 "internalType": "uint256",
-				 "name": "format",
-				 "type": "uint256"
-			 },
-			 {
-				 "internalType": "uint256",
-				 "name": "minPrice",
-				 "type": "uint256"
-			 },
-			 {
-				 "internalType": "uint256",
-				 "name": "duration",
-				 "type": "uint256"
-			 }
-		 ],
-		 "name": "proposeNewListing",
-		 "outputs": [],
-		 "stateMutability": "nonpayable",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [
-			 {
-				 "internalType": "address",
-				 "name": "thirdParty",
-				 "type": "address"
-			 }
-		 ],
-		 "name": "proposeThirdParty",
-		 "outputs": [],
-		 "stateMutability": "nonpayable",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [
-			 {
-				 "internalType": "uint256",
-				 "name": "listingID",
-				 "type": "uint256"
-			 }
-		 ],
-		 "name": "retractNewVoteListing",
-		 "outputs": [],
-		 "stateMutability": "nonpayable",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "retractVoteApproveSubmittedThirdParty",
-		 "outputs": [],
-		 "stateMutability": "nonpayable",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [
-			 {
-				 "internalType": "address",
-				 "name": "thirdParty",
-				 "type": "address"
-			 }
-		 ],
-		 "name": "retractVoteThirdParty",
-		 "outputs": [],
-		 "stateMutability": "nonpayable",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "retractVoteToPay",
-		 "outputs": [],
-		 "stateMutability": "nonpayable",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "retractVoteToWithdraw",
-		 "outputs": [],
-		 "stateMutability": "nonpayable",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "seeMyStake",
-		 "outputs": [
-			 {
-				 "internalType": "uint256",
-				 "name": "",
-				 "type": "uint256"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "submitApprovalThirdParty",
-		 "outputs": [],
-		 "stateMutability": "nonpayable",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [
-			 {
-				 "internalType": "address",
-				 "name": "thirdParty",
-				 "type": "address"
-			 },
-			 {
-				 "internalType": "uint256",
-				 "name": "amount",
-				 "type": "uint256"
-			 }
-		 ],
-		 "name": "submitBid",
-		 "outputs": [],
-		 "stateMutability": "payable",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "submitCashOut",
-		 "outputs": [],
-		 "stateMutability": "nonpayable",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "submitSigPay",
-		 "outputs": [],
-		 "stateMutability": "nonpayable",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "submitSigWithdraw",
-		 "outputs": [],
-		 "stateMutability": "nonpayable",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "submitWithdrawBid",
-		 "outputs": [],
-		 "stateMutability": "nonpayable",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [
-			 {
-				 "internalType": "address",
-				 "name": "_newAuction",
-				 "type": "address"
-			 }
-		 ],
-		 "name": "switchAfterReList",
-		 "outputs": [],
-		 "stateMutability": "nonpayable",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [
-			 {
-				 "internalType": "address",
-				 "name": "",
-				 "type": "address"
-			 }
-		 ],
-		 "name": "thirdParties",
-		 "outputs": [
-			 {
-				 "internalType": "uint256",
-				 "name": "",
-				 "type": "uint256"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [
-			 {
-				 "internalType": "uint256",
-				 "name": "",
-				 "type": "uint256"
-			 }
-		 ],
-		 "name": "thirdPartyOptions",
-		 "outputs": [
-			 {
-				 "internalType": "address",
-				 "name": "",
-				 "type": "address"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "totalVotingPower",
-		 "outputs": [
-			 {
-				 "internalType": "uint256",
-				 "name": "",
-				 "type": "uint256"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [
-			 {
-				 "internalType": "uint256",
-				 "name": "index",
-				 "type": "uint256"
-			 }
-		 ],
-		 "name": "viewListingAtIndex",
-		 "outputs": [
-			 {
-				 "internalType": "uint256",
-				 "name": "",
-				 "type": "uint256"
-			 },
-			 {
-				 "internalType": "uint256",
-				 "name": "",
-				 "type": "uint256"
-			 },
-			 {
-				 "internalType": "uint256",
-				 "name": "",
-				 "type": "uint256"
-			 },
-			 {
-				 "internalType": "uint256",
-				 "name": "",
-				 "type": "uint256"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [
-			 {
-				 "internalType": "uint256",
-				 "name": "index",
-				 "type": "uint256"
-			 }
-		 ],
-		 "name": "viewThirdPartyAtIndex",
-		 "outputs": [
-			 {
-				 "internalType": "address",
-				 "name": "",
-				 "type": "address"
-			 },
-			 {
-				 "internalType": "uint256",
-				 "name": "",
-				 "type": "uint256"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "voteApproveSubmittedThirdParty",
-		 "outputs": [],
-		 "stateMutability": "nonpayable",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [
-			 {
-				 "internalType": "uint256",
-				 "name": "listingID",
-				 "type": "uint256"
-			 }
-		 ],
-		 "name": "voteNewListing",
-		 "outputs": [],
-		 "stateMutability": "nonpayable",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [
-			 {
-				 "internalType": "address",
-				 "name": "thirdParty",
-				 "type": "address"
-			 }
-		 ],
-		 "name": "voteThirdParty",
-		 "outputs": [],
-		 "stateMutability": "nonpayable",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "voteToPay",
-		 "outputs": [],
-		 "stateMutability": "nonpayable",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "voteToWithdraw",
-		 "outputs": [],
-		 "stateMutability": "nonpayable",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [
-			 {
-				 "internalType": "address",
-				 "name": "",
-				 "type": "address"
-			 }
-		 ],
-		 "name": "votedApprove",
-		 "outputs": [
-			 {
-				 "internalType": "bool",
-				 "name": "",
-				 "type": "bool"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [
-			 {
-				 "internalType": "address",
-				 "name": "",
-				 "type": "address"
-			 }
-		 ],
-		 "name": "votedListings",
-		 "outputs": [
-			 {
-				 "internalType": "bool",
-				 "name": "",
-				 "type": "bool"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [
-			 {
-				 "internalType": "address",
-				 "name": "",
-				 "type": "address"
-			 }
-		 ],
-		 "name": "votedSigPay",
-		 "outputs": [
-			 {
-				 "internalType": "bool",
-				 "name": "",
-				 "type": "bool"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [
-			 {
-				 "internalType": "address",
-				 "name": "",
-				 "type": "address"
-			 }
-		 ],
-		 "name": "votedSigWithdraw",
-		 "outputs": [
-			 {
-				 "internalType": "bool",
-				 "name": "",
-				 "type": "bool"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [
-			 {
-				 "internalType": "address",
-				 "name": "",
-				 "type": "address"
-			 }
-		 ],
-		 "name": "votedThirdParty",
-		 "outputs": [
-			 {
-				 "internalType": "bool",
-				 "name": "",
-				 "type": "bool"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "votesApproveSubmittedThirdParty",
-		 "outputs": [
-			 {
-				 "internalType": "uint256",
-				 "name": "",
-				 "type": "uint256"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "votesToPay",
-		 "outputs": [
-			 {
-				 "internalType": "uint256",
-				 "name": "",
-				 "type": "uint256"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "votesToWithdraw",
-		 "outputs": [
-			 {
-				 "internalType": "uint256",
-				 "name": "",
-				 "type": "uint256"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [
-			 {
-				 "internalType": "address",
-				 "name": "",
-				 "type": "address"
-			 }
-		 ],
-		 "name": "votingPower",
-		 "outputs": [
-			 {
-				 "internalType": "uint256",
-				 "name": "",
-				 "type": "uint256"
-			 }
-		 ],
-		 "stateMutability": "view",
-		 "type": "function"
-	 },
-	 {
-		 "inputs": [],
-		 "name": "withdrawValue",
-		 "outputs": [],
-		 "stateMutability": "nonpayable",
-		 "type": "function"
-	 },
-	 {
-		 "stateMutability": "payable",
-		 "type": "receive"
-	 }
- ];
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "auction",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [],
+		"name": "_currentAuction",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "addValue",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "bidSumbitted",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "listingIds",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "listingOptions",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "listings",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "format",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "minPrice",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "duration",
+				"type": "uint256"
+			}
+		],
+		"name": "proposeNewListing",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "thirdParty",
+				"type": "address"
+			}
+		],
+		"name": "proposeThirdParty",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "listingID",
+				"type": "uint256"
+			}
+		],
+		"name": "retractNewVoteListing",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "retractVoteApproveSubmittedThirdParty",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "thirdParty",
+				"type": "address"
+			}
+		],
+		"name": "retractVoteThirdParty",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "retractVoteToPay",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "retractVoteToWithdraw",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "seeMyStake",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "submitApprovalThirdParty",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "thirdParty",
+				"type": "address"
+			}
+		],
+		"name": "submitBid",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "submitCashOut",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "submitSigPay",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "submitSigWithdraw",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "submitWithdrawBid",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_newAuction",
+				"type": "address"
+			}
+		],
+		"name": "switchAfterReList",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "thirdParties",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "thirdPartyOptions",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "totalVotingPower",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			}
+		],
+		"name": "viewListingAtIndex",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			}
+		],
+		"name": "viewThirdPartyAtIndex",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "voteApproveSubmittedThirdParty",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "listingID",
+				"type": "uint256"
+			}
+		],
+		"name": "voteNewListing",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "thirdParty",
+				"type": "address"
+			}
+		],
+		"name": "voteThirdParty",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "voteToPay",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "voteToWithdraw",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "votedApprove",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "votedListings",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "votedSigPay",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "votedSigWithdraw",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "votedThirdParty",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "votesApproveSubmittedThirdParty",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "votesToPay",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "votesToWithdraw",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "votingPower",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "withdrawValue",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"stateMutability": "payable",
+		"type": "receive"
+	}
+];
  
  // const set_address = '';
  //var multibid_address = 0;
@@ -1334,6 +1366,7 @@
 		 web3.eth.defaultAccount = response[0];
 		 update_balance(response[0]);
 	 });
+
 	 // Allows switching between accounts in 'My Account'
 	 web3.eth.getAccounts().then((response)=>{
 		 var opts = response.map(function (a) { return '<option value="'+
@@ -1349,10 +1382,6 @@
 		 Wei : 'Wei'
 	 };
 	 
-	 var select = document.getElementById("units");
-	 for(index in denominations) {
-		 select.options[select.options.length] = new Option(denominations[index], index);
-	 }
  
 	 var select = document.getElementById("units2");
 	 for(index in denominations) {
@@ -1373,19 +1402,7 @@
 		 } else if (web3.eth.defaultAccount.toLocaleLowerCase() == third_address.toLocaleLowerCase()) {
 			 alert("You cannot name yourself as the third party!")
 		 } else {
-			 let unit = $("#units").val();
-			 //alert(unit)
-			 if (unit == "Ether") {
-				 scale = 10**(18)
-			 } else if (unit == "Finney") {
-				 scale = 10**(15)
-			 } else if (unit == "Gwei") {
-				 scale = 10**(9)
-			 } else {
-				 scale = 1
-			 }
-			 amount = $("#bid").val() * scale;
-			 await multibid_contract.methods.submitBid($("#third-address").val(), web3.utils.toBN(amount)).send({from:web3.eth.defaultAccount,gas:5000000})
+			 await multibid_contract.methods.submitBid($("#third-address").val()).send({from:web3.eth.defaultAccount,gas:5000000})
 			 update_balance($("#myaccount").val());
 			 update_info();
 		 }
@@ -1498,7 +1515,7 @@
 		 let min_price = $("#new-listing-minPrice").val() * scale;
 		 duration = $("#new-listing-duration").val() * 60 * 60;
 		 //console.log(min_price,duration)
-		 await multibid_contract.methods.proposeNewListing(0, min_price, duration).send({from:web3.eth.defaultAccount, gasLimit: 500000});
+		 await multibid_contract.methods.proposeNewListing(0, BigInt(min_price), duration).send({from:web3.eth.defaultAccount, gasLimit: 500000});
 		 update_info()
 	 })
  

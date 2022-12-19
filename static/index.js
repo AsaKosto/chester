@@ -1,25 +1,19 @@
-// sets up web3.js
-const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 
-<<<<<<< HEAD
-const multi_spawner_address = '0x86801C8de2C3A36AB1047A8694E6247dB0Ed46F4';
-=======
-const multi_spawner_address = '0x25BD53158Cd6bE9BfB2C43305E087E49d1aE79E3';
->>>>>>> b0c5eea8a7ab84cd65507851575774088739e1c4
+
+// sets up web3.js
+//const web3 = new Web3(Web3.givenProvider)// || "ws://localhost:8545");
+
+if (typeof window.ethereum !== 'undefined' || (typeof window.web3 !== 'undefined')) {
+	// Web3 browser user detected. You can now use the provider.
+    provider = window['ethereum'] || window.web3.currentProvider;
+    web3 = new Web3(provider);
+	web3.eth.getAccounts().then(console.log);
+} else {
+    console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
+}
+
+const multi_spawner_address = '0xdaa6F037f73564f913492725a16e1fCeC78EC69F';
 const multi_spawner_abi = [
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "auction",
-				"type": "address"
-			}
-		],
-		"name": "createMultiBid",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
 	{
 		"anonymous": false,
 		"inputs": [
@@ -38,6 +32,19 @@ const multi_spawner_abi = [
 		],
 		"name": "multiBidCreated",
 		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "auction",
+				"type": "address"
+			}
+		],
+		"name": "createMultiBid",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
 		"inputs": [],
@@ -80,11 +87,7 @@ const multi_spawner_abi = [
 	}
 ];
 
-<<<<<<< HEAD
-const english_spawner_address = '0x1F02feE3A7411c53fa4BBdb68D178888D32c1a31';     
-=======
-const english_spawner_address = '0xe1ceD30f8dF27012a4F278e19f0950B5e0D6639A';     
->>>>>>> b0c5eea8a7ab84cd65507851575774088739e1c4
+const english_spawner_address = '0x7adF0cd0f0953C39AD57C4D29Cc3263Cc85e77F8';     
 const english_spawner_abi =[
 	{
 		"anonymous": false,
@@ -191,6 +194,9 @@ const multi_spawner_contract = new web3.eth.Contract(multi_spawner_abi, multi_sp
 
 // This sets the default account on load and displays the total owed to that
 // account.
+web3.eth.requestAccounts().then(console.log);
+//ethereum.enable()
+
 web3.eth.getAccounts().then((response)=> {
     web3.eth.defaultAccount = response[0];
 });

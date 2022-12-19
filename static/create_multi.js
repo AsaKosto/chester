@@ -1,11 +1,22 @@
+
+
 // sets up web3.js
-const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
+//const web3 = new Web3(Web3.givenProvider)// || "ws://localhost:8545");
+
+if (typeof window.ethereum !== 'undefined' || (typeof window.web3 !== 'undefined')) {
+	// Web3 browser user detected. You can now use the provider.
+    provider = window['ethereum'] || window.web3.currentProvider;
+    web3 = new Web3(provider);
+	//web3.eth.getAccounts().then(console.log);
+} else {
+    console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
+}
 
 // =============================================================================
 //         ABIs and Contract Addresses: Paste Your ABIs/Addresses Here
 // =============================================================================
 
-const multi_spawner_address = '0x25BD53158Cd6bE9BfB2C43305E087E49d1aE79E3';
+const multi_spawner_address = '0xdaa6F037f73564f913492725a16e1fCeC78EC69F';
 const multi_spawner_abi = [
 	{
 		"anonymous": false,
@@ -95,18 +106,19 @@ web3.eth.getAccounts().then((response)=>{
 });
 
 async function create_new(english_pointer,address){
-	console.log(address)
-    await multi_spawner_contract.methods.createMultiBid(english_pointer).send({from:address, gas:5000000});
-    let multi_address = await multi_spawner_contract.methods.getMostRecentMultiBid().call({from:address})
-    // alert(multi_address)
+	console.log('before');
+    await multi_spawner_contract.methods.createMultiBid(english_pointer).send({from:address});
+	console.log('here');
+	let multi_address = await multi_spawner_contract.methods.getMostRecentMultiBid().call({from:address})
+    //alert(multi_address)
     return multi_address;
 }
 
 $("#submit-auction").click(async function() {
-	web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+	web3.eth.defaultAccount = $("#myaccount").val();
     let auction_address = $("#auction-address").val();
     let multi_address = await create_new(auction_address, web3.eth.defaultAccount);
-    //english_address = english_spawner_contract.methods.call
+	console.log(multi_address);
     let params = new URLSearchParams();
     params.append("address", multi_address);
     let url = 'multibid.html?' + params.toString();
