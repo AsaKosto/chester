@@ -16,7 +16,7 @@ if (typeof window.ethereum !== 'undefined' || (typeof window.web3 !== 'undefined
 //         ABIs and Contract Addresses: Paste Your ABIs/Addresses Here
 // =============================================================================
 
-const multi_spawner_address = '0xdaa6F037f73564f913492725a16e1fCeC78EC69F';
+const multi_spawner_address = '0xb90062787c5c10529F1E397E1aEABd01250eF04D';
 const multi_spawner_abi = [
 	{
 		"anonymous": false,

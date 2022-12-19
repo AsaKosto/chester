@@ -15,7 +15,7 @@ if (typeof window.ethereum !== 'undefined' || (typeof window.web3 !== 'undefined
  // =============================================================================
  //         ABIs and Contract Addresses: Paste Your ABIs/Addresses Here
  // =============================================================================
- const english_spawner_address = '0x656FCCFC415d6557cB76DA25019f82fdB6Fc8a2c';     
+ const english_spawner_address = '0x32735f83b17539EfF9645FEEc0b8E1ba1ce530F1';     
  const english_spawner_abi = [
 	{
 		"anonymous": false,
@@ -1369,9 +1369,6 @@ if (typeof window.ethereum !== 'undefined' || (typeof window.web3 !== 'undefined
  
 	 web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
 	 multibid_contract = new web3.eth.Contract(multibid_abi, multibid_address);
-	 // get_multibid_info();
-	 // get_auction_info();
-	 //buttons control
 	 hide_buttons();
 	 update_info();
  

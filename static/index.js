@@ -12,7 +12,7 @@ if (typeof window.ethereum !== 'undefined' || (typeof window.web3 !== 'undefined
     console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
 }
 
-const multi_spawner_address = '0xdaa6F037f73564f913492725a16e1fCeC78EC69F';
+const multi_spawner_address = '0xb90062787c5c10529F1E397E1aEABd01250eF04D';
 const multi_spawner_abi = [
 	{
 		"anonymous": false,
@@ -87,11 +87,7 @@ const multi_spawner_abi = [
 	}
 ];
 
-<<<<<<< HEAD
-const english_spawner_address = '0x7adF0cd0f0953C39AD57C4D29Cc3263Cc85e77F8';     
-=======
-const english_spawner_address = '0x566153de38E3acBa05375B2Dc45ea8c414dE6839';     
->>>>>>> c4c8c3a4ee903327ff52caf16630b93981b47840
+const english_spawner_address = '0x32735f83b17539EfF9645FEEc0b8E1ba1ce530F1';     
 const english_spawner_abi =[
 	{
 		"anonymous": false,
