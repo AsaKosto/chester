@@ -13,6 +13,23 @@
   <body>
     <div class="container">
       <div class="row">
+        <div class="col-md-1">
+          <button class=button2 id="home">Home</button>
+        </div>
+        <div class="col-md-3">
+          <input id="e-address" type="text" placeholder="Search Auction">
+        </div>
+        <div class="'col-md-1">
+          <button class=button3 id="go-e">Go</button>
+        </div>
+        <div class="col-md-3">
+          <input id="mb-address" type="text" placeholder="Search MultiBids">
+        </div>
+        <div class="'col-md-1">
+          <button class=button3 id="go-mb">Go</button>
+        </div>
+      </div>
+      <div class="row">
         <div class="col-md-2" id="multibid-balance">
           Multibid: 
         </div>
@@ -62,17 +79,6 @@
           Time Left: 
         </div>
         <div id="duration" class="col-md-6">
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-md-8">
-        </div>
-        <div class="col-md-3">
-          <input id="bid" type="text" placeholder="00">
-        </div>
-        <div class="col-md-1">
-          <select id="units"></select>
         </div>
       </div>
 
@@ -162,9 +168,13 @@
           Re-Listing Options
           <div class="row">
             <input id="new-listing-minPrice" type="text" placeholder="MinPrice">
+            <div class="col-md-1">
+              <select id="units3"></select>
+            </div>
           </div>
+          
           <div class="row">
-            <input id="new-listing-duration" type="text" placeholder="duration (max 1 week)">
+            <input id="new-listing-duration" type="text" placeholder="Duration in hours (max 1 week)">
           </div>
           <div class="row">
             <button id="proposeNewListing">proposeNewListing</button>

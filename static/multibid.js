@@ -1,11 +1,22 @@
- // sets up web3.js
-const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 
-// =============================================================================
-//         ABIs and Contract Addresses: Paste Your ABIs/Addresses Here
-// =============================================================================
-const english_spawner_address = '0x659253522f9142992030de2347C3a570DEa7c74d';     
-const english_spawner_abi = [
+
+// sets up web3.js
+//const web3 = new Web3(Web3.givenProvider)// || "ws://localhost:8545");
+
+if (typeof window.ethereum !== 'undefined' || (typeof window.web3 !== 'undefined')) {
+	// Web3 browser user detected. You can now use the provider.
+    provider = window['ethereum'] || window.web3.currentProvider;
+    web3 = new Web3(provider);
+	web3.eth.getAccounts().then(console.log);
+} else {
+    console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
+}
+
+ // =============================================================================
+ //         ABIs and Contract Addresses: Paste Your ABIs/Addresses Here
+ // =============================================================================
+ const english_spawner_address = '0x656FCCFC415d6557cB76DA25019f82fdB6Fc8a2c';     
+ const english_spawner_abi = [
 	{
 		"anonymous": false,
 		"inputs": [
@@ -105,8 +116,8 @@ const english_spawner_abi = [
 		"type": "function"
 	}
 ];
-
-const english_abi = [
+ 
+ const english_abi = [
 	{
 		"inputs": [
 			{
@@ -209,6 +220,19 @@ const english_abi = [
 	{
 		"inputs": [],
 		"name": "getAdmin",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getWinner",
 		"outputs": [
 			{
 				"internalType": "address",
@@ -410,8 +434,8 @@ const english_abi = [
 		"type": "function"
 	}
 ];
-
-const multibid_abi =  [
+ 
+ const multibid_abi =  [
 	{
 		"inputs": [
 			{
@@ -441,6 +465,19 @@ const multibid_abi =  [
 		"name": "addValue",
 		"outputs": [],
 		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "bidSumbitted",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -614,11 +651,6 @@ const multibid_abi =  [
 				"internalType": "address",
 				"name": "thirdParty",
 				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
 			}
 		],
 		"name": "submitBid",
@@ -988,556 +1020,597 @@ const multibid_abi =  [
 		"type": "receive"
 	}
 ];
+ 
+ // const set_address = '';
+ //var multibid_address = 0;
+ var multibid_contract = 0;
+ var owner_address = 0;
+ 
+ 
+ async function update_balance(address){
+	 web3.eth.getBalance(address, function(err, result){
+		 if (err){
+			 console.log(err)
+		 } else {
+			 let b = web3.utils.fromWei(result, "ether")
+			 $("#account-balance").html("Balance: " + b + " ETH");
+		 }
+	 });
+ }
+ ///////////////////////////////////////////////////////////////////////////////////////////////////////
+ ///////////////////////////////////////////////////////////////////////////////////////////////////////
+ //BUTTON VISIBILITY CONTROL
+ ///////////////////////////////////////////////////////////////////////////////////////////////////////
+ ///////////////////////////////////////////////////////////////////////////////////////////////////////
+ 
+ function hide_buttons(){
+	 //Voting
+	 document.getElementById('voteToPay').style.visibility='hidden';
+	 document.getElementById('retractVoteToPay').style.visibility='hidden';
+	 document.getElementById('voteToWithdraw').style.visibility='hidden';
+	 document.getElementById('retractVoteToWithdraw').style.visibility='hidden';
+	 //Signatures
+	 document.getElementById('signToPay').style.visibility='hidden';
+	 document.getElementById('signToWithdraw').style.visibility='hidden';
+	 document.getElementById('withdrawBid').style.visibility='hidden';
+	 //Third Party Management
+	 document.getElementById('third-address-proposal').style.visibility='hidden';
+	 document.getElementById('proposeThirdParty').style.visibility='hidden';
+	 //
+	 document.getElementById('third-address-vote').style.visibility='hidden';
+	 document.getElementById('voteThirdParty').style.visibility='hidden';
+	 //
+	 document.getElementById('third-address-retract').style.visibility='hidden';
+	 document.getElementById('retractVoteThirdParty').style.visibility='hidden';
+	 //Re-Listing Options
+	 document.getElementById('new-listing-minPrice').style.visibility='hidden';
+	 document.getElementById('voteApproveSubmittedThirdParty').style.visibility='hidden'
+	 document.getElementById('submittedThirdParty').style.visibility='hidden';
+	 document.getElementById('units3').style.visibility='hidden';
+	 document.getElementById('new-listing-duration').style.visibility='hidden';
+	 document.getElementById('proposeNewListing').style.visibility='hidden';
+	 //
+	 document.getElementById('vote-listing-id').style.visibility='hidden';
+	 document.getElementById('voteNewListing').style.visibility='hidden';
+	 //
+	 document.getElementById('retract-listing-id').style.visibility='hidden';
+	 document.getElementById('retractNewVoteListing').style.visibility='hidden';
+	 //
+	 document.getElementById('final-listing-id').style.visibility='hidden';
+	 document.getElementById('reList').style.visibility='hidden';
+	 //
+	 document.getElementById('voteApproveSubmittedThirdParty').style.visibility='hidden';
+	 document.getElementById('retractVoteApproveSubmittedThirdParty').style.visibility='hidden';
+	 document.getElementById('approveSubmittedThirdParty').style.visibility='hidden';
+	//  document.getElementById('cashOut').style.visibility='hidden';
+ }
+ 
+ async function show_win_vote_buttons(){
+	 web3.eth.defaultAccount = $("#myaccount").val();
+	 address = web3.eth.defaultAccount;
+	 let votedPay = await multibid_contract.methods.votedSigPay(address).call({address});
+	 let votedWithdraw = await multibid_contract.methods.votedSigWithdraw(address).call({address});
+	 if(!votedPay && !votedWithdraw){
+		 document.getElementById('voteToPay').style.visibility='visible';
+		 document.getElementById('voteToWithdraw').style.visibility='visible';
+		 document.getElementById('retractVoteToPay').style.visibility='hidden';
+		 document.getElementById('retractVoteToWithdraw').style.visibility='hidden';
+	 }
+	 if(votedPay){
+		 document.getElementById('voteToPay').style.visibility='hidden';
+		 document.getElementById('voteToWithdraw').style.visibility='hidden';
+		 document.getElementById('retractVoteToPay').style.visibility='visible';
+		 document.getElementById('retractVoteToWithdraw').style.visibility='hidden';
+	 }
+	 if(votedWithdraw){
+		 document.getElementById('voteToPay').style.visibility='hidden';
+		 document.getElementById('voteToWithdraw').style.visibility='hidden';
+		 document.getElementById('retractVoteToPay').style.visibility='hidden';
+		 document.getElementById('retractVoteToWithdraw').style.visibility='visible';
+	 }
+ }
+ 
+ async function show_third_party_mgmt(){
+	 address = web3.eth.defaultAccount;
+	 time_left = await get_time_left();
+	 if(time_left > 0){
+		 document.getElementById('third-address-proposal').style.visibility='visible';
+		 document.getElementById('proposeThirdParty').style.visibility='visible';
+		 let voted = await multibid_contract.methods.votedThirdParty(address).call({address});
+		 if(voted){
+			 document.getElementById('third-address-vote').style.visibility='hidden';
+			 document.getElementById('voteThirdParty').style.visibility='hidden';
+			 document.getElementById('third-address-retract').style.visibility='visible';
+			 document.getElementById('retractVoteThirdParty').style.visibility='visible';
+		 }
+		 else{
+			 document.getElementById('third-address-vote').style.visibility='visible';
+			 document.getElementById('voteThirdParty').style.visibility='visible';
+			 document.getElementById('third-address-retract').style.visibility='hidden';
+			 document.getElementById('retractVoteThirdParty').style.visibility='hidden';
+		 }
+	 }
+	 else{
+		 document.getElementById('third-address-proposal').style.visibility='hidden';
+		 document.getElementById('proposeThirdParty').style.visibility='hidden';
+		 document.getElementById('third-address-vote').style.visibility='hidden';
+		 document.getElementById('voteThirdParty').style.visibility='hidden';
+		 document.getElementById('third-address-retract').style.visibility='hidden';
+		 document.getElementById('retractVoteThirdParty').style.visibility='hidden';
+	 }
+ }
+ 
+ async function show_win_sig_buttons(){
+	 auction_address  = await multibid_contract.methods._currentAuction().call({from:web3.eth.defaultAccount});
+	 english_contract = new web3.eth.Contract(english_abi, auction_address);
+	 time_left        = await get_time_left();
+	 //vote info
+	 votesSigPay      = await multibid_contract.methods.votesToPay().call({from:web3.eth.defaultAccount});
+	 votesSigWithdraw = await multibid_contract.methods.votesToWithdraw().call({from:web3.eth.defaultAccount});
+	 totalVotingPower = await multibid_contract.methods.totalVotingPower().call({from:web3.eth.defaultAccount});
+	 //sig info
+	 let winnerSig        = await english_contract.methods.winnerSigWithdraw().call({from:web3.eth.defaultAccount});
+	 let ownerSig         = await english_contract.methods.ownerSigWithdraw().call({from:web3.eth.defaultAccount});
+	 let thirdPartySig    = await english_contract.methods.thirdPartySigWithdraw().call({from:web3.eth.defaultAccount});
+	 if(time_left <= 0 && (2 * votesSigPay > totalVotingPower)){
+		 document.getElementById('signToPay').style.visibility='visible';
+		 document.getElementById('signToWithdraw').style.visibility='hidden';
+		 document.getElementById('withdrawBid').style.visibility='hidden';
+	 }
+	 if(time_left <= 0 && (2 * votesSigWithdraw > totalVotingPower)){
+		 document.getElementById('signToPay').style.visibility='hidden';
+		 document.getElementById('signToWithdraw').style.visibility='visible';
+		 document.getElementById('withdrawBid').style.visibility='hidden';
+	 }
+	 if(time_left < 0 && ((winnerSig&&ownerSig) || (winnerSig&&thirdPartySig) || (thirdPartySig&&ownerSig))){
+		 document.getElementById('signToPay').style.visibility='hidden';
+		 document.getElementById('signToWithdraw').style.visibility='hidden';
+		 document.getElementById('withdrawBid').style.visibility='visible';
+	 }
+ }
+ 
+ async function show_relist_buttons(){
 
-// const set_address = '';
-//var multibid_address = 0;
-var multibid_contract = 0;
-var owner_address = 0;
-
-
-async function update_balance(address){
-	web3.eth.getBalance(address, function(err, result){
-		if (err){
-			console.log(err)
-		} else {
-			let b = web3.utils.fromWei(result, "ether")
-			$("#account-balance").html("Balance: " + b + " ETH");
-		}
-	});
-}
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-//BUTTON VISIBILITY CONTROL
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-
-function hide_buttons(){
-	//Voting
-	document.getElementById('voteToPay').style.visibility='hidden';
-	document.getElementById('retractVoteToPay').style.visibility='hidden';
-	document.getElementById('voteToWithdraw').style.visibility='hidden';
-	document.getElementById('retractVoteToWithdraw').style.visibility='hidden';
-	//Signatures
-	document.getElementById('signToPay').style.visibility='hidden';
-	document.getElementById('signToWithdraw').style.visibility='hidden';
-	document.getElementById('withdrawBid').style.visibility='hidden';
-	//Third Party Management
-	document.getElementById('third-address-proposal').style.visibility='hidden';
-	document.getElementById('proposeThirdParty').style.visibility='hidden';
-	//
-	document.getElementById('third-address-vote').style.visibility='hidden';
-	document.getElementById('voteThirdParty').style.visibility='hidden';
-	//
-	document.getElementById('third-address-retract').style.visibility='hidden';
-	document.getElementById('retractVoteThirdParty').style.visibility='hidden';
-	//Re-Listing Options
-	document.getElementById('new-listing-minPrice').style.visibility='hidden';
-	document.getElementById('new-listing-duration').style.visibility='hidden';
-	document.getElementById('proposeNewListing').style.visibility='hidden';
-	//
-	document.getElementById('vote-listing-id').style.visibility='hidden';
-	document.getElementById('voteNewListing').style.visibility='hidden';
-	//
-	document.getElementById('retract-listing-id').style.visibility='hidden';
-	document.getElementById('retractNewVoteListing').style.visibility='hidden';
-	//
-	document.getElementById('final-listing-id').style.visibility='hidden';
-	document.getElementById('reList').style.visibility='hidden';
-	//
-	document.getElementById('voteApproveSubmittedThirdParty').style.visibility='hidden';
-	document.getElementById('retractVoteApproveSubmittedThirdParty').style.visibility='hidden';
-	document.getElementById('approveSubmittedThirdParty').style.visibility='hidden';
-	document.getElementById('cashOut').style.visibility='hidden';
-}
-
-async function show_win_vote_buttons(){
-	web3.eth.defaultAccount = $("#myaccount").val();
-	address = web3.eth.defaultAccount;
-	let votedPay = await multibid_contract.methods.votedSigPay(address).call({address});
-	let votedWithdraw = await multibid_contract.methods.votedSigWithdraw(address).call({address});
-	if(!votedPay && !votedWithdraw){
-		document.getElementById('voteToPay').style.visibility='visible';
-		document.getElementById('voteToWithdraw').style.visibility='visible';
-		document.getElementById('retractVoteToPay').style.visibility='hidden';
-		document.getElementById('retractVoteToWithdraw').style.visibility='hidden';
-	}
-	if(votedPay){
-		document.getElementById('voteToPay').style.visibility='hidden';
-		document.getElementById('voteToWithdraw').style.visibility='hidden';
-		document.getElementById('retractVoteToPay').style.visibility='visible';
-		document.getElementById('retractVoteToWithdraw').style.visibility='hidden';
-	}
-	if(votedWithdraw){
-		document.getElementById('voteToPay').style.visibility='hidden';
-		document.getElementById('voteToWithdraw').style.visibility='hidden';
-		document.getElementById('retractVoteToPay').style.visibility='hidden';
-		document.getElementById('retractVoteToWithdraw').style.visibility='visible';
-	}
-}
-
-async function show_third_party_mgmt(){
-	address = web3.eth.defaultAccount;
-	time_left = await get_time_left();
-	if(time_left > 0){
-		document.getElementById('third-address-proposal').style.visibility='visible';
-		document.getElementById('proposeThirdParty').style.visibility='visible';
-		let voted = await multibid_contract.methods.votedThirdParty(address).call({address});
-		if(voted){
-			document.getElementById('third-address-vote').style.visibility='hidden';
-			document.getElementById('voteThirdParty').style.visibility='hidden';
-			document.getElementById('third-address-retract').style.visibility='visible';
-			document.getElementById('retractVoteThirdParty').style.visibility='visible';
-		}
-		else{
-			document.getElementById('third-address-vote').style.visibility='visible';
-			document.getElementById('voteThirdParty').style.visibility='visible';
-			document.getElementById('third-address-retract').style.visibility='hidden';
-			document.getElementById('retractVoteThirdParty').style.visibility='hidden';
-		}
-	}
-	else{
-		document.getElementById('third-address-proposal').style.visibility='hidden';
-		document.getElementById('proposeThirdParty').style.visibility='hidden';
-		document.getElementById('third-address-vote').style.visibility='hidden';
-		document.getElementById('voteThirdParty').style.visibility='hidden';
-		document.getElementById('third-address-retract').style.visibility='hidden';
-		document.getElementById('retractVoteThirdParty').style.visibility='hidden';
-	}
-}
-
-async function show_win_sig_buttons(){
-	auction_address  = await multibid_contract.methods._currentAuction().call({from:web3.eth.defaultAccount});
-	english_contract = new web3.eth.Contract(english_abi, auction_address);
-	time_left        = await get_time_left();
-	//vote info
-	votesSigPay      = await multibid_contract.methods.votesToPay().call({from:web3.eth.defaultAccount});
-	votesSigWithdraw = await multibid_contract.methods.votesToWithdraw().call({from:web3.eth.defaultAccount});
-	totalVotingPower = await multibid_contract.methods.totalVotingPower().call({from:web3.eth.defaultAccount});
-	//sig info
-	let winnerSig        = await english_contract.methods.winnerSigWithdraw().call({from:web3.eth.defaultAccount});
-	let ownerSig         = await english_contract.methods.ownerSigWithdraw().call({from:web3.eth.defaultAccount});
-	let thirdPartySig    = await english_contract.methods.thirdPartySigWithdraw().call({from:web3.eth.defaultAccount});
-	if(time_left <= 0 && (2 * votesSigPay > totalVotingPower)){
-		document.getElementById('signToPay').style.visibility='visible';
-		document.getElementById('signToWithdraw').style.visibility='hidden';
-		document.getElementById('withdrawBid').style.visibility='hidden';
-	}
-	if(time_left <= 0 && (2 * votesSigWithdraw > totalVotingPower)){
-		document.getElementById('signToPay').style.visibility='hidden';
-		document.getElementById('signToWithdraw').style.visibility='visible';
-		document.getElementById('withdrawBid').style.visibility='hidden';
-	}
-	if(time_left < 0 && ((winnerSig&&ownerSig) || (winnerSig&&thirdPartySig) || (thirdPartySig&&ownerSig))){
-		document.getElementById('signToPay').style.visibility='hidden';
-		document.getElementById('signToWithdraw').style.visibility='hidden';
-		document.getElementById('withdrawBid').style.visibility='visible';
-	}
-}
-
-async function show_relist_buttons(){
-	let time_left = await get_time_left();
-	let winner    = await english_contract.methods.winner().call({from:web3.eth.defaultAccount});
-	let balance   = await web3.eth.getBalance(auction_address);
-	if(time_left <= 0 && (winner == multibid_address) && balance == 0){ //check that the auction is over, the multibid has won, and the owner has cashed out (maybe check signatures instead)?
-		document.getElementById('final-listing-id').style.visibility='visible';
-		document.getElementById('reList').style.visibility='visible';
-		document.getElementById('3p-0').style.visibility='hidden';
-		document.getElementById('3p-1').style.visibility='hidden';
-		document.getElementById('3p-2').style.visibility='hidden';
-		document.getElementById('3p-3').style.visibility='hidden';
-		document.getElementById('3p-4').style.visibility='hidden';
-		let voted = await multibid_contract.methods.votedListings(web3.eth.defaultAccount).call({from:web3.eth.defaultAccount});
-		if(!voted){
-			document.getElementById('new-listing-minPrice').style.visibility='visible';
-			document.getElementById('new-listing-duration').style.visibility='visible';
-			document.getElementById('proposeNewListing').style.visibility='visible';
-			document.getElementById('vote-listing-id').style.visibility='visible';
-			document.getElementById('voteNewListing').style.visibility='visible';
-			document.getElementById('retract-listing-id').style.visibility='hidden';
-			document.getElementById('retractNewVoteListing').style.visibility='hidden';
-		}
-		if(voted){
-			document.getElementById('new-listing-minPrice').style.visibility='visible';
-			document.getElementById('new-listing-duration').style.visibility='visible';
-			document.getElementById('proposeNewListing').style.visibility='visible';
-			document.getElementById('vote-listing-id').style.visibility='hidden';
-			document.getElementById('voteNewListing').style.visibility='hidden';
-			document.getElementById('retract-listing-id').style.visibility='visible';
-			document.getElementById('retractNewVoteListing').style.visibility='visible';
-		}
-	}
-
-}
-
-async function show_post_relist_buttons(){
-	web3.eth.defaultAccount = $("#myaccount").val();
-	let time_left = await get_time_left();
-	if(time_left <= 0){
-		auction_address  = await multibid_contract.methods._currentAuction().call({from:web3.eth.defaultAccount});
-		english_contract = new web3.eth.Contract(english_abi, auction_address);
-		thirdParty       = await english_contract.methods.thirdParty().call({from:web3.eth.defaultAccount});
-		let threepee = thirdParty
-		let voted        = await multibid_contract.methods.votedApprove(web3.eth.defaultAccount).call({from:web3.eth.defaultAccount});
-		let votes        = await multibid_contract.methods.votesApproveSubmittedThirdParty().call({from:web3.eth.defaultAccount});
-		totalVotingPower = await multibid_contract.methods.totalVotingPower().call({from:web3.eth.defaultAccount});
-		percentOfVote = votes/totalVotingPower*100;
-		let ownerSigPay      = await english_contract.methods.ownerSigPay().call({from:web3.eth.defaultAccount});
-		let thirdPartySigPay = await english_contract.methods.thirdPartySigPay().call({from:web3.eth.defaultAccount});
-		let winnerSigPay     = await english_contract.methods.winnerSigPay().call({from:web3.eth.defaultAccount});
-		$("#submittedThirdParty").html("Submitted Third Party: " + threepee + "Vote %: " + percentOfVote);
-		if(!voted){
+	 let time_left = await get_time_left();
+	 let winner    = await english_contract.methods.winner().call({from:web3.eth.defaultAccount});
+	 let balance   = await web3.eth.getBalance(auction_address);
+	 if(time_left <= 0 && (winner == multibid_address) && balance == 0){ //check that the auction is over, the multibid has won, and the owner has cashed out (maybe check signatures instead)?
+		// $("#won").html("You won the auction!")
+		 document.getElementById('final-listing-id').style.visibility='visible';
+		 document.getElementById('reList').style.visibility='visible';
+		 document.getElementById('3p-0').style.visibility='hidden';
+		 document.getElementById('3p-1').style.visibility='hidden';
+		 document.getElementById('3p-2').style.visibility='hidden';
+		 document.getElementById('3p-3').style.visibility='hidden';
+		 document.getElementById('3p-4').style.visibility='hidden';
+		 let voted = await multibid_contract.methods.votedListings(web3.eth.defaultAccount).call({from:web3.eth.defaultAccount});
+		 if(!voted){
+			 document.getElementById('new-listing-minPrice').style.visibility='visible';
+			 document.getElementById('voteApproveSubmittedThirdParty').style.visibility='visible';
+			 document.getElementById('submittedThirdParty').style.visibility='visible';
+			 document.getElementById('units3').style.visibility='visible';
+			 document.getElementById('new-listing-duration').style.visibility='visible';
+			 document.getElementById('proposeNewListing').style.visibility='visible';
+			 document.getElementById('vote-listing-id').style.visibility='visible';
+			 document.getElementById('voteNewListing').style.visibility='visible';
+			 document.getElementById('retract-listing-id').style.visibility='hidden';
+			 document.getElementById('retractNewVoteListing').style.visibility='hidden';
+		 }
+		 if(voted){
+			
 			document.getElementById('voteApproveSubmittedThirdParty').style.visibility='visible';
-			document.getElementById('retractVoteApproveSubmittedThirdParty').style.visibility='hidden';
-		}
-		if(voted){
-			document.getElementById('voteApproveSubmittedThirdParty').style.visibility='hidden';
-			document.getElementById('retractVoteApproveSubmittedThirdParty').style.visibility='visible';
-		}
-		if(percentOfVote > 50){
-			document.getElementById('approveSubmittedThirdParty').style.visibility='visible';
-		}
-		if((ownerSigPay && thirdPartySigPay) || (ownerSigPay && winnerSigPay) || (thirdPartySigPay && winnerSigPay)){
-			document.getElementById('voteApproveSubmittedThirdParty').style.visibility='hidden';
-			document.getElementById('retractVoteApproveSubmittedThirdParty').style.visibility='hidden';
-			document.getElementById('cashOut').style.visibility='visible';
-		}
+			 document.getElementById('submittedThirdParty').style.visibility='visible';
+			 document.getElementById('new-listing-minPrice').style.visibility='visible';
+			 document.getElementById('units3').style.visibility='visible';
+			 document.getElementById('new-listing-duration').style.visibility='visible';
+			 document.getElementById('proposeNewListing').style.visibility='visible';
+			 document.getElementById('vote-listing-id').style.visibility='hidden';
+			 document.getElementById('voteNewListing').style.visibility='hidden';
+			 document.getElementById('retract-listing-id').style.visibility='visible';
+			 document.getElementById('retractNewVoteListing').style.visibility='visible';
+		 }
+	 }
+ 
+ }
+ 
+ async function show_post_relist_buttons(){
+	 web3.eth.defaultAccount = $("#myaccount").val();
+	 let time_left = await get_time_left();
+	 if(time_left <= 0){
+		 auction_address  = await multibid_contract.methods._currentAuction().call({from:web3.eth.defaultAccount});
+		 english_contract = new web3.eth.Contract(english_abi, auction_address);
+		 thirdParty       = await english_contract.methods.thirdParty().call({from:web3.eth.defaultAccount});
+		 let threepee = thirdParty
+		 let voted        = await multibid_contract.methods.votedApprove(web3.eth.defaultAccount).call({from:web3.eth.defaultAccount});
+		 let votes        = await multibid_contract.methods.votesApproveSubmittedThirdParty().call({from:web3.eth.defaultAccount});
+		 totalVotingPower = await multibid_contract.methods.totalVotingPower().call({from:web3.eth.defaultAccount});
+		 percentOfVote = votes/totalVotingPower*100;
+		 let ownerSigPay      = await english_contract.methods.ownerSigPay().call({from:web3.eth.defaultAccount});
+		 let thirdPartySigPay = await english_contract.methods.thirdPartySigPay().call({from:web3.eth.defaultAccount});
+		 let winnerSigPay     = await english_contract.methods.winnerSigPay().call({from:web3.eth.defaultAccount});
+		 $("#submittedThirdParty").html("Submitted Third Party: " + threepee + "Vote %: " + percentOfVote);
+		 if(!voted){
+			 document.getElementById('voteApproveSubmittedThirdParty').style.visibility='hidden';
+			 document.getElementById('retractVoteApproveSubmittedThirdParty').style.visibility='hidden';
+		 }
+		 if(voted){
+			 document.getElementById('voteApproveSubmittedThirdParty').style.visibility='hidden';
+			 document.getElementById('retractVoteApproveSubmittedThirdParty').style.visibility='visible';
+		 }
+		 if(percentOfVote > 50){
+			 document.getElementById('approveSubmittedThirdParty').style.visibility='visible';
+		 }
+		 if((ownerSigPay && thirdPartySigPay) || (ownerSigPay && winnerSigPay) || (thirdPartySigPay && winnerSigPay)){
+			 document.getElementById('voteApproveSubmittedThirdParty').style.visibility='hidden';
+			 document.getElementById('retractVoteApproveSubmittedThirdParty').style.visibility='hidden';
+			 admin = await english_contract.methods.admin().call({from:web3.eth.defaultAccount});
+			 let multi_address = $("#mb-address").val()
+			 if (admin == multi_address) {
+			 	document.getElementById('cashOut').style.visibility='visible';
+			 }
+		 }
+		 show_win_vote_buttons();
+	 }
+ }
+ 
+ ///////////////////////////////////////////////////////////////////////////////////////////////////////
+ ///////////////////////////////////////////////////////////////////////////////////////////////////////
+ //END BUTTON VISIBILITY CONTROL
+ ///////////////////////////////////////////////////////////////////////////////////////////////////////
+ ///////////////////////////////////////////////////////////////////////////////////////////////////////
+ 
+ async function update_info(){
+	 address = $("#myaccount").val();
+	 update_balance(address);
+	 get_auction_info();
+	 get_multibid_info();
+	 get_thirdParty_proposals();
+	 //buttons control
+	 show_win_sig_buttons();
+	 show_third_party_mgmt();
+	 show_relist_buttons();
+	 get_listing_proposals();
+	 show_post_relist_buttons();
+ }
+ 
+ async function get_time_left(){
+	 auction_address = await multibid_contract.methods._currentAuction().call({from:web3.eth.defaultAccount});
+	 english_contract = new web3.eth.Contract(english_abi, auction_address);
+	 let duration = await english_contract.methods.duration().call({from:web3.eth.defaultAccount});
+	 let begin = await english_contract.methods.startTime().call({from:web3.eth.defaultAccount});
+	 const d = new Date();
+	 let time = Math.floor(d.getTime()/ 1000);
+	 let time_passed = time - begin;
+	 let time_left = duration - time_passed;
+	 return time_left;
+ }
+ 
+ async function get_auction_info(){
+	 auction_address = await multibid_contract.methods._currentAuction().call({from:web3.eth.defaultAccount});
+	 //console.log(auction_address);
+	 $("#auction-address").html(auction_address);
+	 english_contract = new web3.eth.Contract(english_abi, auction_address);
+	 let name = await english_contract.methods.name().call({from:web3.eth.defaultAccount});
+	 $("#name").html("Item: " + name);
+	 curr_highest_bid = await english_contract.methods.highestBid().call({from:web3.eth.defaultAccount});
+	 $("#curr-high-bid").html(curr_highest_bid * 10**(-18) + " ETH");
+	 winner = await english_contract.methods.winner().call({from:web3.eth.defaultAccount});
+	 $("#winner").html(winner);
+	 let duration = await english_contract.methods.duration().call({from:web3.eth.defaultAccount});
+	 let begin = await english_contract.methods.startTime().call({from:web3.eth.defaultAccount});
+	 const d = new Date();
+	 let time = Math.floor(d.getTime()/ 1000);
+	 let time_passed = time - begin;
+	 let time_left = duration - time_passed;
+	 hours = Math.floor(time_left/(60*60))
+	 minutes = Math.floor((time_left % (60*60)) / 60)
+	 if (time_left < 0){
+		$("#duration").html(0);
 		show_win_vote_buttons();
-	}
-}
+	 } else {
+		$("#duration").html(hours + "H " + minutes + "M");
+	 }
+ }
+ 
+ async function get_multibid_info(){
+	 web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+	 multibid_balance = await web3.eth.getBalance(multibid_address);
+	 //console.log(multibid_balance);
+	 $("#multibid-balance").html("Multibid Contract Balance: "+multibid_balance+" Wei");
+	 stake = await multibid_contract.methods.seeMyStake().call({from:web3.eth.defaultAccount});
+	 totalVotingPower = await multibid_contract.methods.totalVotingPower().call({from:web3.eth.defaultAccount})
+	 percent_ownership = stake/totalVotingPower*100;
+	 $("#stake").html("Stake: "+percent_ownership+"%");
+ }
+ 
+ async function get_listing_proposals(){
+	 web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+	 for(let i = 0; i<5; i++){
+		 res = await multibid_contract.methods.viewListingAtIndex(i).call({from:web3.eth.defaultAccount});
+		 id = res[0];
+		 min_bid = res[1];
+		 duration=res[2];
+		 votes = res[3];
+		 totalVotingPower = await multibid_contract.methods.totalVotingPower().call({from:web3.eth.defaultAccount});
+		 percentOfVote = votes/totalVotingPower*100;
+		 elt_id = "#listing-info-"+i;
+		 $(elt_id).html("id: "+ id +" Minimum Bid: "+ min_bid +" duration: "+ duration +" Vote %: "+ percentOfVote);
+	 }
+ }
+ 
+ async function get_thirdParty_proposals(){
+	 web3.eth.defaultAccount = $("#myaccount").val();
+	 for(let i = 0; i<5; i++){
+		 res = await multibid_contract.methods.viewThirdPartyAtIndex(i).call({from:web3.eth.defaultAccount});
+		 thirdParty = res[0];
+		 if (thirdParty != '0x0000000000000000000000000000000000000000')
+		 {
+			 votes = res[1];
+			 totalVotingPower = await multibid_contract.methods.totalVotingPower().call({from:web3.eth.defaultAccount});
+			 percentOfVote = votes/totalVotingPower*100;
+			 if(totalVotingPower == 0){percentOfVote = 0;}
+			 elt_id = "#3p-"+i;
+			 //console.log(elt_id, thirdParty, percentOfVote);
+			 $(elt_id).html("address:"+thirdParty+" Vote %: "+ percentOfVote);
+		 }
+	 }
+ }
+ 
+ $(document).ready(function(){
+	 let params = new URLSearchParams(window.location.search),
+		 first = params.get("address");
+	 if (first != null){
+		 multibid_address = first;
+		 multibid_contract = new web3.eth.Contract(multibid_abi, multibid_address);       	
+	 } else {
+		 multibid_address = set_address;
+		 multibid_contract = new web3.eth.Contract(multibid_abi, multibid_address);        	
+	 }
+ 
+	 web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+	 multibid_contract = new web3.eth.Contract(multibid_abi, multibid_address);
+	 // get_multibid_info();
+	 // get_auction_info();
+	 //buttons control
+	 hide_buttons();
+	 update_info();
+ 
+	 web3.eth.getAccounts().then((response)=> {
+		 web3.eth.defaultAccount = response[0];
+		 update_balance(response[0]);
+	 });
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-//END BUTTON VISIBILITY CONTROL
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-
-async function update_info(){
-	address = $("#myaccount").val();
-	update_balance(address);
-	get_auction_info();
-	get_multibid_info();
-	get_thirdParty_proposals();
-	//buttons control
-	show_win_sig_buttons();
-	show_third_party_mgmt();
-	show_relist_buttons();
-	get_listing_proposals();
-	show_post_relist_buttons();
-}
-
-async function get_time_left(){
-	auction_address = await multibid_contract.methods._currentAuction().call({from:web3.eth.defaultAccount});
-	english_contract = new web3.eth.Contract(english_abi, auction_address);
-	let duration = await english_contract.methods.duration().call({from:web3.eth.defaultAccount});
-    let begin = await english_contract.methods.startTime().call({from:web3.eth.defaultAccount});
-    const d = new Date();
-    let time = Math.floor(d.getTime()/ 1000);
-    let time_passed = time - begin;
-    let time_left = duration - time_passed;
-	return time_left;
-}
-
-async function get_auction_info(){
-	auction_address = await multibid_contract.methods._currentAuction().call({from:web3.eth.defaultAccount});
-	//console.log(auction_address);
-	$("#auction-address").html(auction_address);
-	english_contract = new web3.eth.Contract(english_abi, auction_address);
-	let name = await english_contract.methods.name().call({from:web3.eth.defaultAccount});
-	$("#name").html("Item: " + name);
-	curr_highest_bid = await english_contract.methods.highestBid().call({from:web3.eth.defaultAccount});
-	$("#curr-high-bid").html(curr_highest_bid * 10**(-18) + " ETH");
-	winner = await english_contract.methods.winner().call({from:web3.eth.defaultAccount});
-	$("#winner").html(winner);
-	let duration = await english_contract.methods.duration().call({from:web3.eth.defaultAccount});
-    let begin = await english_contract.methods.startTime().call({from:web3.eth.defaultAccount});
-    const d = new Date();
-    let time = Math.floor(d.getTime()/ 1000);
-    let time_passed = time - begin;
-    let time_left = duration - time_passed;
-	hours = Math.floor(time_left/(60*60))
-	minutes = Math.floor((time_left % (60*60)) / 60)
-    if (time_left < 0){
-       $("#duration").html(0);
-	   show_win_vote_buttons();
-    } else {
-       $("#duration").html(hours + "H " + minutes + "M");
-    }
-}
-
-async function get_multibid_info(){
-	web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-	multibid_balance = await web3.eth.getBalance(multibid_address);
-	//console.log(multibid_balance);
-	$("#multibid-balance").html("Multibid Contract Balance: "+multibid_balance+" Wei");
-	stake = await multibid_contract.methods.seeMyStake().call({from:web3.eth.defaultAccount});
-	totalVotingPower = await multibid_contract.methods.totalVotingPower().call({from:web3.eth.defaultAccount})
-	percent_ownership = stake/totalVotingPower*100;
-	$("#stake").html("Stake: "+percent_ownership+"%");
-}
-
-async function get_listing_proposals(){
-	web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-	for(let i = 0; i<5; i++){
-		res = await multibid_contract.methods.viewListingAtIndex(i).call({from:web3.eth.defaultAccount});
-		id = res[0];
-		min_bid = res[1];
-		duration=res[2];
-		votes = res[3];
-		totalVotingPower = await multibid_contract.methods.totalVotingPower().call({from:web3.eth.defaultAccount});
-		percentOfVote = votes/totalVotingPower*100;
-		elt_id = "#listing-info-"+i;
-		$(elt_id).html("id: "+ id +" Minimum Bid: "+ min_bid +" duration: "+ duration +" Vote %: "+ percentOfVote);
-	}
-}
-
-async function get_thirdParty_proposals(){
-	web3.eth.defaultAccount = $("#myaccount").val();
-	for(let i = 0; i<5; i++){
-		res = await multibid_contract.methods.viewThirdPartyAtIndex(i).call({from:web3.eth.defaultAccount});
-		thirdParty = res[0];
-		if (thirdParty != '0x0000000000000000000000000000000000000000')
-		{
-			votes = res[1];
-			totalVotingPower = await multibid_contract.methods.totalVotingPower().call({from:web3.eth.defaultAccount});
-			percentOfVote = votes/totalVotingPower*100;
-			if(totalVotingPower == 0){percentOfVote = 0;}
-			elt_id = "#3p-"+i;
-			//console.log(elt_id, thirdParty, percentOfVote);
-			$(elt_id).html("address:"+thirdParty+" Vote %: "+ percentOfVote);
-		}
-	}
-}
-
-$(document).ready(function(){
-	let params = new URLSearchParams(window.location.search),
-		first = params.get("address");
-	if (first != null){
-		multibid_address = first;
-		multibid_contract = new web3.eth.Contract(multibid_abi, multibid_address);       	
-	} else {
-		multibid_address = set_address;
-		multibid_contract = new web3.eth.Contract(multibid_abi, multibid_address);        	
-	}
-
-	web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-	multibid_contract = new web3.eth.Contract(multibid_abi, multibid_address);
-	// get_multibid_info();
-	// get_auction_info();
-	//buttons control
-	hide_buttons();
-	update_info();
-
-	web3.eth.getAccounts().then((response)=> {
-		web3.eth.defaultAccount = response[0];
-		update_balance(response[0]);
-	});
-	// Allows switching between accounts in 'My Account'
-	web3.eth.getAccounts().then((response)=>{
-		var opts = response.map(function (a) { return '<option value="'+
-				a.toLowerCase()+'">'+a.toLowerCase()+'</option>' });
-		$(".account").html(opts);
-		web3.eth.defaultAccount = $("#myaccount").val();
-	});
-
-	var denominations = {
-		Ether : 'Ether',
-		Finny : 'Finney',
-		Gwei : 'Gwei',
-		Wei : 'Wei'
-	};
-	
-	var select = document.getElementById("units");
-	for(index in denominations) {
-		select.options[select.options.length] = new Option(denominations[index], index);
-	}
-
-	var select = document.getElementById("units2");
-	for(index in denominations) {
-		select.options[select.options.length] = new Option(denominations[index], index);
-	}
-
-	$("#submit-bid").click(async function() {
-		
-		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-		let third_address = $("#third-address").val()
-		if (duration == 0){
-			alert("This auction is over!")
-		} else if (web3.eth.defaultAccount.toLocaleLowerCase() == third_address.toLocaleLowerCase()) {
-			alert("You cannot name yourself as the third party!")
-		} else {
-			let unit = $("#units").val();
-			//alert(unit)
-			if (unit == "Ether") {
-				scale = 10**(18)
-			} else if (unit == "Finney") {
-				scale = 10**(15)
-			} else if (unit == "Gwei") {
-				scale = 10**(9)
-			} else {
-				scale = 1
-			}
-			amount = $("#bid").val() * scale;
-			await multibid_contract.methods.submitBid($("#third-address").val(), web3.utils.toBN(amount)).send({from:web3.eth.defaultAccount})
-			update_balance($("#myaccount").val());
-			update_info();
-		}
-	})
-
-
-
-	$("#addValue").click(async function() {
-		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-		let unit = $("#units2").val();
-		//alert(unit);
-		if (unit == "Ether") {
-			scale = 10**(18)
-		} else if (unit == "Finney") {
-			scale = 10**(15)
-		} else if (unit == "Gwei") {
-			scale = 10**(9)
-		} else {
-			scale = 1
-		}
-		amount = $("#valueToAdd").val() * scale;
-		await multibid_contract.methods.addValue().send({from:web3.eth.defaultAccount, value:amount});
-		update_info()
-	})
-
-
-	$("#withdrawValue").click(async function() {
-		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-		await multibid_contract.methods.withdrawValue().send({from:web3.eth.defaultAccount});
-		update_info()
-	})
-
-	$("#voteToPay").click(async function() {
-		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-		await multibid_contract.methods.voteToPay().send({from:web3.eth.defaultAccount});
-		update_info()
-	})
-
-	$("#retractVoteToPay").click(async function() {
-		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-		await multibid_contract.methods.retractVoteToPay().send({from:web3.eth.defaultAccount});
-		update_info()
-	})
-
-	$("#voteToWithdraw").click(async function() {
-		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-		await multibid_contract.methods.voteToWithdraw().send({from:web3.eth.defaultAccount});
-		update_info()
-	})
-
-	$("#retractVoteToWithdraw").click(async function() {
-		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-		await multibid_contract.methods.retractVoteToWithdraw().send({from:web3.eth.defaultAccount, gas:500000});
-		update_info()
-	})
-
-	$("#signToPay").click(async function() {
-		web3.eth.defaultAccount = $("#myaccount").val();
-		await multibid_contract.methods.submitSigPay().send({from:web3.eth.defaultAccount});
-		update_info()
-	})
-
-	$("#signToWithdraw").click(async function() {
-		web3.eth.defaultAccount = $("#myaccount").val();
-		await multibid_contract.methods.submitSigWithdraw().send({from:web3.eth.defaultAccount});
-		update_info()
-	})
-
-	$("#withdrawBid").click(async function() {
-		web3.eth.defaultAccount = $("#myaccount").val();
-		await multibid_contract.methods.submitWithdrawBid().send({from:web3.eth.defaultAccount});
-		update_info()
-	})
-	
-	$("#proposeThirdParty").click(async function() {
-		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-		third_party_prop = $("#third-address-proposal").val()
-		await multibid_contract.methods.proposeThirdParty(third_party_prop).send({from:web3.eth.defaultAccount});
-		update_info()
-	})
-
-	$("#voteThirdParty").click(async function() {
-		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-		third_party_vote = $("#third-address-vote").val()
-		await multibid_contract.methods.voteThirdParty(third_party_vote).send({from:web3.eth.defaultAccount});
-		update_info()
-	})
-
-	$("#retractVoteThirdParty").click(async function() {
-		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-		third_party_retract = $("#third-address-retract").val()
-		await multibid_contract.methods.retractVoteThirdParty(third_party_retract).send({from:web3.eth.defaultAccount});
-		update_info()
-	})
-
-	$("#proposeNewListing").click(async function() {
-		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-		min_price = $("#new-listing-minPrice").val();
-		duration = $("#new-listing-duration").val();
-		//console.log(min_price,duration)
-		await multibid_contract.methods.proposeNewListing(0, min_price, duration).send({from:web3.eth.defaultAccount, gasLimit: 500000});
-		update_info()
-	})
-
-	$("#voteNewListing").click(async function() {
-		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-		listing_id = $("#vote-listing-id").val()
-		await multibid_contract.methods.voteNewListing(listing_id).send({from:web3.eth.defaultAccount});
-		update_info()
-	})
-
-	$("#retractNewVoteListing").click(async function() {
-		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-		listing_id = $("#retract-listing-id").val()
-		//console.log(listing_id)
-		await multibid_contract.methods.retractNewVoteListing(listing_id).send({from:web3.eth.defaultAccount});
-		update_info()
-	})
-
-	$("#voteApproveSubmittedThirdParty").click(async function() {
-		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-		await multibid_contract.methods.voteApproveSubmittedThirdParty().send({from:web3.eth.defaultAccount});
-		update_info()
-	})
-
-	$("#retractVoteApproveSubmittedThirdParty").click(async function() {
-		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-		await multibid_contract.methods.retractVoteApproveSubmittedThirdParty().send({from:web3.eth.defaultAccount});
-		update_info()
-	})
-
-	$("#approveSubmittedThirdParty").click(async function() {
-		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-		await multibid_contract.methods.submitApprovalThirdParty().send({from:web3.eth.defaultAccount});
-		update_info()
-	})
-
-	$("#cashOut").click(async function() {
-		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-		await multibid_contract.methods.submitCashOut().send({from:web3.eth.defaultAccount});
-		update_info()
-	})
-
-	$("#reList").click(async function(){
-		web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
-		listing_id = $("#final-listing-id").val();
-		let votes = await multibid_contract.methods.listings(listing_id).call({from:web3.eth.defaultAccount});
-		totalVotingPower = await multibid_contract.methods.totalVotingPower().call({from:web3.eth.defaultAccount});
-		if(2 * votes > totalVotingPower){
-			const english_spawner_contract = new web3.eth.Contract(english_spawner_abi, english_spawner_address);
-			min_bid  = await multibid_contract.methods.listingIds(listing_id, 1).call({from:web3.eth.defaultAccount});
-			duration = await multibid_contract.methods.listingIds(listing_id, 2).call({from:web3.eth.defaultAccount});
-			let name = await english_contract.methods.name().call({from:web3.eth.defaultAccount});
-			await english_spawner_contract.methods.createAuction(min_bid, duration, multibid_address,name).send({from:web3.eth.defaultAccount, gas:2000000});
-			let relisted = await english_spawner_contract.methods.getMostRecentListing().call({from:web3.eth.defaultAccount});
-			await multibid_contract.methods.switchAfterReList(relisted).send({from:web3.eth.defaultAccount});
-			alert('You are now viewing your re-listed auction, make sure to reset all your votes');
-
-		} else { alert('This listing option does not currently have enough votes'); }
-		
-	})
-
-})
+	 // Allows switching between accounts in 'My Account'
+	 web3.eth.getAccounts().then((response)=>{
+		 var opts = response.map(function (a) { return '<option value="'+
+				 a.toLowerCase()+'">'+a.toLowerCase()+'</option>' });
+		 $(".account").html(opts);
+		 web3.eth.defaultAccount = $("#myaccount").val();
+	 });
+ 
+	 var denominations = {
+		 Ether : 'Ether',
+		 Finny : 'Finney',
+		 Gwei : 'Gwei',
+		 Wei : 'Wei'
+	 };
+	 
+ 
+	 var select = document.getElementById("units2");
+	 for(index in denominations) {
+		 select.options[select.options.length] = new Option(denominations[index], index);
+	 }
+ 
+	 var select = document.getElementById("units3");
+	 for(index in denominations) {
+		 select.options[select.options.length] = new Option(denominations[index], index);
+	 }
+ 
+	 $("#submit-bid").click(async function() {
+		 
+		 web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		 let third_address = $("#third-address").val()
+		 if (duration == 0){
+			 alert("This auction is over!")
+		 } else if (web3.eth.defaultAccount.toLocaleLowerCase() == third_address.toLocaleLowerCase()) {
+			 alert("You cannot name yourself as the third party!")
+		 } else {
+			 await multibid_contract.methods.submitBid($("#third-address").val()).send({from:web3.eth.defaultAccount,gas:5000000})
+			 update_balance($("#myaccount").val());
+			 update_info();
+		 }
+	 })
+ 
+ 
+ 
+	 $("#addValue").click(async function() {
+		 web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		 let unit = $("#units2").val();
+		 //alert(unit);
+		 if (unit == "Ether") {
+			 scale = 10**(18)
+		 } else if (unit == "Finney") {
+			 scale = 10**(15)
+		 } else if (unit == "Gwei") {
+			 scale = 10**(9)
+		 } else {
+			 scale = 1
+		 }
+		 amount = $("#valueToAdd").val() * scale;
+		 await multibid_contract.methods.addValue().send({from:web3.eth.defaultAccount, value:amount});
+		 update_info()
+	 })
+ 
+ 
+	 $("#withdrawValue").click(async function() {
+		 web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		 await multibid_contract.methods.withdrawValue().send({from:web3.eth.defaultAccount});
+		 update_info()
+	 })
+ 
+	 $("#voteToPay").click(async function() {
+		 web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		 await multibid_contract.methods.voteToPay().send({from:web3.eth.defaultAccount});
+		 update_info()
+	 })
+ 
+	 $("#retractVoteToPay").click(async function() {
+		 web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		 await multibid_contract.methods.retractVoteToPay().send({from:web3.eth.defaultAccount});
+		 update_info()
+	 })
+ 
+	 $("#voteToWithdraw").click(async function() {
+		 web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		 await multibid_contract.methods.voteToWithdraw().send({from:web3.eth.defaultAccount});
+		 update_info()
+	 })
+ 
+	 $("#retractVoteToWithdraw").click(async function() {
+		 web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		 await multibid_contract.methods.retractVoteToWithdraw().send({from:web3.eth.defaultAccount, gas:500000});
+		 update_info()
+	 })
+ 
+	 $("#signToPay").click(async function() {
+		 web3.eth.defaultAccount = $("#myaccount").val();
+		 await multibid_contract.methods.submitSigPay().send({from:web3.eth.defaultAccount});
+		 alert('Signed')
+		//  document.getElementById('signToPay').style.visibility='hidden';
+		 update_info()
+	 })
+ 
+	 $("#signToWithdraw").click(async function() {
+		 web3.eth.defaultAccount = $("#myaccount").val();
+		 await multibid_contract.methods.submitSigWithdraw().send({from:web3.eth.defaultAccount});
+		 update_info()
+	 })
+ 
+	 $("#withdrawBid").click(async function() {
+		 web3.eth.defaultAccount = $("#myaccount").val();
+		 await multibid_contract.methods.submitWithdrawBid().send({from:web3.eth.defaultAccount});
+		 update_info()
+	 })
+	 
+	 $("#proposeThirdParty").click(async function() {
+		 web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		 third_party_prop = $("#third-address-proposal").val()
+		 await multibid_contract.methods.proposeThirdParty(third_party_prop).send({from:web3.eth.defaultAccount});
+		 update_info()
+	 })
+ 
+	 $("#voteThirdParty").click(async function() {
+		 web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		 third_party_vote = $("#third-address-vote").val()
+		 await multibid_contract.methods.voteThirdParty(third_party_vote).send({from:web3.eth.defaultAccount});
+		 update_info()
+	 })
+ 
+	 $("#retractVoteThirdParty").click(async function() {
+		 web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		 third_party_retract = $("#third-address-retract").val()
+		 await multibid_contract.methods.retractVoteThirdParty(third_party_retract).send({from:web3.eth.defaultAccount});
+		 update_info()
+	 })
+ 
+	 $("#proposeNewListing").click(async function() {
+		 web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		 let unit = $("#units3").val();
+		 //alert(unit)
+		 if (unit == "Ether") {
+			 scale = 10**(18)
+		 } else if (unit == "Finney") {
+			 scale = 10**(15)
+		 } else if (unit == "Gwei") {
+			 scale = 10**(9)
+		 } else {
+			 scale = 1
+		 }
+		 let min_price = $("#new-listing-minPrice").val() * scale;
+		 duration = $("#new-listing-duration").val() * 60 * 60;
+		 //console.log(min_price,duration)
+		 await multibid_contract.methods.proposeNewListing(0, BigInt(min_price), duration).send({from:web3.eth.defaultAccount, gasLimit: 500000});
+		 update_info()
+	 })
+ 
+	 $("#voteNewListing").click(async function() {
+		 web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		 listing_id = $("#vote-listing-id").val()
+		 await multibid_contract.methods.voteNewListing(listing_id).send({from:web3.eth.defaultAccount});
+		 update_info()
+	 })
+ 
+	 $("#retractNewVoteListing").click(async function() {
+		 web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		 listing_id = $("#retract-listing-id").val()
+		 //console.log(listing_id)
+		 await multibid_contract.methods.retractNewVoteListing(listing_id).send({from:web3.eth.defaultAccount});
+		 update_info()
+	 })
+ 
+	 $("#voteApproveSubmittedThirdParty").click(async function() {
+		 web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		 await multibid_contract.methods.voteApproveSubmittedThirdParty().send({from:web3.eth.defaultAccount});
+		 update_info()
+	 })
+ 
+	 $("#retractVoteApproveSubmittedThirdParty").click(async function() {
+		 web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		 await multibid_contract.methods.retractVoteApproveSubmittedThirdParty().send({from:web3.eth.defaultAccount});
+		 update_info()
+	 })
+ 
+	 $("#approveSubmittedThirdParty").click(async function() {
+		 web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		 await multibid_contract.methods.submitApprovalThirdParty().send({from:web3.eth.defaultAccount});
+		 update_info()
+	 })
+ 
+	 $("#cashOut").click(async function() {
+		 web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		 await multibid_contract.methods.submitCashOut().send({from:web3.eth.defaultAccount});
+		 update_info()
+	 })
+ 
+	 $("#reList").click(async function(){
+		 web3.eth.defaultAccount = $("#myaccount").val(); //sets the default account
+		 listing_id = $("#final-listing-id").val();
+		 let votes = await multibid_contract.methods.listings(listing_id).call({from:web3.eth.defaultAccount});
+		 totalVotingPower = await multibid_contract.methods.totalVotingPower().call({from:web3.eth.defaultAccount});
+		 if(2 * votes > totalVotingPower){
+			 const english_spawner_contract = new web3.eth.Contract(english_spawner_abi, english_spawner_address);
+			 min_bid  = await multibid_contract.methods.listingIds(listing_id, 1).call({from:web3.eth.defaultAccount});
+			 duration = await multibid_contract.methods.listingIds(listing_id, 2).call({from:web3.eth.defaultAccount});
+			 let name = await english_contract.methods.name().call({from:web3.eth.defaultAccount});
+			 await english_spawner_contract.methods.createAuction(BigInt(min_bid), duration, multibid_address,name).send({from:web3.eth.defaultAccount, gas:2000000});
+			 let relisted = await english_spawner_contract.methods.getMostRecentListing().call({from:web3.eth.defaultAccount});
+			 await multibid_contract.methods.switchAfterReList(relisted).send({from:web3.eth.defaultAccount});
+			 alert('You are now viewing your re-listed auction, make sure to reset all your votes');
+ 
+		 } else { alert('This listing option does not currently have enough votes'); }
+		 
+	 })
+ 
+	 $("#home").click(function() {
+		 location.href = 'index.html'
+	 })
+ 
+	 $("#go-e").click(function() {
+		 let english_address = $("#e-address").val()
+		 let params = new URLSearchParams();
+		 params.append("address", english_address);
+		 let url = 'english.html?' + params.toString();
+		 console.log(url)
+		 location.href = url;
+	 })
+ 
+	 $("#go-mb").click(function() {
+		 let multi_address = $("#mb-address").val()
+		 let params = new URLSearchParams();
+		 params.append("address", multi_address);
+		 let url = 'multibid.html?' + params.toString();
+		 console.log(url)
+		 location.href = url;
+	 })
+ 
+ })

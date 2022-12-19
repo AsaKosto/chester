@@ -1,5 +1,16 @@
+
+
 // sets up web3.js
-const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
+//const web3 = new Web3(Web3.givenProvider)// || "ws://localhost:8545");
+
+if (typeof window.ethereum !== 'undefined' || (typeof window.web3 !== 'undefined')) {
+	// Web3 browser user detected. You can now use the provider.
+    provider = window['ethereum'] || window.web3.currentProvider;
+    web3 = new Web3(provider);
+	web3.eth.getAccounts().then(console.log);
+} else {
+    console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
+}
 
 // =============================================================================
 //         ABIs and Contract Addresses: Paste Your ABIs/Addresses Here
@@ -111,6 +122,19 @@ const english_abi = [
 	{
 		"inputs": [],
 		"name": "getAdmin",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getWinner",
 		"outputs": [
 			{
 				"internalType": "address",
@@ -713,12 +737,35 @@ $(document).ready(function(){
 		web3.eth.defaultAccount = $("#myaccount").val();
 		english_contract.methods.cashOut().send({from:web3.eth.defaultAccount});
 		update_balance2();
+		update_curr_bid();
 	})
 
 	$("#withdraw-button").click(async function() {
 		web3.eth.defaultAccount = $("#myaccount").val();
 		english_contract.methods.withdrawBid().send({from:web3.eth.defaultAccount});
 		update_balance2();
+	})
+
+	$("#home").click(function() {
+		location.href = 'index.html'
+	})
+
+	$("#go-e").click(function() {
+		let english_address = $("#e-address").val()
+		let params = new URLSearchParams();
+		params.append("address", english_address);
+		let url = 'english.html?' + params.toString();
+		console.log(url)
+		location.href = url;
+	})
+
+	$("#go-mb").click(function() {
+		let multi_address = $("#mb-address").val()
+		let params = new URLSearchParams();
+		params.append("address", multi_address);
+		let url = 'multibid.html?' + params.toString();
+		console.log(url)
+		location.href = url;
 	})
 
 

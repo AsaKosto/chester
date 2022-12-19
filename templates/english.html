@@ -1,7 +1,4 @@
-<!-- <!DOCTYPE html> -->
-{% extends "layout.html" %}
-
-{% block content %}
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <link rel="stylesheet" type="text/css" href="./../static/style.css">
@@ -15,6 +12,23 @@
   </head>
   <body>
     <div class="container">
+      <div class="row">
+        <div class="col-md-1">
+          <button class=button2 id="home">Home</button>
+        </div>
+        <div class="col-md-3">
+          <input id="e-address" type="text" placeholder="Search Auction">
+        </div>
+        <div class="'col-md-1">
+          <button class=button3 id="go-e">Go</button>
+        </div>
+        <div class="col-md-3">
+          <input id="mb-address" type="text" placeholder="Search MultiBids">
+        </div>
+        <div class="'col-md-1">
+          <button class=button3 id="go-mb">Go</button>
+        </div>
+      </div>
       <div class="row">
         <div class="col-md-2">
           English Auction
@@ -36,7 +50,7 @@
               Item: 
             </div>
             <div id="name" class="col-md-3">
-              "Mona Lisa"
+              Invalid Address
             </div>
           </div>
 
@@ -216,5 +230,4 @@
     <script src="./../static/english.js"></script>
   </body>
 </html>
-{% endblock %}
 

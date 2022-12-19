@@ -1,21 +1,19 @@
-// sets up web3.js
-const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 
-const multi_spawner_address = '0x9FFc83Dde60cEa5AA6848Bc58f1D1Dca368d96B2';
+
+// sets up web3.js
+//const web3 = new Web3(Web3.givenProvider)// || "ws://localhost:8545");
+
+if (typeof window.ethereum !== 'undefined' || (typeof window.web3 !== 'undefined')) {
+	// Web3 browser user detected. You can now use the provider.
+    provider = window['ethereum'] || window.web3.currentProvider;
+    web3 = new Web3(provider);
+	web3.eth.getAccounts().then(console.log);
+} else {
+    console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
+}
+
+const multi_spawner_address = '0xdaa6F037f73564f913492725a16e1fCeC78EC69F';
 const multi_spawner_abi = [
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "auction",
-				"type": "address"
-			}
-		],
-		"name": "createMultiBid",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
 	{
 		"anonymous": false,
 		"inputs": [
@@ -34,6 +32,19 @@ const multi_spawner_abi = [
 		],
 		"name": "multiBidCreated",
 		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "auction",
+				"type": "address"
+			}
+		],
+		"name": "createMultiBid",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
 		"inputs": [],
@@ -76,7 +87,11 @@ const multi_spawner_abi = [
 	}
 ];
 
-const english_spawner_address = '0x659253522f9142992030de2347C3a570DEa7c74d';     
+<<<<<<< HEAD
+const english_spawner_address = '0x7adF0cd0f0953C39AD57C4D29Cc3263Cc85e77F8';     
+=======
+const english_spawner_address = '0x566153de38E3acBa05375B2Dc45ea8c414dE6839';     
+>>>>>>> c4c8c3a4ee903327ff52caf16630b93981b47840
 const english_spawner_abi =[
 	{
 		"anonymous": false,
@@ -183,6 +198,9 @@ const multi_spawner_contract = new web3.eth.Contract(multi_spawner_abi, multi_sp
 
 // This sets the default account on load and displays the total owed to that
 // account.
+web3.eth.requestAccounts().then(console.log);
+//ethereum.enable()
+
 web3.eth.getAccounts().then((response)=> {
     web3.eth.defaultAccount = response[0];
 });
@@ -247,8 +265,32 @@ async function get_active_multis(){
 
 $(document).ready(function(){
 
+	
 	get_active_auctions();
 	get_active_multis();
+
+	$("#home").click(function() {
+		location.href = 'index.html'
+	})
+
+	$("#go-e").click(function() {
+		let english_address = $("#e-address").val()
+		let params = new URLSearchParams();
+		params.append("address", english_address);
+		let url = 'english.html?' + params.toString();
+		console.log(url)
+		location.href = url;
+	})
+
+	$("#go-mb").click(function() {
+		let multi_address = $("#mb-address").val()
+		let params = new URLSearchParams();
+		params.append("address", multi_address);
+		let url = 'multibid.html?' + params.toString();
+		console.log(url)
+		location.href = url;
+	})
+
 
 	// This opens a new page to create an auction
 	$("#create-auction").click(function() {
