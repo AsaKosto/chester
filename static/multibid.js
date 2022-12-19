@@ -1064,6 +1064,8 @@ if (typeof window.ethereum !== 'undefined' || (typeof window.web3 !== 'undefined
 	 document.getElementById('retractVoteThirdParty').style.visibility='hidden';
 	 //Re-Listing Options
 	 document.getElementById('new-listing-minPrice').style.visibility='hidden';
+	 document.getElementById('voteApproveSubmittedThirdParty').style.visibility='hidden'
+	 document.getElementById('submittedThirdParty').style.visibility='hidden';
 	 document.getElementById('units3').style.visibility='hidden';
 	 document.getElementById('new-listing-duration').style.visibility='hidden';
 	 document.getElementById('proposeNewListing').style.visibility='hidden';
@@ -1080,7 +1082,7 @@ if (typeof window.ethereum !== 'undefined' || (typeof window.web3 !== 'undefined
 	 document.getElementById('voteApproveSubmittedThirdParty').style.visibility='hidden';
 	 document.getElementById('retractVoteApproveSubmittedThirdParty').style.visibility='hidden';
 	 document.getElementById('approveSubmittedThirdParty').style.visibility='hidden';
-	 document.getElementById('cashOut').style.visibility='hidden';
+	//  document.getElementById('cashOut').style.visibility='hidden';
  }
  
  async function show_win_vote_buttons(){
@@ -1168,10 +1170,12 @@ if (typeof window.ethereum !== 'undefined' || (typeof window.web3 !== 'undefined
  }
  
  async function show_relist_buttons(){
+
 	 let time_left = await get_time_left();
 	 let winner    = await english_contract.methods.winner().call({from:web3.eth.defaultAccount});
 	 let balance   = await web3.eth.getBalance(auction_address);
 	 if(time_left <= 0 && (winner == multibid_address) && balance == 0){ //check that the auction is over, the multibid has won, and the owner has cashed out (maybe check signatures instead)?
+		// $("#won").html("You won the auction!")
 		 document.getElementById('final-listing-id').style.visibility='visible';
 		 document.getElementById('reList').style.visibility='visible';
 		 document.getElementById('3p-0').style.visibility='hidden';
@@ -1182,6 +1186,8 @@ if (typeof window.ethereum !== 'undefined' || (typeof window.web3 !== 'undefined
 		 let voted = await multibid_contract.methods.votedListings(web3.eth.defaultAccount).call({from:web3.eth.defaultAccount});
 		 if(!voted){
 			 document.getElementById('new-listing-minPrice').style.visibility='visible';
+			 document.getElementById('voteApproveSubmittedThirdParty').style.visibility='visible';
+			 document.getElementById('submittedThirdParty').style.visibility='visible';
 			 document.getElementById('units3').style.visibility='visible';
 			 document.getElementById('new-listing-duration').style.visibility='visible';
 			 document.getElementById('proposeNewListing').style.visibility='visible';
@@ -1191,6 +1197,9 @@ if (typeof window.ethereum !== 'undefined' || (typeof window.web3 !== 'undefined
 			 document.getElementById('retractNewVoteListing').style.visibility='hidden';
 		 }
 		 if(voted){
+			
+			document.getElementById('voteApproveSubmittedThirdParty').style.visibility='visible';
+			 document.getElementById('submittedThirdParty').style.visibility='visible';
 			 document.getElementById('new-listing-minPrice').style.visibility='visible';
 			 document.getElementById('units3').style.visibility='visible';
 			 document.getElementById('new-listing-duration').style.visibility='visible';
@@ -1221,7 +1230,7 @@ if (typeof window.ethereum !== 'undefined' || (typeof window.web3 !== 'undefined
 		 let winnerSigPay     = await english_contract.methods.winnerSigPay().call({from:web3.eth.defaultAccount});
 		 $("#submittedThirdParty").html("Submitted Third Party: " + threepee + "Vote %: " + percentOfVote);
 		 if(!voted){
-			 document.getElementById('voteApproveSubmittedThirdParty').style.visibility='visible';
+			 document.getElementById('voteApproveSubmittedThirdParty').style.visibility='hidden';
 			 document.getElementById('retractVoteApproveSubmittedThirdParty').style.visibility='hidden';
 		 }
 		 if(voted){
@@ -1234,7 +1243,11 @@ if (typeof window.ethereum !== 'undefined' || (typeof window.web3 !== 'undefined
 		 if((ownerSigPay && thirdPartySigPay) || (ownerSigPay && winnerSigPay) || (thirdPartySigPay && winnerSigPay)){
 			 document.getElementById('voteApproveSubmittedThirdParty').style.visibility='hidden';
 			 document.getElementById('retractVoteApproveSubmittedThirdParty').style.visibility='hidden';
-			 document.getElementById('cashOut').style.visibility='visible';
+			 admin = await english_contract.methods.admin().call({from:web3.eth.defaultAccount});
+			 let multi_address = $("#mb-address").val()
+			 if (admin == multi_address) {
+			 	document.getElementById('cashOut').style.visibility='visible';
+			 }
 		 }
 		 show_win_vote_buttons();
 	 }
@@ -1462,7 +1475,8 @@ if (typeof window.ethereum !== 'undefined' || (typeof window.web3 !== 'undefined
 	 $("#signToPay").click(async function() {
 		 web3.eth.defaultAccount = $("#myaccount").val();
 		 await multibid_contract.methods.submitSigPay().send({from:web3.eth.defaultAccount});
-		 alert('signed')
+		 alert('Signed')
+		//  document.getElementById('signToPay').style.visibility='hidden';
 		 update_info()
 	 })
  
@@ -1568,7 +1582,7 @@ if (typeof window.ethereum !== 'undefined' || (typeof window.web3 !== 'undefined
 			 min_bid  = await multibid_contract.methods.listingIds(listing_id, 1).call({from:web3.eth.defaultAccount});
 			 duration = await multibid_contract.methods.listingIds(listing_id, 2).call({from:web3.eth.defaultAccount});
 			 let name = await english_contract.methods.name().call({from:web3.eth.defaultAccount});
-			 await english_spawner_contract.methods.createAuction(min_bid, duration, multibid_address,name).send({from:web3.eth.defaultAccount, gas:2000000});
+			 await english_spawner_contract.methods.createAuction(BigInt(min_bid), duration, multibid_address,name).send({from:web3.eth.defaultAccount, gas:2000000});
 			 let relisted = await english_spawner_contract.methods.getMostRecentListing().call({from:web3.eth.defaultAccount});
 			 await multibid_contract.methods.switchAfterReList(relisted).send({from:web3.eth.defaultAccount});
 			 alert('You are now viewing your re-listed auction, make sure to reset all your votes');

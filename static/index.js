@@ -87,7 +87,11 @@ const multi_spawner_abi = [
 	}
 ];
 
+<<<<<<< HEAD
 const english_spawner_address = '0x7adF0cd0f0953C39AD57C4D29Cc3263Cc85e77F8';     
+=======
+const english_spawner_address = '0x566153de38E3acBa05375B2Dc45ea8c414dE6839';     
+>>>>>>> c4c8c3a4ee903327ff52caf16630b93981b47840
 const english_spawner_abi =[
 	{
 		"anonymous": false,
