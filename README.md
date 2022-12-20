@@ -18,10 +18,11 @@ Multi-Bid Spawner Goerli Address: 0xb90062787c5c10529F1E397E1aEABd01250eF04D
 We reccomend interacting with the contracts directly, on the Goerli test chain. Chester is integrated with MetaMask, so as long as you have Goerli Test ETH and a web3 enabled browser, you can use Chester with the following instructions!
 
 Chester is not currently hosted by us, because we are broke. To use MetaMask, you will need to host the website yourself. Download the repo, navigate to the top level "chester" directory, and start and http server instance.
-* npm install http-server -g
-* cd chester
-* http-server
-s
+
+npm install http-server -g
+cd chester
+http-server
+
 Navigate to localhost:8080 in your browser, and then to templates/index.html. You have now arrived at the Chester homepage. You can see all the auctions and multi-bids that have been created in the last week, and create your own! If you would like to test with your own metamask accounts, make sure you have at least 3 that all have some Goerli Test ETH and switch between them. Remember to refresh the page after you switch accounts! (also note that because the contracts are running on the test network)
 
 If you would like to test chester locally, load the contracts into the REMIX IDE and deploy them on a ganache network (ganache-cli). Copy and paste the new addresses into the approprately labeled spots in the javascript files, and set the provider to localhost. The provider is set by default to MetaMask at the top of each javascript file, but you can comment that section and uncomment the section above it to switch to a local provider. The test files in /test are meant to be run locally, because testing will take a long time on the network. 
@@ -30,47 +31,44 @@ Typical Usage:
 This section will explain how some typical users, Alice, Bob, Charlie, David, Earl, and Felicity might use the app.
 See the demo videos for a UI walkthrough!
 
-Individual Bids:
-A: create auction
-B: submit bid with C as third party
-D: submit higher bid with C as third party, B recieves money back
--Auction Ends-
-D: signs to pay
-A: approves C
-C: signs to pay
-A: signs to pay
-A: cashes out
-
-Multi-Bid:
-A: create auction
-B: create multi bid, add 1 ETH
-C: join multi-bid, add 2 ETH
-B: propose D as third party
-B: vote for D as third party
-C: vote for D as third party
-B or C: submit bid
--Auction Ends-
-A: approves D as third party
-A: signs to pay
-B and C: vote to pay
-B or C: sign to pay
-A: cash out
--B now owns 1/3 of listed item, C owns 2/3-
-B or C: proposes listing params (time, min bid)
-B and C: vote on listing params
-B or C: re-List
-E: bids 30 ETH on B/C re-listing
-E: proposes F as third party
--auction ends-
-B and C: vote to approve F
-B and C: vote to pay
-B or C: sign to pay
-E: sign to pay
-B: withdraws 10 ETH
-C: withdraws 20 ETH
-
-
-
+Individual Bids:  
+A: create auction  
+B: submit bid with C as third party  
+D: submit higher bid with C as third party, B recieves money back  
+-Auction Ends-  
+D: signs to pay  
+A: approves C  
+C: signs to pay  
+A: signs to pay  
+A: cashes out  
+  
+Multi-Bid:  
+A: create auction  
+B: create multi bid, add 1 ETH  
+C: join multi-bid, add 2 ETH  
+B: propose D as third party   
+B: vote for D as third party  
+C: vote for D as third party  
+B or C: submit bid  
+-Auction Ends-  
+A: approves D as third party  
+A: signs to pay  
+B and C: vote to pay  
+B or C: sign to pay  
+A: cash out  
+-B now owns 1/3 of listed item, C owns 2/3-  
+B or C: proposes listing params (time, min bid)  
+B and C: vote on listing params  
+B or C: re-List  
+E: bids 30 ETH on B/C re-listing  
+E: proposes F as third party  
+-auction ends-  
+B and C: vote to approve F  
+B and C: vote to pay  
+B or C: sign to pay  
+E: sign to pay  
+B: withdraws 10 ETH  
+C: withdraws 20 ETH  
 
 Explanations and More Information:
 
