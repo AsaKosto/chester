@@ -23,16 +23,57 @@ Chester is not currently hosted by us, because we are broke. To use MetaMask, yo
 * http-server
 Navigate to localhost:8080 in your browser, and then to templates/index.html. You have now arrived at the Chester homepage. You can see all the auctions and multi-bids that have been created in the last week, and create your own! If you would like to test with your own metamask accounts, make sure you have at least 3 that all have some Goerli Test ETH and switch between them. Remember to refresh the page after you switch accounts! (also note that because the contracts are running on the test network)
 
-If you would like to test chester locally, load the contracts into the REMIX IDE and deploy them on a ganache network (>>> ganache-cli). Copy and paste the new addresses into the approprately labeled spots in the javascript files, and set the provider to localhost. The provider is set by default to MetaMask at the top of each javascript file, but you can comment that section and uncomment the section above it to switch to a local provider. The test files in /test are meant to be run locally, because testing will take a long time on the network. 
+If you would like to test chester locally, load the contracts into the REMIX IDE and deploy them on a ganache network (ganache-cli). Copy and paste the new addresses into the approprately labeled spots in the javascript files, and set the provider to localhost. The provider is set by default to MetaMask at the top of each javascript file, but you can comment that section and uncomment the section above it to switch to a local provider. The test files in /test are meant to be run locally, because testing will take a long time on the network. 
+
+Typical Usage: 
+This section will explain how some typical users, Alice, Bob, Charlie, David, Earl, and Felicity might use the app.
+See the demo videos for a UI walkthrough!
+
+Individual Bids:
+A: create auction
+B: submit bid with C as third party
+D: submit higher bid with C as third party, B recieves money back
+-Auction Ends-
+D: signs to pay
+A: approves C
+C: signs to pay
+A: signs to pay
+A: cashes out
+
+Multi-Bid:
+A: create auction
+B: create multi bid, add 1 ETH
+C: join multi-bid, add 2 ETH
+B: propose D as third party
+B: vote for D as third party
+C: vote for D as third party
+B or C: submit bid
+-Auction Ends-
+A: approves D as third party
+A: signs to pay
+B and C: vote to pay
+B or C: sign to pay
+A: cash out
+-B now owns 1/3 of listed item, C owns 2/3-
+B or C: proposes listing params (time, min bid)
+B and C: vote on listing params
+B or C: re-List
+E: bids 30 ETH on B/C re-listing
+E: proposes F as third party
+-auction ends-
+B and C: vote to approve F
+B and C: vote to pay
+B or C: sign to pay
+E: sign to pay
+B: withdraws 10 ETH
+C: withdraws 20 ETH
 
 
-Using the user interface in the multibid and english html pages, anybody can interact and explore all the functionality of Chesster.
 
 
+Explanations and More Information:
 
-Chesster: open source blockchain auctions for the art market Asa Kosto (atk2142) Aaron Ashery (ala2201) Sergio Nahas (sn2865)
-
-The concept of blockchain auctions is absolutely nothing new. The ability to have anonymity, security, and guaranteed payment are all obvious benefits. Multiple services exist that allow users to post items for a set sale price or for auction, mostly on the dark web. These platforms, however, are often populated with bad actors, illegal goods, and are inflexible (for example, only supporting one auction format or payment in a single installment). Many existing services also use alternate chains or service-specific blockchains that affect final sale values because of exchange rates and volatility.
+The concept of blockchain auctions is absolutely nothing new. The ability to have anonymity, security, and guaranteed payment are all obvious benefits. Multiple services exist that allow users to post items for a set sale price or for auction, mostly on the dark web. These platforms, however, are often populated with bad actors, illegal goods, and are inflexible. Many existing services also use alternate chains or service-specific blockchains that affect final sale values because of exchange rates and volatility.
 
 We propose to create Chesster: an open source platform that enables a party to create a secure and flexible auction, tailored specifically to the art market using the Ethereum blockchain and smart contracts.
 
@@ -42,14 +83,14 @@ The nature of art ownership: Owning a piece of art is a strange thing. Owning a 
 
 Valuation: One of the primary difficulties in buying or selling a piece of art is how to set a proper price. Art valuation is inherently a subjective task that takes into account many factors such as the artist, the time period, the condition, the popularity of the piece itself, and the provenance. Usually, valuations are performed by appraisers who are hired by either the auction house or the private seller. Appraisers, auctioneers, and sellers are incentivized to give ridiculously high appraisals. This is possible because the sale history of the piece is often either private or difficult to ascertain, meaning there is no historical baseline for valuation in most cases. A blockchain solution clearly solves this problem by showing an on-chain record of amount that was paid during the auction. This is a benefit for buyers in the future, who can avoid getting prices hiked by opaque valuations, and for regulatory authorities, who can more accurately value collections based on the historical sale prices of similar pieces.
 
-Security: At a physical auction, there is a risk of "partial or promised payment" scams. When bidding at an auction, a bidder does not need to actually have the money on hand, and hence payment is not guaranteed. Running the auction through a smart contract means that the item will only be "sold" if there are enough funds necessary for its purchase. Due to the sometimes sketchy nature of art collectors, particularly those whose money comes from dubious or volatile sources, this is an important concern. Regulatory authorities need to come in to enforce restitution if one party is scammed. An on-chain solution means that the auction platform itself enforces the sale, and if payment is not rendered, the sale is easily and verifiably nullified.
+Security: At a physical auction, there is a risk of "partial or promised payment" scams. When bidding at an auction, a bidder does not need to actually have the money on hand, and hence payment is not guaranteed. Running the auction through a smart contract means that the item will only be "sold" if there are enough funds necessary for its purchase. Due to the sometimes sketchy nature of art collectors, particularly those whose money comes from dubious or volatile sources, this is an important concern. Regulatory authorities need to come in to enforce restitution if one party is scammed. An on-chain solution means that the auction platform itself enforces the sale, and if payment cannot be rendered, the sale is easily and verifiably nullified.
 
 Anonymity: Often, wealthy patrons buying or selling art prefer to remain anonymous. This can be for a multitude of reasons, but the fact is that no auction house or even any private auction today can provide true anonymity. The ability to buy and sell high-valued goods anonymously is obviously in demand, buyers at auctions in the past have paid for pieces with cryptocurrency. A platform that allows anonymous listing, bidding, and arbitration is perfectly tailored to high value individuals or organizations who value their privacy transacting high value items.
 
-Speculation: The art market is inherently speculative, and many collectors with no interest in art buy pieces purely for economic value. Chesster would allow multiple parties to join together and create a bid, which then would require some pre-agreed amount of signatures to re-list. Upon re-listing, the original buyers would be paid out relative to the percentage they contributed to the original purchase. A blockchain record of all the initial transaction makes automatic proportional payout easy. This ability to "split" a purchase with multiple parties in the same bid will also allow large numbers of people to own fractions of a piece, and gain access to the insane multiples of returns normally reserved for super-rich art collectors. This idea is already implemented through multiple services such as Masterworks and Yieldstreet, but those services are still susceptible to foul play or loss of records. With an on-chain record of who paid how much, the investment is guaranteed if the payout is managed by a smart contract instead of a central entity.
+Speculation: The art market is inherently speculative, and many collectors with no interest in art buy pieces purely for economic value. Chesster would allow multiple parties to join together and create a bid, which they can then re-list. Upon re-listing, the original buyers would be paid out relative to the percentage they contributed to the original purchase. A blockchain record of all the initial transaction makes automatic proportional payout easy. This ability to "split" a purchase with multiple parties in the same bid will also allow large numbers of people to own fractions of a piece, and gain access to the insane multiples of returns normally reserved for super-rich art collectors. This idea is already implemented through multiple services such as Masterworks and Yieldstreet, but those services are still susceptible to foul play or loss of records. With an on-chain record of who paid how much, the investment is guaranteed if the payout is managed by a smart contract instead of a central entity.
 
-Section 2: Chesster's Features Chesster will support multiple auction formats with multiple payment options: List: Sellers can list an item for a certain amount of time. Currently there is only one auction format, English, but in the future there could be more such as secret bids that take advantage of ZK-proofs. Bid: Buyers can currently bid on listings and in the future they will have the option to automatically match bids up to a certain amount. Authorize/Ensure: Buyers must propose a trusted third party (such as a well-known auction house with a publicly verifiable signature) to arbitrate transactions in the case of an escrow procedure being necessary. Multi-Bid: Multiple buyers can join together to create a bid that will pay out proportionally upon re-listing the item. Re-listing will require some percentage of signatures agreed upon in the initial bid.
- Chesster's main advantage is its simplicity and usability. We encapsulate all the transaction mechanics under the hood and provide an easy-to-use and intuitive API with functions like ListEnglish(TimeLimit, MinimumBid), Bid(AuctionID, Amount, ThirdParty), Lookup(AuctionID) etc... Chesster will also allow listers to pay the third party a commission for their role in arbitrating the sale (*To be Implemented).
+Section 2: Chesster's Features: Chesster will support multiple auction formats with multiple payment options: List: Sellers can list an item for a certain amount of time. Currently there is only one auction format, English, but in the future there could be more such as secret bids that take advantage of ZK-proofs (FPSB/SPSB for example). Bid: Buyers can currently bid on listings and in the future they will have the option to automatically match bids up to a certain amount. Authorize/Ensure: Buyers must propose a trusted third party (such as a well-known auction house with a publicly verifiable signature) to arbitrate transactions in the case of an escrow procedure being necessary. Multi-Bid: Multiple buyers can join together to create a bid that will pay out proportionally upon re-listing the item. Re-listing will require some percentage of signatures agreed upon in the initial bid.
+ Chesster's main advantage is its simplicity and usability. We encapsulate all the transaction mechanics under the hood and provide an easy-to-use and intuitive API. Chesster will also allow listers to pay the third party a commission for their role in arbitrating the sale (*To be Implemented).
 
 Section 3: Why Chesster?
 
@@ -88,14 +129,14 @@ There exist smart contract auditors such as https://audity.one/ and also compile
 
 1. Reentrancy: The contract is vulnerable to reentrancy attacks, meaning a malicious user could call a function multiple times and cause unintended consequences.
 
-    When bidding on auctions we get a reentrancy violation. Due to the structure of our ocntract this is not possible and cannot be exploited. When a valid bid is submitted the bidder's money is sent to the contract. At the same time the money that was in the contract is sent back to the previous highest bidder. A malicious attack could potentially manipulate contracts to call the trasnfer of the contracts value back to the previous winner multiple times, however this would be pointless. For example if an innocent party is the previous highest bidder and a malicious one outbids them using this exploitation, the value submitted by the malicious party would be transffered to the innoncent parties account. There is no way the malicious actor could gain inccoent peoples ETH, they could only transfer their own by playing both roles.
+    When bidding on auctions we get a reentrancy violation. Due to the structure of our ocntract this is not possible and cannot be exploited. When a valid bid is submitted the bidder's money is sent to the contract. At the same time the money that was in the contract is sent back to the previous highest bidder. A malicious attack could potentially manipulate contracts to call the trasnfer of the contracts value back to the previous winner multiple times, however this would be pointless. For example if an innocent party is the previous highest bidder and a malicious one outbids them using this exploitation, the value submitted by the malicious party would be transffered to the innocent party's account. There is no way the malicious actor could gain inccoent peoples ETH, they could only transfer their own by playing both roles.
     An issue is that if a malicious actor manipulates the contract in this way, they could win a bid with no ETH in the actual contract even though they are the highest bidder. In this case the owner would not sign the transaction and the bidder would never gain the item.
 
 2. Unchecked Math: 
     Due to time limitations we were unable to implement the safe math library. This is to be added in the future and is a valid security issue that needs to be addressed.
 
 3. User Interface (Not audited): 
-    Due to time constraints the user interface is not complete. Most issues are of button visibility and user input feedback. While these UI issues exist, none allow a bad actor to maliciously affect an auction as the contract itself will not allow anything out of order to take place.
+    Due to time constraints the user interface is not complete. Most issues are of button visibility and user input feedback. While these UI issues exist, none allow a bad actor to maliciously affect an auction as the contract itself will not allow anything out of order to take place. In certain situations the stake in a multi-bid displayed on the website is inaccurate, and sometimes the buttons to vote for or retract votes for third parties do not appear when they should. Both of these bugs (and there are undoubtedly more), do not affect the contract itself. With the stake display bug in particular, we have checked that the stakes are updated appropriately in the contract and this is purely a frontend issue. 
 
 
 By the end of this project the three of us learned a lot about Web3 and blockchain. With more time there is so much we would like to add, improve, and clean up. Our Web3 auction site offers a lot of functionality, highlighted by the ability to have a multi-bid and relist objects, amounting value equal to each users stake. We are extremely proud of Chesster and are looking forward to iterating on it and developing other Web3 projects in the future.
