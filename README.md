@@ -21,6 +21,7 @@ Chester is not currently hosted by us, because we are broke. To use MetaMask, yo
 * npm install http-server -g
 * cd chester
 * http-server
+s
 Navigate to localhost:8080 in your browser, and then to templates/index.html. You have now arrived at the Chester homepage. You can see all the auctions and multi-bids that have been created in the last week, and create your own! If you would like to test with your own metamask accounts, make sure you have at least 3 that all have some Goerli Test ETH and switch between them. Remember to refresh the page after you switch accounts! (also note that because the contracts are running on the test network)
 
 If you would like to test chester locally, load the contracts into the REMIX IDE and deploy them on a ganache network (ganache-cli). Copy and paste the new addresses into the approprately labeled spots in the javascript files, and set the provider to localhost. The provider is set by default to MetaMask at the top of each javascript file, but you can comment that section and uncomment the section above it to switch to a local provider. The test files in /test are meant to be run locally, because testing will take a long time on the network. 
